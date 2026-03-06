@@ -31,6 +31,16 @@ export const registry: RegistryItem[] = [
     type: "component",
   },
 
+  {
+    slug: "ripple-button",
+    title: "Ripple button",
+    description: "Click-origin pastel ripple with cursor-mapped colour and spring physics. Every tap is uniquely tinted by where the pointer lives in the viewport.",
+    date: "2026-03-06",
+    tech: ["Spring Physics", "requestAnimationFrame", "cursorColour"],
+    tags: ["button", "ripple", "spring", "interaction", "click"],
+    type: "component",
+  },
+
   // --- Playground (visual experiments, not reusable components) ---
   {
     slug: "colour-field",

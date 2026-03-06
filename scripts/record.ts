@@ -70,38 +70,66 @@ async function record() {
   });
 
   const page = await context.newPage();
-  await page.goto(`${BASE_URL}/${slug}`, { waitUntil: "networkidle" });
+  await page.goto(`${BASE_URL}/${slug}`, { waitUntil: "load", timeout: 60000 });
 
   // Wait for canvas/content to initialise
   await page.waitForTimeout(1000);
 
+  const cx = SIZE / 2;
+  const cy = SIZE / 2;
+  let curX = cx;
+  let curY = cy;
+
+  // Corner positions to sweep through — each gives a different colour
+  const corners = [
+    { x: SIZE * 0.05, y: SIZE * 0.05 },  // top-left: red/magenta
+    { x: SIZE * 0.95, y: SIZE * 0.05 },  // top-right: green
+    { x: SIZE * 0.95, y: SIZE * 0.95 },  // bottom-right: cyan
+    { x: SIZE * 0.05, y: SIZE * 0.95 },  // bottom-left: blue
+    { x: SIZE * 0.5,  y: SIZE * 0.05 },  // top-centre
+    { x: SIZE * 0.05, y: SIZE * 0.5 },   // left-centre
+    { x: SIZE * 0.95, y: SIZE * 0.5 },   // right-centre
+    { x: SIZE * 0.5,  y: SIZE * 0.95 },  // bottom-centre
+  ];
+
   const startTime = Date.now();
-  let curX = SIZE / 2;
-  let curY = SIZE / 2;
+  let cornerIdx = 0;
 
-  // Move cursor in organic patterns across the canvas
+  // Pattern: sweep to a corner (colour shifts), glide to button centre, click
+  // This shows the colour changing dramatically between clicks
   while (Date.now() - startTime < duration) {
-    // Random target within the viewport, biased toward center
-    const targetX = SIZE * 0.15 + Math.random() * SIZE * 0.7;
-    const targetY = SIZE * 0.15 + Math.random() * SIZE * 0.7;
+    const corner = corners[cornerIdx % corners.length];
+    cornerIdx++;
 
-    await smoothMove(page, curX, curY, targetX, targetY, 50);
+    // Sweep out to corner — colour changes as cursor moves across viewport
+    await smoothMove(page, curX, curY, corner.x, corner.y, 40);
+    curX = corner.x;
+    curY = corner.y;
+    await page.waitForTimeout(150);
 
-    // Occasionally click to trigger particle bursts
-    if (Math.random() > 0.6) {
-      await page.mouse.click(targetX, targetY);
+    // Glide back toward button centre — the colour is now "locked in" at this position
+    // Add slight offset so clicks land in different spots on the button
+    const clickX = cx + (Math.random() - 0.5) * 120;
+    const clickY = cy + (Math.random() - 0.5) * 20;
+    await smoothMove(page, curX, curY, clickX, clickY, 35);
+    curX = clickX;
+    curY = clickY;
+
+    // Click — ripple blooms with the colour from the corner we just visited
+    await page.mouse.click(curX, curY);
+    await page.waitForTimeout(400 + Math.random() * 200);
+
+    // Occasionally do a rapid double-click to show multiple ripples layering
+    if (cornerIdx % 3 === 0) {
+      await page.mouse.click(curX + 15, curY);
+      await page.waitForTimeout(150);
+      await page.mouse.click(curX - 15, curY);
       await page.waitForTimeout(300);
     }
-
-    curX = targetX;
-    curY = targetY;
-
-    // Brief pause between movements
-    await page.waitForTimeout(200 + Math.random() * 400);
   }
 
   // Hold final frame
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1500);
 
   await context.close();
   await browser.close();

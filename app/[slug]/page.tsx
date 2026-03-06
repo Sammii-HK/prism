@@ -8,6 +8,7 @@ const componentMap: Record<string, React.ComponentType> = {
   // Components
   "magnetic-button": dynamic(() => import("../demos/magnetic-button")),
   "spotlight-card": dynamic(() => import("../demos/spotlight-card")),
+  "ripple-button": dynamic(() => import("../demos/ripple-button")),
   // Playground
   "colour-field": dynamic(() => import("../playground/colour-field")),
   "fluid-mesh": dynamic(() => import("../playground/fluid-mesh")),
