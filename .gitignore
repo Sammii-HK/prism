@@ -36,6 +36,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# pipeline state
+pipeline/state/
+pipeline/mcp-configs/*.json
+!pipeline/mcp-configs/base.json
+
+# recordings
+recordings/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
