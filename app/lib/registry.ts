@@ -1,13 +1,37 @@
-export type Experiment = {
+export type ItemType = "component" | "playground";
+
+export type RegistryItem = {
   slug: string;
   title: string;
   description: string;
   date: string;
   tech: string[];
   tags: string[];
+  type: ItemType;
 };
 
-export const experiments: Experiment[] = [
+export const registry: RegistryItem[] = [
+  // --- Components (reusable, importable) ---
+  {
+    slug: "magnetic-button",
+    title: "Magnetic button",
+    description: "Button that stretches toward your cursor with spring physics. Glows with position-mapped pastel colour on proximity. Click for a satisfying bounce.",
+    date: "2026-03-06",
+    tech: ["Spring Physics", "DOM Transforms", "Pointer Events"],
+    tags: ["button", "magnetic", "spring", "interaction"],
+    type: "component",
+  },
+  {
+    slug: "spotlight-card",
+    title: "Spotlight card",
+    description: "Card with a cursor-reactive pastel border glow. Border colour shifts based on where the cursor sits within the card.",
+    date: "2026-03-06",
+    tech: ["CSS Border", "Pointer Events", "requestAnimationFrame"],
+    tags: ["card", "spotlight", "border", "glow"],
+    type: "component",
+  },
+
+  // --- Playground (visual experiments, not reusable components) ---
   {
     slug: "colour-field",
     title: "Colour field",
@@ -15,14 +39,7 @@ export const experiments: Experiment[] = [
     date: "2026-03-06",
     tech: ["Canvas", "Pointer Events", "requestAnimationFrame"],
     tags: ["colour", "cursor", "gradient"],
-  },
-  {
-    slug: "magnetic-buttons",
-    title: "Magnetic buttons",
-    description: "Buttons that stretch and warp toward your cursor with spring physics. Each surface glows with position-mapped colour. Click to ripple neighbours.",
-    date: "2026-03-06",
-    tech: ["Spring Physics", "DOM Transforms", "Interaction Design"],
-    tags: ["buttons", "spring", "magnetic", "interaction"],
+    type: "playground",
   },
   {
     slug: "fluid-mesh",
@@ -31,6 +48,7 @@ export const experiments: Experiment[] = [
     date: "2026-03-06",
     tech: ["Canvas", "Spring Physics", "Mesh Grid"],
     tags: ["mesh", "deformation", "physics"],
+    type: "playground",
   },
   {
     slug: "text-dissolve",
@@ -39,6 +57,7 @@ export const experiments: Experiment[] = [
     date: "2026-03-06",
     tech: ["Canvas", "Pixel Sampling", "Particle Physics"],
     tags: ["text", "particles", "dissolve"],
+    type: "playground",
   },
   {
     slug: "gravity-wells",
@@ -47,6 +66,7 @@ export const experiments: Experiment[] = [
     date: "2026-03-06",
     tech: ["Canvas", "Newtonian Gravity", "Particle Systems"],
     tags: ["gravity", "particles", "orbits"],
+    type: "playground",
   },
   {
     slug: "shader-marbling",
@@ -55,5 +75,9 @@ export const experiments: Experiment[] = [
     date: "2026-03-06",
     tech: ["WebGL", "GLSL", "Simplex Noise"],
     tags: ["shader", "marble", "noise", "webgl"],
+    type: "playground",
   },
 ];
+
+export const components = registry.filter((r) => r.type === "component");
+export const playground = registry.filter((r) => r.type === "playground");

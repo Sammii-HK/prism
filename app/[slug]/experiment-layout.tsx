@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
-import { type Experiment } from "../lib/registry";
+import { type RegistryItem } from "../lib/registry";
 import { type ReactNode } from "react";
 
 type Props = {
-  experiment: Experiment;
+  experiment: RegistryItem;
   children: ReactNode;
 };
 
