@@ -6,14 +6,14 @@ import { colourField } from "./lib/primitives/gradient";
 import { SpotlightCard, CursorGlow } from "./lib/primitives";
 
 export default function Gallery() {
-  const { xPc, yPc, time } = usePointer({ lerp: 0.08 });
+  const { xPc, yPc, time, mounted } = usePointer({ lerp: 0.08 });
 
   return (
     <div
       className="min-h-screen relative"
-      style={colourField(xPc, yPc, time, 8)}
+      style={mounted ? colourField(xPc, yPc, time, 8) : undefined}
     >
-      <CursorGlow size={400} blur={40} opacity={0.05} />
+      {mounted && <CursorGlow size={400} blur={40} opacity={0.05} />}
 
       <header className="pt-16 pb-12 px-6 text-center">
         <h1 className="text-4xl sm:text-5xl font-light tracking-tight text-white/90">

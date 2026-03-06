@@ -13,6 +13,8 @@ type PointerState = {
   clientY: number;
   /** Whether pointer is currently over the tracked element */
   isHovering: boolean;
+  /** Whether the hook has mounted (use to guard SSR-sensitive rendering) */
+  mounted: boolean;
 };
 
 type UsePointerOptions = {
@@ -32,6 +34,7 @@ export const usePointer = (options: UsePointerOptions = {}): PointerState => {
     clientX: 0,
     clientY: 0,
     isHovering: false,
+    mounted: false,
   });
 
   const targetRef = useRef({ x: 50, y: 50, clientX: 0, clientY: 0 });
@@ -84,6 +87,7 @@ export const usePointer = (options: UsePointerOptions = {}): PointerState => {
         clientX: targetRef.current.clientX,
         clientY: targetRef.current.clientY,
         isHovering: hoveringRef.current,
+        mounted: true,
       });
 
       raf = requestAnimationFrame(tick);
