@@ -130,7 +130,7 @@ export const MagneticButton = ({
     <button
       ref={ref}
       onClick={handleClick}
-      className={`relative rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/60 text-sm font-light tracking-wide cursor-pointer transition-colors hover:text-white/90 select-none ${className}`}
+      className={`relative rounded-2xl bg-white/[0.06] border border-white/[0.12] text-white/80 font-medium tracking-tight cursor-pointer transition-colors hover:text-white select-none px-8 py-4 ${className}`}
       style={{ willChange: "transform", backfaceVisibility: "hidden" }}
       {...rest}
     >

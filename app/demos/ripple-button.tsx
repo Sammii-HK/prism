@@ -31,12 +31,13 @@ export default function RippleButtonDemo() {
           alignItems: "center",
           justifyContent: "center",
           gap: "18px",
+          padding: "24px",
         }}
       >
         <RippleButton
           rippleDuration={750}
           rippleScale={3}
-          style={{ fontSize: "15px", padding: "14px 36px" }}
+          style={{ fontSize: "20px", padding: "20px 64px" }}
         >
           Click anywhere
         </RippleButton>
@@ -45,7 +46,7 @@ export default function RippleButtonDemo() {
           style={{
             margin: 0,
             color: "rgba(255,255,255,0.28)",
-            fontSize: "11px",
+            fontSize: "13px",
             letterSpacing: "0.07em",
             textTransform: "lowercase",
           }}

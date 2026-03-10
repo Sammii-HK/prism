@@ -6,9 +6,11 @@ import dynamic from "next/dynamic";
 // Explicit component map — add new entries here when adding components/playground items
 const componentMap: Record<string, React.ComponentType> = {
   // Components
+  "animated-border": dynamic(() => import("../demos/animated-border")),
   "magnetic-button": dynamic(() => import("../demos/magnetic-button")),
   "spotlight-card": dynamic(() => import("../demos/spotlight-card")),
   "ripple-button": dynamic(() => import("../demos/ripple-button")),
+  "floating-dock": dynamic(() => import("../demos/floating-dock")),
   // Playground
   "colour-field": dynamic(() => import("../playground/colour-field")),
   "fluid-mesh": dynamic(() => import("../playground/fluid-mesh")),

@@ -13,6 +13,15 @@ export type RegistryItem = {
 export const registry: RegistryItem[] = [
   // --- Components (reusable, importable) ---
   {
+    slug: "animated-border",
+    title: "Animated border",
+    description: "Card with a rotating conic gradient border. Colours shift based on cursor position via pastelColour — every spot on screen produces a unique palette.",
+    date: "2026-03-10",
+    tech: ["Spring Physics", "Conic Gradient", "requestAnimationFrame"],
+    tags: ["border", "gradient", "conic", "card", "cursor"],
+    type: "component",
+  },
+  {
     slug: "magnetic-button",
     title: "Magnetic button",
     description: "Button that stretches toward your cursor with spring physics. Glows with position-mapped pastel colour on proximity. Click for a satisfying bounce.",
@@ -31,6 +40,15 @@ export const registry: RegistryItem[] = [
     type: "component",
   },
 
+  {
+    slug: "floating-dock",
+    title: "Floating dock",
+    description: "macOS-style dock with proximity-based scaling and spring physics. Icons lift and glow with position-mapped pastel colour as your cursor approaches.",
+    date: "2026-03-10",
+    tech: ["Spring Physics", "Proximity Detection", "pastelColour"],
+    tags: ["dock", "navigation", "spring", "proximity", "glow"],
+    type: "component",
+  },
   {
     slug: "ripple-button",
     title: "Ripple button",
