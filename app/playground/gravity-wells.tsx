@@ -37,7 +37,9 @@ export default function GravityWells() {
   const particlesRef = useRef<Particle[]>([]);
   const pointer = usePointer({ lerp: 0.2 });
   const pointerRef = useRef(pointer);
-  pointerRef.current = pointer;
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

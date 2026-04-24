@@ -56,7 +56,9 @@ function AnimatedRipple({
   const spanRef = useRef<HTMLSpanElement>(null);
   // Keep onDone fresh without re-triggering the effect
   const onDoneRef = useRef(onDone);
-  onDoneRef.current = onDone;
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   useEffect(() => {
     const el = spanRef.current;

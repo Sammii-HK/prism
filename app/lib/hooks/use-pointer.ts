@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type PointerState = {
   /** Smoothed cursor X as 0-100 percentage of viewport width */

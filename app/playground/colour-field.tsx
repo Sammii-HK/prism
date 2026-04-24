@@ -31,7 +31,9 @@ export default function ColourField() {
   const particlesRef = useRef<Particle[]>([]);
   const pointer = usePointer({ lerp: 0.06 });
   const pointerRef = useRef(pointer);
-  pointerRef.current = pointer;
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
 
   const spawnParticles = useCallback((clientX: number, clientY: number) => {
     const canvas = canvasRef.current;

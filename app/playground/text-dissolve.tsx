@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect } from "react";
 import { usePointer } from "../lib/hooks/use-pointer";
 import { cursorColour } from "../lib/primitives/gradient";
 
@@ -36,7 +36,9 @@ export default function TextDissolve() {
   const particlesRef = useRef<Particle[]>([]);
   const pointer = usePointer({ lerp: 0.15 });
   const pointerRef = useRef(pointer);
-  pointerRef.current = pointer;
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
   const initialisedRef = useRef(false);
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export default function TextDissolve() {
 
       ctx.clearRect(0, 0, w, h);
 
-      const { clientX, clientY, xPc, yPc, time } = pointerRef.current;
+      const { clientX, clientY } = pointerRef.current;
       const mx = clientX;
       const my = clientY - 41;
 
@@ -171,13 +173,16 @@ export default function TextDissolve() {
 
   const handleClick = () => {
     // Explode all particles outward from their origin
-    for (const p of particlesRef.current) {
+    particlesRef.current = particlesRef.current.map((p) => {
       const angle = Math.random() * Math.PI * 2;
       const force = 4 + Math.random() * 8;
-      p.velX += Math.cos(angle) * force;
-      p.velY += Math.sin(angle) * force;
-      p.dissolved = true;
-    }
+      return {
+        ...p,
+        velX: p.velX + Math.cos(angle) * force,
+        velY: p.velY + Math.sin(angle) * force,
+        dissolved: true,
+      };
+    });
   };
 
   return (

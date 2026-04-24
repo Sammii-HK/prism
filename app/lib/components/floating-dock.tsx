@@ -47,16 +47,15 @@ export const FloatingDock = ({
   const statesRef = useRef<IconState[]>([]);
   const mouseRef = useRef({ x: Infinity, y: Infinity });
 
-  // Ensure states array matches items length
-  if (statesRef.current.length !== items.length) {
-    statesRef.current = items.map(() => ({
-      scale: 1,
-      scaleVel: 0,
-      liftY: 0,
-      liftVel: 0,
-      glow: 0,
+  useEffect(() => {
+    statesRef.current = items.map((_, index) => ({
+      scale: statesRef.current[index]?.scale ?? 1,
+      scaleVel: statesRef.current[index]?.scaleVel ?? 0,
+      liftY: statesRef.current[index]?.liftY ?? 0,
+      liftVel: statesRef.current[index]?.liftVel ?? 0,
+      glow: statesRef.current[index]?.glow ?? 0,
     }));
-  }
+  }, [items]);
 
   useEffect(() => {
     const dock = dockRef.current;
@@ -92,6 +91,7 @@ export const FloatingDock = ({
         if (!el) continue;
 
         const s = statesRef.current[i];
+        if (!s) continue;
         const rect = el.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;

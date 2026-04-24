@@ -33,7 +33,9 @@ export default function FluidMesh() {
   const rowsRef = useRef(0);
   const pointer = usePointer({ lerp: 0.2 });
   const pointerRef = useRef(pointer);
-  pointerRef.current = pointer;
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -81,7 +83,7 @@ export default function FluidMesh() {
     window.addEventListener("resize", buildGrid);
 
     const draw = () => {
-      const { clientX, clientY, xPc, yPc } = pointerRef.current;
+      const { clientX, clientY } = pointerRef.current;
       const mx = clientX;
       const my = clientY - 41; // offset for nav bar
 
@@ -177,17 +179,21 @@ export default function FluidMesh() {
     const my = e.clientY - 41;
 
     // Shockwave: push all nodes outward from click point
-    for (const node of nodesRef.current) {
+    nodesRef.current = nodesRef.current.map((node) => {
       const dx = node.x - mx;
       const dy = node.y - my;
       const dist = Math.sqrt(dx * dx + dy * dy);
       if (dist < 300 && dist > 0) {
         const force = (1 - dist / 300) * 12;
         const angle = Math.atan2(dy, dx);
-        node.velX += Math.cos(angle) * force;
-        node.velY += Math.sin(angle) * force;
+        return {
+          ...node,
+          velX: node.velX + Math.cos(angle) * force,
+          velY: node.velY + Math.sin(angle) * force,
+        };
       }
-    }
+      return node;
+    });
   };
 
   return (
