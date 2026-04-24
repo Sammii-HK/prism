@@ -7,6 +7,7 @@ const links = [
   { href: "/components", label: "Components" },
   { href: "/playground", label: "Playground" },
   { href: "/atoms", label: "Atoms" },
+  { href: "/hire", label: "Hire" },
 ];
 
 export const SiteNav = () => {
