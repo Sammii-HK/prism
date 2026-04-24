@@ -1,0 +1,158 @@
+{
+  "name": "@sammii/prism-ui",
+  "version": "0.0.0",
+  "description": "Cursor-reactive React components with spring physics and position-mapped colour.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "tailwind.preset.js",
+    "tailwind.preset.d.ts",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tailwind.preset": {
+      "types": "./tailwind.preset.d.ts",
+      "import": "./tailwind.preset.js",
+      "default": "./tailwind.preset.js"
+    },
+    "./animated-border": {
+      "types": "./dist/animated-border.d.ts",
+      "import": "./dist/animated-border.js"
+    },
+    "./avatar": {
+      "types": "./dist/avatar.d.ts",
+      "import": "./dist/avatar.js"
+    },
+    "./floating-dock": {
+      "types": "./dist/floating-dock.d.ts",
+      "import": "./dist/floating-dock.js"
+    },
+    "./fluid-tooltip": {
+      "types": "./dist/fluid-tooltip.d.ts",
+      "import": "./dist/fluid-tooltip.js"
+    },
+    "./glow-badge": {
+      "types": "./dist/glow-badge.d.ts",
+      "import": "./dist/glow-badge.js"
+    },
+    "./glow-checkbox": {
+      "types": "./dist/glow-checkbox.d.ts",
+      "import": "./dist/glow-checkbox.js"
+    },
+    "./glow-input": {
+      "types": "./dist/glow-input.d.ts",
+      "import": "./dist/glow-input.js"
+    },
+    "./glow-select": {
+      "types": "./dist/glow-select.d.ts",
+      "import": "./dist/glow-select.js"
+    },
+    "./glow-slider": {
+      "types": "./dist/glow-slider.d.ts",
+      "import": "./dist/glow-slider.js"
+    },
+    "./glow-textarea": {
+      "types": "./dist/glow-textarea.d.ts",
+      "import": "./dist/glow-textarea.js"
+    },
+    "./hover-reveal": {
+      "types": "./dist/hover-reveal.d.ts",
+      "import": "./dist/hover-reveal.js"
+    },
+    "./icon-button": {
+      "types": "./dist/icon-button.d.ts",
+      "import": "./dist/icon-button.js"
+    },
+    "./magnetic-button": {
+      "types": "./dist/magnetic-button.d.ts",
+      "import": "./dist/magnetic-button.js"
+    },
+    "./morph-tabs": {
+      "types": "./dist/morph-tabs.d.ts",
+      "import": "./dist/morph-tabs.js"
+    },
+    "./progress-bar": {
+      "types": "./dist/progress-bar.d.ts",
+      "import": "./dist/progress-bar.js"
+    },
+    "./pulse-dot": {
+      "types": "./dist/pulse-dot.d.ts",
+      "import": "./dist/pulse-dot.js"
+    },
+    "./ripple-button": {
+      "types": "./dist/ripple-button.d.ts",
+      "import": "./dist/ripple-button.js"
+    },
+    "./shimmer-text": {
+      "types": "./dist/shimmer-text.d.ts",
+      "import": "./dist/shimmer-text.js"
+    },
+    "./skeleton": {
+      "types": "./dist/skeleton.d.ts",
+      "import": "./dist/skeleton.js"
+    },
+    "./spotlight-card": {
+      "types": "./dist/spotlight-card.d.ts",
+      "import": "./dist/spotlight-card.js"
+    },
+    "./spring-toggle": {
+      "types": "./dist/spring-toggle.d.ts",
+      "import": "./dist/spring-toggle.js"
+    },
+    "./tilt-card": {
+      "types": "./dist/tilt-card.d.ts",
+      "import": "./dist/tilt-card.js"
+    },
+    "./cursor-glow": {
+      "types": "./dist/cursor-glow.d.ts",
+      "import": "./dist/cursor-glow.js"
+    },
+    "./gradient": {
+      "types": "./dist/gradient.d.ts",
+      "import": "./dist/gradient.js"
+    },
+    "./use-pointer": {
+      "types": "./dist/hooks/use-pointer.d.ts",
+      "import": "./dist/hooks/use-pointer.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "tailwindcss": ">=3.4"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsup": "^8.3.5",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "cursor-reactive",
+    "spring-physics",
+    "tailwind"
+  ],
+  "author": "Sammii Kellow"
+}
