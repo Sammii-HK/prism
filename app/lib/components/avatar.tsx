@@ -106,6 +106,7 @@ export const Avatar = ({
       }}
     >
       {src ? (
+        // eslint-disable-next-line @next/next/no-img-element -- library component; next/image would couple it to Next.js
         <img
           src={src}
           alt={alt}
