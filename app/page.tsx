@@ -130,15 +130,35 @@ export default function LandingPage() {
             </p>
           </div>
           <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">Contact</p>
+            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">Links</p>
             <ul className="text-sm space-y-2">
               <li>
                 <a
-                  href="#"
+                  href="https://github.com/Sammii-HK/prism"
+                  target="_blank"
+                  rel="noopener"
                   className="text-white/55 hover:text-white/85 transition-colors"
                 >
                   GitHub →
                 </a>
+              </li>
+              <li>
+                <a
+                  href="https://x.com/sammiihk"
+                  target="_blank"
+                  rel="noopener"
+                  className="text-white/55 hover:text-white/85 transition-colors"
+                >
+                  X / @sammiihk →
+                </a>
+              </li>
+              <li>
+                <Link
+                  href="/hire"
+                  className="text-white/55 hover:text-white/85 transition-colors"
+                >
+                  Hiring me →
+                </Link>
               </li>
               <li>
                 <Link
