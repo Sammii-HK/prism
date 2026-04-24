@@ -41,6 +41,10 @@ pipeline/state/
 pipeline/mcp-configs/*.json
 !pipeline/mcp-configs/base.json
 
+# pipeline output artifacts
+scout-findings-*.json
+SCOUT_REPORT_*.json
+
 # recordings
 recordings/
 
