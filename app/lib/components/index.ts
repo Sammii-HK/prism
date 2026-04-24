@@ -1,5 +1,6 @@
 export { AnimatedBorder } from "./animated-border";
 export { Avatar } from "./avatar";
+export { CommandPalette, type Command, type CommandPaletteProps } from "./command-palette";
 export { FloatingDock } from "./floating-dock";
 export { FluidTooltip } from "./fluid-tooltip";
 export { GlowBadge } from "./glow-badge";

@@ -211,6 +211,15 @@ export const registry: RegistryItem[] = [
     tags: ["button", "ripple", "spring", "interaction", "click"],
     type: "component",
   },
+  {
+    slug: "command-palette",
+    title: "Command palette",
+    description: "⌘K launcher with fuzzy search, grouped results, sub-palettes, and a morphing highlight pill. Zero external deps — rAF spring entrance, cursor-mapped pastel indicator, colourField scrim behind backdrop blur.",
+    date: "2026-04-24",
+    tech: ["Spring Physics", "requestAnimationFrame", "Fuzzy Match", "Portal", "pastelColour"],
+    tags: ["command", "palette", "search", "launcher", "keyboard", "spring", "cursor", "a11y"],
+    type: "component",
+  },
 
   // --- Playground (visual experiments, not reusable components) ---
   {
