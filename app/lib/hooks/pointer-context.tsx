@@ -13,6 +13,8 @@ type PointerSnapshot = {
 type PointerContextValue = PointerSnapshot & {
   /** Ref to the smoothed values — updated every rAF without triggering renders. */
   ref: React.MutableRefObject<PointerSnapshot>;
+  /** The lerp factor this provider is using. Consumers can compare to decide whether the shared smoothing matches their needs. */
+  lerp: number;
 };
 
 const defaultSnapshot: PointerSnapshot = {
@@ -94,7 +96,7 @@ export const PointerProvider = ({ children, lerp = 0.08, throttleMs = 60 }: Prop
   }, [lerp, throttleMs]);
 
   return (
-    <PointerContext.Provider value={{ ...snapshot, ref }}>
+    <PointerContext.Provider value={{ ...snapshot, ref, lerp }}>
       {children}
     </PointerContext.Provider>
   );
@@ -105,7 +107,14 @@ export const useSharedPointer = () => {
   const ctx = useContext(PointerContext);
   if (!ctx) {
     // Fall back to default snapshot — lets components work outside the provider.
-    return { ...defaultSnapshot, ref: { current: { ...defaultSnapshot } } as React.MutableRefObject<PointerSnapshot> };
+    return {
+      ...defaultSnapshot,
+      ref: { current: { ...defaultSnapshot } } as React.MutableRefObject<PointerSnapshot>,
+      lerp: 0.08,
+    };
   }
   return ctx;
 };
+
+/** Internal: returns the raw context (or null). Used by `usePointer` to decide between shared and own listener. */
+export const usePointerContext = () => useContext(PointerContext);
