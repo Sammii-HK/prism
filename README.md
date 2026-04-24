@@ -1,8 +1,19 @@
 # Prism
 
+<p align="center">
+  <a href="https://prism.sammii.dev"><img src=".github/assets/hero.gif" alt="Prism floating dock — cursor-reactive component library" width="600" /></a>
+</p>
+
+<p align="center">
+  <a href="https://prism.sammii.dev"><img src="https://img.shields.io/website?url=https%3A%2F%2Fprism.sammii.dev&label=live&up_message=prism.sammii.dev&style=flat-square" alt="live site"/></a>
+  <img src="https://img.shields.io/badge/built-daily-brightgreen?style=flat-square" alt="built daily"/>
+  <img src="https://img.shields.io/badge/runtime%20deps-0-blue?style=flat-square" alt="zero runtime deps"/>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT license"/></a>
+</p>
+
 **Cursor-reactive design engineering components.** Spring physics, zero runtime dependencies, one file per component. Every element responds chromatically to pointer position — components glow, borders shift, motion tracks where you are on the page.
 
-→ **Live: [prism-9r1bu6mmn-sammiis-projects.vercel.app](https://prism-9r1bu6mmn-sammiis-projects.vercel.app)**
+→ **Live: [prism.sammii.dev](https://prism.sammii.dev)**
 
 ---
 
@@ -29,9 +40,9 @@ Every component library ships static components. Even "animated" ones use fixed 
 
 22 components, 5 experimental playgrounds. Every demo is a live route on the site.
 
-**Components** — [animated-border](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/animated-border), [avatar](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/avatar), [floating-dock](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/floating-dock), [fluid-tooltip](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/fluid-tooltip), [glow-badge](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-badge), [glow-checkbox](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-checkbox), [glow-input](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-input), [glow-select](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-select), [glow-slider](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-slider), [glow-textarea](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/glow-textarea), [hover-reveal](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/hover-reveal), [icon-button](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/icon-button), [magnetic-button](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/magnetic-button), [morph-tabs](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/morph-tabs), [progress-bar](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/progress-bar), [pulse-dot](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/pulse-dot), [ripple-button](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/ripple-button), [shimmer-text](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/shimmer-text), [skeleton](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/skeleton), [spotlight-card](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/spotlight-card), [spring-toggle](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/spring-toggle), [tilt-card](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/tilt-card)
+**Components** — [animated-border](https://prism.sammii.dev/animated-border), [avatar](https://prism.sammii.dev/avatar), [floating-dock](https://prism.sammii.dev/floating-dock), [fluid-tooltip](https://prism.sammii.dev/fluid-tooltip), [glow-badge](https://prism.sammii.dev/glow-badge), [glow-checkbox](https://prism.sammii.dev/glow-checkbox), [glow-input](https://prism.sammii.dev/glow-input), [glow-select](https://prism.sammii.dev/glow-select), [glow-slider](https://prism.sammii.dev/glow-slider), [glow-textarea](https://prism.sammii.dev/glow-textarea), [hover-reveal](https://prism.sammii.dev/hover-reveal), [icon-button](https://prism.sammii.dev/icon-button), [magnetic-button](https://prism.sammii.dev/magnetic-button), [morph-tabs](https://prism.sammii.dev/morph-tabs), [progress-bar](https://prism.sammii.dev/progress-bar), [pulse-dot](https://prism.sammii.dev/pulse-dot), [ripple-button](https://prism.sammii.dev/ripple-button), [shimmer-text](https://prism.sammii.dev/shimmer-text), [skeleton](https://prism.sammii.dev/skeleton), [spotlight-card](https://prism.sammii.dev/spotlight-card), [spring-toggle](https://prism.sammii.dev/spring-toggle), [tilt-card](https://prism.sammii.dev/tilt-card)
 
-**Playground** — [colour-field](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/colour-field), [fluid-mesh](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/fluid-mesh), [gravity-wells](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/gravity-wells), [shader-marbling](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/shader-marbling), [text-dissolve](https://prism-9r1bu6mmn-sammiis-projects.vercel.app/text-dissolve)
+**Playground** — [colour-field](https://prism.sammii.dev/colour-field), [fluid-mesh](https://prism.sammii.dev/fluid-mesh), [gravity-wells](https://prism.sammii.dev/gravity-wells), [shader-marbling](https://prism.sammii.dev/shader-marbling), [text-dissolve](https://prism.sammii.dev/text-dissolve)
 
 Roadmap for the next 80+ is in [`COMPONENT-LIBRARY-PLAN.md`](./COMPONENT-LIBRARY-PLAN.md).
 

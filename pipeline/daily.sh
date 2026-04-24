@@ -4,7 +4,7 @@
 # produced so Vercel redeploys and the GitHub contributions graph stays honest.
 # Invoked by ~/Library/LaunchAgents/dev.sammii.prism-daily.plist
 
-set -euo pipefail
+set -uo pipefail
 
 PRISM_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 LOG_DIR="$PRISM_DIR/pipeline/state/logs"
@@ -13,12 +13,21 @@ mkdir -p "$LOG_DIR"
 STAMP=$(date -u +"%Y-%m-%dT%H-%M-%SZ")
 LOG="$LOG_DIR/daily-$STAMP.log"
 
+notify_failure() {
+  local summary="$1"
+  osascript -e "display notification \"$summary — see $LOG\" with title \"Prism daily failed\" sound name \"Basso\"" 2>/dev/null || true
+}
+
+trap 'notify_failure "unexpected exit at line $LINENO"' ERR
+
 {
   echo "=== prism daily run $STAMP ==="
   cd "$PRISM_DIR"
 
   # Run the full autonomous cycle
-  ./pipeline/orchestrator.sh auto || echo "orchestrator exited with $?"
+  if ! ./pipeline/orchestrator.sh auto; then
+    notify_failure "orchestrator auto exited non-zero"
+  fi
 
   # Stage anything the pipeline produced. Be explicit about paths so we never
   # accidentally commit pipeline state, lockfile churn, or IDE noise.
