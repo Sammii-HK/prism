@@ -104,7 +104,9 @@ export default function ShaderMarbling() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointer = usePointer({ lerp: 0.05 });
   const pointerRef = useRef(pointer);
-  pointerRef.current = pointer;
+  useEffect(() => {
+    pointerRef.current = pointer;
+  }, [pointer]);
   const burstRef = useRef(0);
 
   useEffect(() => {
