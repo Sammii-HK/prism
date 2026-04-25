@@ -24,10 +24,10 @@ export default function Icon() {
             position: "absolute",
             inset: 4,
             background:
-              "conic-gradient(from 180deg, rgba(255,180,210,0.9), rgba(180,210,255,0.9), rgba(210,255,200,0.9), rgba(255,200,160,0.9), rgba(255,180,210,0.9))",
+              "linear-gradient(135deg, rgba(255,180,210,0.95) 0%, rgba(180,210,255,0.95) 50%, rgba(210,255,200,0.95) 100%)",
             borderRadius: 6,
-            filter: "blur(3px)",
-            opacity: 0.85,
+            filter: "blur(2px)",
+            opacity: 0.95,
           }}
         />
         <div

@@ -2,6 +2,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -131,7 +132,7 @@ export const CommandPalette = ({
   const [stack, setStack] = useState<Frame[]>([]);
   const [announce, setAnnounce] = useState("");
 
-  const listId = useRef(`cp-${Math.random().toString(36).slice(2, 9)}`);
+  const listId = useId();
 
   const scrimRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -634,7 +635,7 @@ export const CommandPalette = ({
   let flatCursor = 0;
 
   const activeItemId = flatItems[highlight]
-    ? `${listId.current}-item-${highlight}`
+    ? `${listId}-item-${highlight}`
     : undefined;
 
   return createPortal(
@@ -751,7 +752,7 @@ export const CommandPalette = ({
             type="text"
             role="combobox"
             aria-expanded="true"
-            aria-controls={listId.current}
+            aria-controls={listId}
             aria-activedescendant={activeItemId}
             aria-autocomplete="list"
             value={query}
@@ -791,7 +792,7 @@ export const CommandPalette = ({
         >
           <div
             ref={listRef}
-            id={listId.current}
+            id={listId}
             role="listbox"
             aria-label={currentTitle ?? "Commands"}
             style={{
@@ -874,7 +875,7 @@ export const CommandPalette = ({
                         ref={(el) => {
                           itemRefs.current[idx] = el;
                         }}
-                        id={`${listId.current}-item-${idx}`}
+                        id={`${listId}-item-${idx}`}
                         role="option"
                         aria-selected={selected}
                         type="button"
