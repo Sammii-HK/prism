@@ -304,11 +304,22 @@ export const HireView = () => {
         <p className="mt-6 text-[12px] font-mono text-white/50 tracking-wide">
           London · UK citizen · permanent or contract · remote or hybrid
         </p>
+        <p className="mt-2 text-[12px] font-mono text-white/50 tracking-wide">
+          Contract rates and case studies:{" "}
+          <a
+            href="https://studio.sammii.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/75 underline underline-offset-4 decoration-white/25 hover:text-white/90 hover:decoration-white/60 transition-colors"
+          >
+            studio.sammii.dev
+          </a>
+        </p>
 
         {/* Primary CTAs */}
         <div className="mt-10 flex flex-col sm:flex-row gap-3 items-center">
           <a
-            href="mailto:kellow.sammii@gmail.com"
+            href="mailto:hello@sammii.dev"
             className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.14] text-sm text-white/85 hover:bg-white/[0.09] hover:border-white/[0.22] transition-colors"
           >
             Email Sammii
@@ -505,8 +516,8 @@ export const HireView = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <ContactLink
             label="Email"
-            value="kellow.sammii@gmail.com"
-            href="mailto:kellow.sammii@gmail.com"
+            value="hello@sammii.dev"
+            href="mailto:hello@sammii.dev"
           />
           <ContactLink
             label="Portfolio"
