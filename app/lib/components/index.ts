@@ -20,6 +20,7 @@ export { ShimmerText } from "./shimmer-text";
 export { AsyncButton } from "./async-button";
 export { RadialMenu } from "./radial-menu";
 export { MotionCompare } from "./motion-compare";
+export { LatencyAdapt } from "./latency-adapt";
 export { Skeleton } from "./skeleton";
 export { SpringToggle } from "./spring-toggle";
 export { TiltCard } from "./tilt-card";

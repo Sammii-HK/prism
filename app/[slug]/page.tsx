@@ -10,6 +10,7 @@ const componentMap: Record<string, React.ComponentType> = {
   "async-button": dynamic(() => import("../demos/async-button")),
   "radial-menu": dynamic(() => import("../demos/radial-menu")),
   "motion-compare": dynamic(() => import("../demos/motion-compare")),
+  "latency-adapt": dynamic(() => import("../demos/latency-adapt")),
   "avatar": dynamic(() => import("../demos/avatar")),
   "command-palette": dynamic(() => import("../demos/command-palette")),
   "glow-checkbox": dynamic(() => import("../demos/glow-checkbox")),

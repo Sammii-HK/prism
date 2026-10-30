@@ -62,6 +62,17 @@ export const registry: RegistryItem[] = [
     category: "feedback",
   },
   {
+    slug: "latency-adapt",
+    title: "Latency adapt",
+    tagline: "A region that changes what it shows to match how long the wait is.",
+    description: "Content region driven by a pure reducer. A response under 150 ms renders with no skeleton flash; a longer wait shows a skeleton; past 2 s it says how many seconds have passed and offers Cancel; failure shows an inline Retry. The demo has a latency slider, an outcome toggle and a timestamped log of the state machine's events. With reduced motion the skeleton is still and nothing fades.",
+    date: "2026-10-30",
+    tech: ["State Machine", "useReducer", "AbortController", "aria-live", "prefers-reduced-motion"],
+    tags: ["loading", "skeleton", "latency", "state", "accessibility", "reduced-motion"],
+    type: "component",
+    category: "feedback",
+  },
+  {
     slug: "animated-border",
     title: "Animated border",
     tagline: "Rotating conic gradient border with cursor-tinted palette.",
