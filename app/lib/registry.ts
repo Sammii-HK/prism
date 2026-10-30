@@ -40,6 +40,17 @@ export const registry: RegistryItem[] = [
     category: "button",
   },
   {
+    slug: "radial-menu",
+    title: "Radial menu",
+    tagline: "A menu that springs out of its trigger and still works from the keyboard.",
+    description: "Items fan out on damped springs from a trigger. Built as a standard menu button: roving tabindex, arrow keys walk the ring and wrap, Home and End jump, typing jumps to a label, Escape closes and returns focus to the trigger, and the chosen item is announced through a polite live region. With reduced motion the items appear instantly in place with no spring.",
+    date: "2026-10-30",
+    tech: ["Spring Physics", "Roving Tabindex", "aria-live", "prefers-reduced-motion"],
+    tags: ["menu", "radial", "keyboard", "spring", "accessibility", "reduced-motion"],
+    type: "component",
+    category: "navigation",
+  },
+  {
     slug: "animated-border",
     title: "Animated border",
     tagline: "Rotating conic gradient border with cursor-tinted palette.",
