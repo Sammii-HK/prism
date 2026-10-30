@@ -29,6 +29,50 @@ export type RegistryItem = {
 export const registry: RegistryItem[] = [
   // --- Components (reusable, importable) ---
   {
+    slug: "async-button",
+    title: "Async button",
+    tagline: "A button that tells the truth about waiting.",
+    description: "Button driven by a five-state machine (idle, pending, slow, success, error). It stays focusable while it works, ignores presses it cannot honour, says out loud when a request is slow, and offers a retry on failure. The demo shows the live state, the legal transitions and an event log. With reduced motion the moving progress bar becomes a still one and the colour change is instant.",
+    date: "2026-10-30",
+    tech: ["State Machine", "useReducer", "aria-live", "prefers-reduced-motion"],
+    tags: ["button", "loading", "state", "accessibility", "reduced-motion", "keyboard"],
+    type: "component",
+    category: "button",
+  },
+  {
+    slug: "radial-menu",
+    title: "Radial menu",
+    tagline: "A menu that springs out of its trigger and still works from the keyboard.",
+    description: "Items fan out on damped springs from a trigger. Built as a standard menu button: roving tabindex, arrow keys walk the ring and wrap, Home and End jump, typing jumps to a label, Escape closes and returns focus to the trigger, and the chosen item is announced through a polite live region. With reduced motion the items appear instantly in place with no spring.",
+    date: "2026-10-30",
+    tech: ["Spring Physics", "Roving Tabindex", "aria-live", "prefers-reduced-motion"],
+    tags: ["menu", "radial", "keyboard", "spring", "accessibility", "reduced-motion"],
+    type: "component",
+    category: "navigation",
+  },
+  {
+    slug: "motion-compare",
+    title: "Motion compare",
+    tagline: "Three ways to move one dot, each measured in your browser.",
+    description: "Runs the same move three ways: a CSS transition, a linear requestAnimationFrame tween and a damped spring. Each run reads the dot's rendered position every frame and reports frames rendered, average and worst frame gap, overshoot count and settle time. Cells read 'not measured yet' until a run completes. Frame gaps come from rAF timestamps and reflect your display and page load, not the isolated cost of each approach. With reduced motion all three snap and nothing is measured.",
+    date: "2026-10-30",
+    tech: ["Spring Physics", "requestAnimationFrame", "CSS Transition", "prefers-reduced-motion"],
+    tags: ["motion", "comparison", "measurement", "spring", "performance", "reduced-motion"],
+    type: "component",
+    category: "feedback",
+  },
+  {
+    slug: "latency-adapt",
+    title: "Latency adapt",
+    tagline: "A region that changes what it shows to match how long the wait is.",
+    description: "Content region driven by a pure reducer. A response under 150 ms renders with no skeleton flash; a longer wait shows a skeleton; past 2 s it says how many seconds have passed and offers Cancel; failure shows an inline Retry. The demo has a latency slider, an outcome toggle and a timestamped log of the state machine's events. With reduced motion the skeleton is still and nothing fades.",
+    date: "2026-10-30",
+    tech: ["State Machine", "useReducer", "AbortController", "aria-live", "prefers-reduced-motion"],
+    tags: ["loading", "skeleton", "latency", "state", "accessibility", "reduced-motion"],
+    type: "component",
+    category: "feedback",
+  },
+  {
     slug: "animated-border",
     title: "Animated border",
     tagline: "Rotating conic gradient border with cursor-tinted palette.",
@@ -290,6 +334,17 @@ export const registry: RegistryItem[] = [
   },
 
   // --- Playground (visual experiments, not reusable components) ---
+  {
+    slug: "lab",
+    title: "Interaction lab",
+    tagline: "Four expressive interactions on one page, each with its keyboard path and live evidence.",
+    description: "A single long page that asks whether interfaces can become expressive without sacrificing usability. It hosts the async button, radial menu, motion compare and latency adapt experiments inline, each with why it exists, keyboard and accessibility notes, and an evidence block read from your own browser. A page-level switch forces every experiment into its reduced-motion mode at once. Numbers say 'not measured yet' until something has run.",
+    date: "2026-10-30",
+    tech: ["State Machine", "Spring Physics", "aria-live", "prefers-reduced-motion"],
+    tags: ["lab", "motion", "accessibility", "keyboard", "reduced-motion", "measurement"],
+    type: "playground",
+    category: "playground",
+  },
   {
     slug: "colour-field",
     title: "Colour field",

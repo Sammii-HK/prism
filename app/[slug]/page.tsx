@@ -7,6 +7,10 @@ import dynamic from "next/dynamic";
 const componentMap: Record<string, React.ComponentType> = {
   // Components
   "animated-border": dynamic(() => import("../demos/animated-border")),
+  "async-button": dynamic(() => import("../demos/async-button")),
+  "radial-menu": dynamic(() => import("../demos/radial-menu")),
+  "motion-compare": dynamic(() => import("../demos/motion-compare")),
+  "latency-adapt": dynamic(() => import("../demos/latency-adapt")),
   "avatar": dynamic(() => import("../demos/avatar")),
   "command-palette": dynamic(() => import("../demos/command-palette")),
   "glow-checkbox": dynamic(() => import("../demos/glow-checkbox")),
@@ -35,6 +39,8 @@ const componentMap: Record<string, React.ComponentType> = {
   "text-dissolve": dynamic(() => import("../playground/text-dissolve")),
   "gravity-wells": dynamic(() => import("../playground/gravity-wells")),
   "shader-marbling": dynamic(() => import("../playground/shader-marbling")),
+  // "lab" has its own static route at app/lab, which takes precedence over this dynamic one.
+  "lab": dynamic(() => import("../lab/lab").then((m) => m.Lab)),
 };
 
 export function generateStaticParams() {
