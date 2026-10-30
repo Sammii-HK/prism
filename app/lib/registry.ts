@@ -335,6 +335,17 @@ export const registry: RegistryItem[] = [
 
   // --- Playground (visual experiments, not reusable components) ---
   {
+    slug: "lab",
+    title: "Interaction lab",
+    tagline: "Four expressive interactions on one page, each with its keyboard path and live evidence.",
+    description: "A single long page that asks whether interfaces can become expressive without sacrificing usability. It hosts the async button, radial menu, motion compare and latency adapt experiments inline, each with why it exists, keyboard and accessibility notes, and an evidence block read from your own browser. A page-level switch forces every experiment into its reduced-motion mode at once. Numbers say 'not measured yet' until something has run.",
+    date: "2026-10-30",
+    tech: ["State Machine", "Spring Physics", "aria-live", "prefers-reduced-motion"],
+    tags: ["lab", "motion", "accessibility", "keyboard", "reduced-motion", "measurement"],
+    type: "playground",
+    category: "playground",
+  },
+  {
     slug: "colour-field",
     title: "Colour field",
     tagline: "Four radial blobs drifting on sine waves.",
