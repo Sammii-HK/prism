@@ -29,6 +29,17 @@ export type RegistryItem = {
 export const registry: RegistryItem[] = [
   // --- Components (reusable, importable) ---
   {
+    slug: "async-button",
+    title: "Async button",
+    tagline: "A button that tells the truth about waiting.",
+    description: "Button driven by a five-state machine (idle, pending, slow, success, error). It stays focusable while it works, ignores presses it cannot honour, says out loud when a request is slow, and offers a retry on failure. The demo shows the live state, the legal transitions and an event log. With reduced motion the moving progress bar becomes a still one and the colour change is instant.",
+    date: "2026-10-30",
+    tech: ["State Machine", "useReducer", "aria-live", "prefers-reduced-motion"],
+    tags: ["button", "loading", "state", "accessibility", "reduced-motion", "keyboard"],
+    type: "component",
+    category: "button",
+  },
+  {
     slug: "animated-border",
     title: "Animated border",
     tagline: "Rotating conic gradient border with cursor-tinted palette.",

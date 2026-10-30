@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 const componentMap: Record<string, React.ComponentType> = {
   // Components
   "animated-border": dynamic(() => import("../demos/animated-border")),
+  "async-button": dynamic(() => import("../demos/async-button")),
   "avatar": dynamic(() => import("../demos/avatar")),
   "command-palette": dynamic(() => import("../demos/command-palette")),
   "glow-checkbox": dynamic(() => import("../demos/glow-checkbox")),

@@ -17,6 +17,7 @@ export { ProgressBar } from "./progress-bar";
 export { PulseDot } from "./pulse-dot";
 export { RippleButton } from "./ripple-button";
 export { ShimmerText } from "./shimmer-text";
+export { AsyncButton } from "./async-button";
 export { Skeleton } from "./skeleton";
 export { SpringToggle } from "./spring-toggle";
 export { TiltCard } from "./tilt-card";
