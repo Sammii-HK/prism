@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   LatencyAdapt,
   LATENCY_TRANSITIONS,
@@ -8,15 +8,22 @@ import {
   type LatencyPhase,
 } from "../lib/components/latency-adapt";
 import { useSystemReducedMotion } from "../lib/components/async-button";
+import type { DemoPanelProps } from "./async-button";
 
 const PHASES: LatencyPhase[] = ["idle", "waiting", "skeleton", "slow", "success", "error", "cancelled"];
 
 type Article = { title: string; lines: string[] };
 
-export default function LatencyAdaptDemo() {
+export function LatencyAdaptPanel({
+  embedded = false,
+  forceReduced: hostReduced = false,
+  onObserve,
+}: DemoPanelProps & { onObserve?: (e: LatencyLogEntry) => void }) {
   const [latency, setLatency] = useState(80);
+  const outcomeName = useId();
   const [outcome, setOutcome] = useState<"succeed" | "fail">("succeed");
-  const [forceReduced, setForceReduced] = useState(false);
+  const [localReduced, setLocalReduced] = useState(false);
+  const forceReduced = hostReduced || localReduced;
   const [phase, setPhase] = useState<LatencyPhase>("idle");
   const [log, setLog] = useState<(LatencyLogEntry & { n: number })[]>([]);
   const counter = useRef(0);
@@ -53,18 +60,20 @@ export default function LatencyAdaptDemo() {
   const onEvent = useCallback((entry: LatencyLogEntry) => {
     setPhase(entry.to);
     setLog((rows) => [{ ...entry, n: ++counter.current }, ...rows].slice(0, 10));
-  }, []);
+    onObserve?.(entry);
+  }, [onObserve]);
 
   const legal = Object.keys(LATENCY_TRANSITIONS[phase]) as LatencyEvent[];
   const bucket = latency < 150 ? "under 150 ms: no skeleton" : latency <= 2000 ? "150 ms to 2 s: skeleton" : "over 2 s: slow message and cancel";
 
   return (
-    <div className="min-h-screen px-6 py-16" style={{ background: "#050505" }}>
       <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
-        <section className="flex flex-col gap-8">
-          <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
-            latency-adapt
-          </p>
+        <section className="flex min-w-0 flex-col gap-8">
+          {!embedded && (
+            <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
+              latency-adapt
+            </p>
+          )}
 
           <LatencyAdapt<Article>
             load={load}
@@ -100,22 +109,24 @@ export default function LatencyAdaptDemo() {
             <div role="radiogroup" aria-label="Outcome" className="flex gap-4 text-sm text-white/70">
               {(["succeed", "fail"] as const).map((o) => (
                 <label key={o} className="flex items-center gap-2">
-                  <input type="radio" name="outcome" checked={outcome === o} onChange={() => setOutcome(o)} />
+                  <input type="radio" name={outcomeName} checked={outcome === o} onChange={() => setOutcome(o)} />
                   {o === "succeed" ? "Succeeds" : "Fails"}
                 </label>
               ))}
             </div>
-            <label className="flex items-center gap-2 text-sm text-white/70">
-              <input type="checkbox" checked={forceReduced} onChange={(e) => setForceReduced(e.target.checked)} />
-              Preview reduced motion
-              <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
-            </label>
+            {!embedded && (
+              <label className="flex items-center gap-2 text-sm text-white/70">
+                <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
+                Preview reduced motion
+                <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+              </label>
+            )}
           </fieldset>
         </section>
 
-        <section className="flex flex-col gap-6" aria-label="State machine">
+        <section className="flex min-w-0 flex-col gap-6" aria-label="State machine">
           <div>
-            <h2 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h2>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h3>
             <ol className="flex flex-wrap gap-2">
               {PHASES.map((s) => (
                 <li
@@ -135,7 +146,7 @@ export default function LatencyAdaptDemo() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-xs uppercase tracking-widest text-white/40">Event log</h2>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">Event log</h3>
             {log.length === 0 ? (
               <p className="text-sm text-white/30">Nothing yet. Press Load.</p>
             ) : (
@@ -154,6 +165,13 @@ export default function LatencyAdaptDemo() {
           </p>
         </section>
       </div>
+  );
+}
+
+export default function LatencyAdaptDemo() {
+  return (
+    <div className="min-h-screen px-6 py-16" style={{ background: "#050505" }}>
+      <LatencyAdaptPanel />
     </div>
   );
 }

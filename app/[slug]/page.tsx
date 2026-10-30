@@ -39,6 +39,8 @@ const componentMap: Record<string, React.ComponentType> = {
   "text-dissolve": dynamic(() => import("../playground/text-dissolve")),
   "gravity-wells": dynamic(() => import("../playground/gravity-wells")),
   "shader-marbling": dynamic(() => import("../playground/shader-marbling")),
+  // "lab" has its own static route at app/lab, which takes precedence over this dynamic one.
+  "lab": dynamic(() => import("../lab/lab").then((m) => m.Lab)),
 };
 
 export function generateStaticParams() {

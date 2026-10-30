@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   AsyncButton,
   ASYNC_BUTTON_TRANSITIONS,
@@ -12,10 +12,30 @@ const STATES: AsyncButtonState[] = ["idle", "pending", "slow", "success", "error
 
 type LogRow = { at: number; event: AsyncButtonEvent; to: AsyncButtonState };
 
-export default function AsyncButtonDemo() {
+export interface DemoPanelProps {
+  /** Inline use: drop the slug label and the local reduced-motion checkbox (the host page owns that control). */
+  embedded?: boolean;
+  /** Host-forced reduced motion. Combined with the local checkbox. */
+  forceReduced?: boolean;
+}
+
+export interface AsyncButtonObservation {
+  state: AsyncButtonState;
+  event: AsyncButtonEvent;
+  /** ms since the press that started the request (0 for PRESS). */
+  atMs: number;
+}
+
+export function AsyncButtonPanel({
+  embedded = false,
+  forceReduced: hostReduced = false,
+  onObserve,
+}: DemoPanelProps & { onObserve?: (o: AsyncButtonObservation) => void }) {
   const [latency, setLatency] = useState(2500);
+  const outcomeName = useId();
   const [outcome, setOutcome] = useState<"succeed" | "fail">("succeed");
-  const [forceReduced, setForceReduced] = useState(false);
+  const [localReduced, setLocalReduced] = useState(false);
+  const forceReduced = hostReduced || localReduced;
   const [state, setState] = useState<AsyncButtonState>("idle");
   const [log, setLog] = useState<LogRow[]>([]);
   const systemReduced = useSystemReducedMotion();
@@ -40,21 +60,22 @@ export default function AsyncButtonDemo() {
 
   const onStateChange = useCallback((next: AsyncButtonState, event: AsyncButtonEvent) => {
     if (event === "PRESS") startedAt.current = performance.now();
+    const at = Math.round(performance.now() - startedAt.current);
     setState(next);
-    setLog((rows) =>
-      [{ at: Math.round(performance.now() - startedAt.current), event, to: next }, ...rows].slice(0, 8)
-    );
-  }, []);
+    setLog((rows) => [{ at, event, to: next }, ...rows].slice(0, 8));
+    onObserve?.({ state: next, event, atMs: at });
+  }, [onObserve]);
 
   const legal = Object.keys(ASYNC_BUTTON_TRANSITIONS[state]) as AsyncButtonEvent[];
 
   return (
-    <div className="min-h-screen px-6 py-16" style={{ background: "#050505" }}>
-      <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
-        <section className="flex flex-col gap-8">
-          <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
-            async-button
-          </p>
+    <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
+        <section className="flex min-w-0 flex-col gap-8">
+          {!embedded && (
+            <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+              async-button
+            </p>
+          )}
 
           <AsyncButton
             onPress={work}
@@ -81,16 +102,18 @@ export default function AsyncButtonDemo() {
             <div role="radiogroup" aria-label="Outcome" className="flex gap-4 text-sm text-white/70">
               {(["succeed", "fail"] as const).map((o) => (
                 <label key={o} className="flex items-center gap-2">
-                  <input type="radio" name="outcome" checked={outcome === o} onChange={() => setOutcome(o)} />
+                  <input type="radio" name={outcomeName} checked={outcome === o} onChange={() => setOutcome(o)} />
                   {o === "succeed" ? "Succeeds" : "Fails"}
                 </label>
               ))}
             </div>
-            <label className="flex items-center gap-2 text-sm text-white/70">
-              <input type="checkbox" checked={forceReduced} onChange={(e) => setForceReduced(e.target.checked)} />
-              Preview reduced motion
-              <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
-            </label>
+            {!embedded && (
+              <label className="flex items-center gap-2 text-sm text-white/70">
+                <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
+                Preview reduced motion
+                <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+              </label>
+            )}
           </fieldset>
 
           <p className="max-w-sm text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
@@ -99,9 +122,9 @@ export default function AsyncButtonDemo() {
           </p>
         </section>
 
-        <section className="flex flex-col gap-6" aria-label="State machine">
+        <section className="flex min-w-0 flex-col gap-6" aria-label="State machine">
           <div>
-            <h2 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h2>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h3>
             <ol className="flex flex-wrap gap-2">
               {STATES.map((s) => (
                 <li
@@ -123,7 +146,7 @@ export default function AsyncButtonDemo() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-xs uppercase tracking-widest text-white/40">Transitions</h2>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">Transitions</h3>
             <table className="w-full text-left text-sm text-white/60">
               <thead>
                 <tr className="text-white/30">
@@ -152,7 +175,7 @@ export default function AsyncButtonDemo() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-xs uppercase tracking-widest text-white/40">What just happened</h2>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">What just happened</h3>
             {log.length === 0 ? (
               <p className="text-sm text-white/30">Nothing yet. Press the button.</p>
             ) : (
@@ -167,6 +190,13 @@ export default function AsyncButtonDemo() {
           </div>
         </section>
       </div>
+  );
+}
+
+export default function AsyncButtonDemo() {
+  return (
+    <div className="min-h-screen px-6 py-16" style={{ background: "#050505" }}>
+      <AsyncButtonPanel />
     </div>
   );
 }
