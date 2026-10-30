@@ -19,6 +19,7 @@ export { RippleButton } from "./ripple-button";
 export { ShimmerText } from "./shimmer-text";
 export { AsyncButton } from "./async-button";
 export { RadialMenu } from "./radial-menu";
+export { MotionCompare } from "./motion-compare";
 export { Skeleton } from "./skeleton";
 export { SpringToggle } from "./spring-toggle";
 export { TiltCard } from "./tilt-card";

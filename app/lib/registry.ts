@@ -51,6 +51,17 @@ export const registry: RegistryItem[] = [
     category: "navigation",
   },
   {
+    slug: "motion-compare",
+    title: "Motion compare",
+    tagline: "Three ways to move one dot, each measured in your browser.",
+    description: "Runs the same move three ways: a CSS transition, a linear requestAnimationFrame tween and a damped spring. Each run reads the dot's rendered position every frame and reports frames rendered, average and worst frame gap, overshoot count and settle time. Cells read 'not measured yet' until a run completes. Frame gaps come from rAF timestamps and reflect your display and page load, not the isolated cost of each approach. With reduced motion all three snap and nothing is measured.",
+    date: "2026-10-30",
+    tech: ["Spring Physics", "requestAnimationFrame", "CSS Transition", "prefers-reduced-motion"],
+    tags: ["motion", "comparison", "measurement", "spring", "performance", "reduced-motion"],
+    type: "component",
+    category: "feedback",
+  },
+  {
     slug: "animated-border",
     title: "Animated border",
     tagline: "Rotating conic gradient border with cursor-tinted palette.",
