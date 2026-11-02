@@ -21,6 +21,8 @@ export { AsyncButton } from "./async-button";
 export { RadialMenu } from "./radial-menu";
 export { MotionCompare } from "./motion-compare";
 export { LatencyAdapt } from "./latency-adapt";
+export { ComposedCard, TokenComposePanel } from "./token-compose";
+export { FocusDialog, FocusTrailPanel, useFocusTrail } from "./focus-trail";
 export { Skeleton } from "./skeleton";
 export { SpringToggle } from "./spring-toggle";
 export { TiltCard } from "./tilt-card";
