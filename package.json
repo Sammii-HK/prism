@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:tokens": "node --test --experimental-strip-types scripts/token-compose.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",

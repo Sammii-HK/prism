@@ -8,6 +8,11 @@ import { AsyncButtonPanel, type AsyncButtonObservation } from "../demos/async-bu
 import { RadialMenuPanel, RADIAL_DEMO_ITEMS, type RadialObservation } from "../demos/radial-menu";
 import { MotionComparePanel } from "../demos/motion-compare";
 import { LatencyAdaptPanel } from "../demos/latency-adapt";
+import {
+  TokenComposePanel, initialTokenObservation, PALETTE, SPACING_STEPS, RADII, TYPE_SIZES, LAYOUTS,
+  type TokenObservation,
+} from "../lib/components/token-compose";
+import { FocusTrailPanel, type FocusObservation, type TrailEntry } from "../lib/components/focus-trail";
 import { LabSection, SERIF, type EvidenceRow } from "./parts";
 
 const NOT_YET = "not measured yet";
@@ -17,6 +22,8 @@ const SECTIONS = [
   { id: "radial-menu", label: "Radial menu" },
   { id: "motion-compare", label: "Motion compare" },
   { id: "latency-adapt", label: "Latency adapt" },
+  { id: "token-compose", label: "Token compose" },
+  { id: "focus-trail", label: "Focus trail" },
 ] as const;
 type SectionId = (typeof SECTIONS)[number]["id"];
 
@@ -293,6 +300,135 @@ function LatencySection({ mode }: { mode: Mode }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Section: token compose                                               */
+/* ------------------------------------------------------------------ */
+function TokenSection({ mode }: { mode: Mode }) {
+  const [obs, setObs] = useState<TokenObservation>(() => initialTokenObservation());
+  const inj = obs.injected;
+  const evidence: EvidenceRow[] = [
+    { key: "vocab", label: "Closed vocabulary", value: `${SPACING_STEPS.length} spacing, ${RADII.length} radii, ${TYPE_SIZES.length} type sizes, ${PALETTE.length} colours, ${LAYOUTS.length} layouts` },
+    { key: "generated", label: "Compositions generated", value: `${obs.generated} (seeds ${obs.seeds[0]} to ${obs.seeds[1]})` },
+    { key: "checked", label: "Values the validator checked", value: String(obs.valuesChecked) },
+    { key: "outside", label: "Values outside the system", value: String(obs.outside) },
+    {
+      key: "injected",
+      label: "Injected off-token value",
+      value: !inj ? NOT_YET : inj.rejected ? `rejected: ${inj.path} = ${inj.value}` : "NOT rejected",
+    },
+    { key: "rule", label: "Rule that rejected it", value: !inj ? NOT_YET : inj.rule },
+    { key: "mode", label: "Reduced-motion mode", value: modeText(mode) },
+  ];
+  return (
+    <LabSection
+      slug="token-compose"
+      index="05"
+      kicker="Composing"
+      question="Can a generative interface be allowed to say yes only to the design system?"
+      name="Token compose"
+      demo={<TokenComposePanel embedded forceReduced={mode.forced} onObserve={setObs} />}
+      why={
+        <>
+          <p>
+            Generated layouts tend to drift: a 13 px gap here, a slightly different pink there. Here the composer draws only from a closed set of spacing steps, radii, type sizes and palette colours, and a plain function checks every value before anything is drawn.
+          </p>
+          <p className="mt-3">
+            The palette is read from the pastelColour primitive, not typed in. The check is set membership only: it says nothing about taste or hierarchy.
+          </p>
+        </>
+      }
+      keys={[
+        { keys: ["Tab"], does: "reaches the count options, “Generate another batch”, “Inject an off-token value” and Clear." },
+        { keys: ["←", "→"], does: "move between the count options once one is focused." },
+        { keys: ["Enter", "Space"], does: "generates, or injects. The result is announced through a polite live region." },
+      ]}
+      reducedNote="new cards appear in place instead of easing in over 220 ms. Nothing else on this experiment moves."
+      evidence={evidence}
+      evidenceNote={`Every number comes from running validateComposition() over each generated value, in this browser, using the same code as the unit tests. “0 outside” describes the composer's output, not the quality of the designs. Unit tests: pnpm test:tokens.`}
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section: focus trail                                                 */
+/* ------------------------------------------------------------------ */
+interface FocusObs {
+  moves: number;
+  last: TrailEntry | null;
+  wraps: number;
+  whileOpen: number;
+  outsideWhileOpen: number;
+  role: string | null;
+  ariaModal: string | null;
+  anim: string | null;
+  returned: boolean | null;
+  invoker: string | null;
+  closedBy: string | null;
+}
+
+function FocusSection({ mode }: { mode: Mode }) {
+  const [obs, setObs] = useState<FocusObs>({
+    moves: 0, last: null, wraps: 0, whileOpen: 0, outsideWhileOpen: 0,
+    role: null, ariaModal: null, anim: null, returned: null, invoker: null, closedBy: null,
+  });
+  const onObserve = useCallback((o: FocusObservation) => {
+    setObs((p) => {
+      if (o.kind === "move") {
+        return {
+          ...p,
+          moves: p.moves + 1,
+          last: o.entry,
+          wraps: p.wraps + (o.entry.via.startsWith("trap wrapped") ? 1 : 0),
+          whileOpen: p.whileOpen + (o.dialogOpen ? 1 : 0),
+          outsideWhileOpen: p.outsideWhileOpen + (o.dialogOpen && !o.entry.inside ? 1 : 0),
+        };
+      }
+      if (o.kind === "open") return { ...p, role: o.info.role, ariaModal: o.info.ariaModal, anim: o.info.animationName, returned: null, closedBy: null };
+      return { ...p, returned: o.returnedToInvoker, invoker: o.invoker, closedBy: o.via };
+    });
+  }, []);
+
+  const evidence: EvidenceRow[] = [
+    { key: "role", label: "Dialog role and aria-modal (read from the DOM)", value: obs.role === null ? NOT_YET : `role=${obs.role}, aria-modal=${obs.ariaModal}` },
+    { key: "moves", label: "Focus moves logged this visit", value: String(obs.moves) },
+    { key: "last", label: "Last move", value: obs.last ? `+${obs.last.atMs} ms ${obs.last.label} · ${obs.last.via}` : NOT_YET },
+    { key: "open", label: "Moves while the dialog was open", value: obs.moves === 0 ? NOT_YET : `${obs.whileOpen}, of which ${obs.outsideWhileOpen} landed outside it` },
+    { key: "wraps", label: "Trap wraps", value: obs.moves === 0 ? NOT_YET : String(obs.wraps) },
+    { key: "return", label: "Focus back on the invoker after closing", value: obs.returned === null ? NOT_YET : `${obs.returned ? "yes" : "no"} (${obs.invoker}, closed by ${obs.closedBy})` },
+    { key: "anim", label: "Dialog animation-name (computed)", value: obs.anim ?? NOT_YET },
+    { key: "mode", label: "Reduced-motion mode", value: modeText(mode) },
+  ];
+  return (
+    <LabSection
+      slug="focus-trail"
+      index="06"
+      kicker="Focusing"
+      question="Can focus management be something you can see?"
+      name="Focus trail"
+      demo={<FocusTrailPanel embedded forceReduced={mode.forced} onObserve={onObserve} />}
+      why={
+        <>
+          <p>
+            Focus is the keyboard user&apos;s cursor, and it is usually invisible to everyone else. Logging each move by element name makes the trap wrapping around, and focus coming home, something you can check rather than trust.
+          </p>
+          <p className="mt-3">
+            The dialog is an ordinary one. The trail only watches; removing it changes nothing about how the dialog works.
+          </p>
+        </>
+      }
+      keys={[
+        { keys: ["Enter", "Space"], does: "on “Rename project” opens the dialog and moves focus to the name field." },
+        { keys: ["Tab"], does: "moves forward; from the last control it wraps to the first." },
+        { keys: ["Shift", "Tab"], does: "moves back; from the first control it wraps to the last." },
+        { keys: ["Esc"], does: "closes the dialog and returns focus to the button that opened it." },
+      ]}
+      reducedNote="the dialog and its backdrop appear instantly instead of fading and rising over about 200 ms. Focus behaviour is identical."
+      evidence={evidence}
+      evidenceNote="Read from focusin events, aria attributes and document.activeElement in this browser. Only focus inside the demo is logged. aria-modal is set but the rest of the page is not made inert, and no screen reader has been tried."
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Page                                                                 */
 /* ------------------------------------------------------------------ */
 export function Lab() {
@@ -364,7 +500,7 @@ export function Lab() {
           Can interfaces become expressive without sacrificing usability?
         </h1>
         <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg" style={{ fontFamily: SERIF }}>
-          Four small experiments, each built so the expressive layer can be taken away and the interface still works.
+          Six small experiments, each built so the expressive layer can be taken away and the interface still works.
           They are live below. Use them with a mouse, then use them again with only the keyboard.
         </p>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/60">
@@ -436,6 +572,8 @@ export function Lab() {
         <RadialSection mode={mode} />
         <MotionSection mode={mode} />
         <LatencySection mode={mode} />
+        <TokenSection mode={mode} />
+        <FocusSection mode={mode} />
 
         <section
           aria-labelledby="limits-heading"
@@ -450,7 +588,7 @@ export function Lab() {
               <li>It does not show these are more usable than the plain alternatives. There was no user study.</li>
               <li>Measured numbers come from your browser, display and current load. They vary between runs and machines.</li>
               <li>The live regions are present and update, but the announcements have not been tried with a screen reader.</li>
-              <li>The reduced-motion switch changes what these four experiments do. It does not change anything else on the site.</li>
+              <li>The reduced-motion switch changes what these six experiments do. It does not change anything else on the site.</li>
             </ul>
           </div>
         </section>
