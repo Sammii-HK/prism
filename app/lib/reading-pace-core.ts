@@ -77,7 +77,7 @@ export interface Pace {
   idleMs: number;
   /** Words per minute of active time, or null until there is enough to say. */
   wpm: number | null;
-  /** Time spent at the reading line, by block index, in ms. */
+  /** Time spent at the reading line, by block index, in ms. Includes time in skimmed buckets, which `activeMs` does not. */
   dwellMs: number[];
 }
 
@@ -161,6 +161,8 @@ export const analyse = (samples: Sample[], blocks: Block[], params: PaceParams =
     const wpm = dw / (b.ms / 60000);
     if (dw > 0 && wpm > params.skimWpm) {
       out.skimmedWords += dw;
+      // The time still happened at those paragraphs, so it counts as dwell (a short one), but not as reading time.
+      spread(dwellMs, blocks, b.y0, b.y1, b.ms);
       return;
     }
     out.readWords += dw;

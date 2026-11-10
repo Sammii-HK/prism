@@ -95,6 +95,16 @@ test("pointerMove changes order without announcing", () => {
   assert.equal(s.announcement, "");
 });
 
+test("pointerDrop announces the final position; reset can carry a sentence", () => {
+  let s = reorderReducer(initialState(items), { type: "pointerMove", id: "a", to: 2 });
+  s = reorderReducer(s, { type: "pointerDrop", id: "a" });
+  assert.equal(s.announcement, "Dropped A, position 3 of 5.");
+  const r = reorderReducer(s, { type: "reset", items: [...items].reverse(), announcement: "List reversed." });
+  assert.equal(ids(r), "edcba");
+  assert.equal(r.announcement, "List reversed.");
+  assert.equal(reorderReducer(initialState(items), { type: "reset", items }).announcement, "");
+});
+
 test("keyAction", () => {
   assert.deepEqual(keyAction("ArrowDown", true), { type: "move", delta: 1 });
   assert.deepEqual(keyAction("ArrowUp", true), { type: "move", delta: -1 });

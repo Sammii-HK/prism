@@ -13,6 +13,9 @@ import {
   type TokenObservation,
 } from "../lib/components/token-compose";
 import { FocusTrailPanel, type FocusObservation, type TrailEntry } from "../lib/components/focus-trail";
+import { SpringFieldPanel, type SpringFieldObservation } from "../lib/components/spring-field";
+import { ReadingRailPanel, DEFAULT_PARAMS, DEFAULT_DWELL, type ReadingObservation } from "../lib/components/reading-rail";
+import { FlipReorderPanel, type ReorderObservation } from "../lib/components/flip-reorder";
 import { LabSection, SERIF, type EvidenceRow } from "./parts";
 
 const NOT_YET = "not measured yet";
@@ -24,6 +27,9 @@ const SECTIONS = [
   { id: "latency-adapt", label: "Latency adapt" },
   { id: "token-compose", label: "Token compose" },
   { id: "focus-trail", label: "Focus trail" },
+  { id: "spring-field", label: "Spring field" },
+  { id: "reading-rail", label: "Reading rail" },
+  { id: "flip-reorder", label: "FLIP reorder" },
 ] as const;
 type SectionId = (typeof SECTIONS)[number]["id"];
 
@@ -429,6 +435,154 @@ function FocusSection({ mode }: { mode: Mode }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Section: spring field                                                */
+/* ------------------------------------------------------------------ */
+function SpringSection({ mode }: { mode: Mode }) {
+  const [obs, setObs] = useState<SpringFieldObservation | null>(null);
+  const r = obs?.release ?? null;
+  const evidence: EvidenceRow[] = [
+    { key: "ratio", label: "Damping ratio from stiffness and damping", value: obs ? `${obs.zeta.toFixed(2)}, ${obs.regime}` : NOT_YET },
+    { key: "coeff", label: "Spring constants (mass 1)", value: obs ? `k = ${obs.stiffness}, c = ${obs.damping.toFixed(1)}, natural frequency ${obs.naturalHz.toFixed(2)} Hz` : NOT_YET },
+    { key: "displaced", label: "Dots away from rest right now", value: obs ? `${obs.displaced} of ${obs.total}, largest offset ${obs.maxOffset.toFixed(1)} px` : NOT_YET },
+    { key: "running", label: "Simulation loop", value: obs ? (obs.running ? "running" : "stopped (everything at rest)") : NOT_YET },
+    { key: "settle", label: "Last release: whole field settled in", value: r ? `${Math.round(r.settleMs)} ms (ratio ${r.zeta.toFixed(2)})` : NOT_YET },
+    { key: "overshoot", label: "Last release: most-displaced dot swung past rest by", value: r ? `${r.overshootPct.toFixed(1)}% of its offset` : NOT_YET },
+    { key: "predicted", label: "Closed-form overshoot for a spring released from rest", value: r ? `${r.predictedPct.toFixed(1)}%` : NOT_YET },
+    { key: "mode", label: "Reduced-motion mode", value: modeText(mode) },
+  ];
+  return (
+    <LabSection
+      slug="spring-field"
+      index="07"
+      kicker="Responding"
+      question="Can a field of springs be tuned by a number you can read instead of a feeling?"
+      name="Spring field"
+      demo={<SpringFieldPanel embedded forceReduced={mode.forced} onObserve={setObs} />}
+      why={
+        <>
+          <p>
+            Every dot is its own damped spring, aiming at a point the pointer pushes or pulls it to. Whether it wobbles, glides or creeps is decided by one number, the damping ratio, which a small pure function computes from stiffness and damping.
+          </p>
+          <p className="mt-3">
+            Below 1 a spring overshoots. At 1 it arrives as fast as it can without crossing. Above 1 it is slower for nothing. The demo measures that on the dot you displaced most and puts the textbook prediction beside it.
+          </p>
+        </>
+      }
+      keys={[
+        { keys: ["Tab"], does: "focuses the field; a probe appears in the middle." },
+        { keys: ["←", "→", "↑", "↓"], does: "move the probe by 24 px." },
+        { keys: ["Esc"], does: "lets go of the field; the dots spring home. Leaving the field does the same." },
+        { keys: ["Tab"], does: "on to the sliders and buttons, which are native controls." },
+      ]}
+      reducedNote="there is no spring at all: each dot moves straight to its target and straight back, and no overshoot or settle time is measured."
+      evidence={evidence}
+      evidenceNote="The simulation uses fixed 1/240 s steps. The closed-form figure is for a single spring released from rest; when you let go while the pointer was moving, the dots carry velocity and the measured figure can differ from it. Unit tests (pnpm test:lab) compare simulation and formula to within 1.5 percentage points."
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section: reading rail                                                */
+/* ------------------------------------------------------------------ */
+function ReadingSection({ mode }: { mode: Mode }) {
+  const [obs, setObs] = useState<ReadingObservation | null>(null);
+  const started = !!obs?.started;
+  const evidence: EvidenceRow[] = [
+    { key: "words", label: "Words in the article, counted from its text", value: obs ? `${obs.totalWords} in ${obs.blocks} paragraphs` : NOT_YET },
+    { key: "pace", label: "Pace over all active time", value: obs?.wpm != null ? `${Math.round(obs.wpm)} wpm` : NOT_YET },
+    { key: "recent", label: `Pace over the last ${DEFAULT_PARAMS.windowMs / 1000} s`, value: obs?.recentWpm != null ? `${Math.round(obs.recentWpm)} wpm` : NOT_YET },
+    { key: "eta", label: "Time left at that pace", value: obs ? obs.etaText : NOT_YET },
+    { key: "split", label: "Words passed: read, skimmed, re-read", value: started && obs ? `${obs.readWords}, ${obs.skimmedWords}, ${obs.rereadWords}` : NOT_YET },
+    { key: "time", label: "Active time, idle time", value: started && obs ? `${obs.activeSeconds.toFixed(1)} s, ${obs.idleSeconds.toFixed(1)} s` : NOT_YET },
+    { key: "classes", label: "Paragraphs: skimmed, read, lingered", value: started && obs ? `${obs.counts.skimmed}, ${obs.counts.read}, ${obs.counts.lingered}` : NOT_YET },
+    { key: "samples", label: "Position samples taken (every 250 ms)", value: obs ? String(obs.samples) : NOT_YET },
+    {
+      key: "params",
+      label: "Model settings (choices in this demo, not findings)",
+      value: `buckets ${DEFAULT_PARAMS.bucketMs / 1000} s, away after ${DEFAULT_PARAMS.idleMs / 1000} s still, skimming above ${DEFAULT_PARAMS.skimWpm} wpm, skimmed under ${DEFAULT_DWELL.skimBelow}x and lingered over ${DEFAULT_DWELL.lingerAbove}x your pace`,
+    },
+    { key: "mode", label: "Reduced-motion mode", value: modeText(mode) },
+  ];
+  return (
+    <LabSection
+      slug="reading-rail"
+      index="08"
+      kicker="Reading"
+      question="What would a progress bar say if it measured how you read instead of where you are?"
+      name="Reading rail"
+      demo={<ReadingRailPanel embedded forceReduced={mode.forced} onObserve={setObs} />}
+      why={
+        <>
+          <p>
+            A reading line sits 40% down the article. Its position is sampled four times a second and grouped into buckets of a few seconds, because scrolling is much faster than reading and a per-event speed would only measure flicks.
+          </p>
+          <p className="mt-3">
+            Skimming, jumping, scrolling back and being away are each counted on their own, so they cannot bend the pace. The rail then colours every paragraph by your time there against your own pace.
+          </p>
+        </>
+      }
+      keys={[
+        { keys: ["Tab"], does: "focuses the article, which scrolls like any region." },
+        { keys: ["↑", "↓", "PgUp", "PgDn", "Space"], does: "scroll it. Anything that moves the reading line is measured." },
+        { keys: ["Enter", "Space"], does: "on Skip to 70% jumps the article; those words count as skimmed, not read." },
+        { keys: ["Enter", "Space"], does: "on Reset measurement clears every sample and returns to the top." },
+      ]}
+      reducedNote="the rail and the paragraph highlight change at once instead of easing, and the page never scrolls itself. Skip is instant in both modes."
+      evidence={evidence}
+      evidenceNote="This measures the page moving, not eyes, and not understanding: scrolling evenly past text you did not read gives a healthy number, and a fast reader who barely scrolls gives a slow one. Nothing is stored or sent; reloading clears it. Unit tests: pnpm test:lab."
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Section: flip reorder                                                */
+/* ------------------------------------------------------------------ */
+function ReorderSection({ mode }: { mode: Mode }) {
+  const [obs, setObs] = useState<ReorderObservation | null>(null);
+  const f = obs?.lastFlip ?? null;
+  const evidence: EvidenceRow[] = [
+    { key: "changes", label: "Order changes seen this visit", value: obs ? String(obs.changes) : NOT_YET },
+    { key: "via", label: "Last change was made by", value: f ? f.via : NOT_YET },
+    { key: "animated", label: "Rows FLIP shifted on the last change", value: f ? (mode.forced || mode.system ? `${f.animated} measured, none animated (reduced motion)` : `${f.animated}, the largest by ${Math.round(f.maxPx)} px`) : NOT_YET },
+    { key: "running", label: "Web Animations running right after", value: obs ? String(obs.animationsRunning) : NOT_YET },
+    { key: "live", label: "Live-region text after the last change (read from the DOM)", value: obs ? obs.announcement || "(empty)" : NOT_YET },
+    { key: "focus", label: "Focus still on the moved row after a keyboard move", value: obs?.focusKept == null ? NOT_YET : obs.focusKept ? "yes" : "no" },
+    { key: "grabbed", label: "Row picked up right now", value: obs ? (obs.grabbed ? obs.grabbed : "none") : NOT_YET },
+    { key: "mode", label: "Reduced-motion mode", value: modeText(mode) },
+  ];
+  return (
+    <LabSection
+      slug="flip-reorder"
+      index="09"
+      kicker="Reordering"
+      question="Can a drag-and-drop list be as good with only a keyboard?"
+      name="FLIP reorder"
+      demo={<FlipReorderPanel embedded forceReduced={mode.forced} onObserve={setObs} />}
+      why={
+        <>
+          <p>
+            When a list changes order, each row is measured before and after (FLIP), then animated from where it was to where it is, so the eye can follow every row. Dragging uses the same code, with the held row following the pointer.
+          </p>
+          <p className="mt-3">
+            The keyboard path is not an add-on. Both input methods change the same list through one pure reducer, which also writes every sentence the live region says.
+          </p>
+        </>
+      }
+      keys={[
+        { keys: ["Tab"], does: "moves between rows; each row is one tab stop." },
+        { keys: ["Space", "Enter"], does: "picks the row up, and drops it where it is." },
+        { keys: ["↑", "↓"], does: "move the picked-up row one place; at an end it says so." },
+        { keys: ["Home", "End"], does: "send it to the top or bottom." },
+        { keys: ["Esc"], does: "cancels and returns it to where it was picked up, however far it travelled." },
+      ]}
+      reducedNote="rows jump to their new places without animating. Dragging, the keyboard path and the announcements work the same."
+      evidence={evidence}
+      evidenceNote="Shifts are measured with getBoundingClientRect before and after each change, and the live-region text is read back from the DOM. The announcements are present and update, but have not been tried with a screen reader."
+    />
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Page                                                                 */
 /* ------------------------------------------------------------------ */
 export function Lab() {
@@ -500,7 +654,7 @@ export function Lab() {
           Can interfaces become expressive without sacrificing usability?
         </h1>
         <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg" style={{ fontFamily: SERIF }}>
-          Six small experiments, each built so the expressive layer can be taken away and the interface still works.
+          Nine small experiments, each built so the expressive layer can be taken away and the interface still works.
           They are live below. Use them with a mouse, then use them again with only the keyboard.
         </p>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/60">
@@ -574,6 +728,9 @@ export function Lab() {
         <LatencySection mode={mode} />
         <TokenSection mode={mode} />
         <FocusSection mode={mode} />
+        <SpringSection mode={mode} />
+        <ReadingSection mode={mode} />
+        <ReorderSection mode={mode} />
 
         <section
           aria-labelledby="limits-heading"
@@ -588,7 +745,7 @@ export function Lab() {
               <li>It does not show these are more usable than the plain alternatives. There was no user study.</li>
               <li>Measured numbers come from your browser, display and current load. They vary between runs and machines.</li>
               <li>The live regions are present and update, but the announcements have not been tried with a screen reader.</li>
-              <li>The reduced-motion switch changes what these six experiments do. It does not change anything else on the site.</li>
+              <li>The reduced-motion switch changes what these nine experiments do. It does not change anything else on the site.</li>
             </ul>
           </div>
         </section>

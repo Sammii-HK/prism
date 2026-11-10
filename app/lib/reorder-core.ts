@@ -77,7 +77,8 @@ export type ReorderAction =
   | { type: "moveTo"; index: number }
   | { type: "drop" }
   | { type: "cancel" }
-  | { type: "reset"; items: Item[] }
+  | { type: "reset"; items: Item[]; announcement?: string }
+  | { type: "pointerDrop"; id: string }
   /** Pointer drag finished or shifted the order: the list is replaced, the sentence is built here. */
   | { type: "pointerMove"; id: string; to: number };
 
@@ -99,7 +100,7 @@ export const reorderReducer = (s: ReorderState, a: ReorderAction): ReorderState 
   const indexOf = (id: string) => s.items.findIndex((i) => i.id === id);
   switch (a.type) {
     case "reset":
-      return initialState(a.items);
+      return { ...initialState(a.items), announcement: a.announcement ?? "" };
     case "grab": {
       const i = indexOf(a.id);
       if (i < 0) return s;
@@ -126,6 +127,10 @@ export const reorderReducer = (s: ReorderState, a: ReorderAction): ReorderState 
       const i = indexOf(s.grabbed.id);
       const items = moveItem(s.items, i, s.grabbed.origin);
       return { items, grabbed: null, announcement: announceCancel(s.items[i].label, s.grabbed.origin, n) };
+    }
+    case "pointerDrop": {
+      const i = indexOf(a.id);
+      return i < 0 ? s : { ...s, announcement: announceDrop(s.items[i].label, i, n) };
     }
     case "pointerMove": {
       const i = indexOf(a.id);

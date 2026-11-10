@@ -28,3 +28,6 @@ export { SpringToggle } from "./spring-toggle";
 export { TiltCard } from "./tilt-card";
 export { SpotlightCard } from "../primitives/spotlight-card";
 export { CursorGlow } from "../primitives/cursor-glow";
+export { SpringFieldPanel } from "./spring-field";
+export { ReadingRailPanel } from "./reading-rail";
+export { FlipReorderPanel } from "./flip-reorder";

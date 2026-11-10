@@ -88,6 +88,18 @@ test("a jump is skimmed words, not a pace spike", () => {
   assert.ok(Math.abs(p.wpm! - 200) < 12, `got ${p.wpm}`);
 });
 
+test("skimmed buckets still leave a short dwell on the blocks they crossed, but no active time", () => {
+  const a = steady(200, 30);
+  const y = a[a.length - 1].y;
+  const p = analyse([...a, { t: 30250, y: y + 400 * PX_PER_WORD }, { t: 33300, y: y + 400 * PX_PER_WORD }], blocks);
+  const crossed = p.dwellMs.slice(0, 6).reduce((n, d) => n + d, 0);
+  assert.ok(p.skimmedWords > 300);
+  assert.ok(crossed > p.activeMs - 1);
+  assert.ok(p.dwellMs[4] > 0);
+  // 100 words at the measured pace would take about 30 s; a skim past it leaves well under 40% of that.
+  assert.equal(classifyDwell(p.dwellMs[4], 100, p.wpm), "skimmed");
+});
+
 test("scrolling back is counted as re-reading", () => {
   const a = steady(200, 30);
   const back: Sample[] = [];
