@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  moveItem, insertIndexFromMidpoints, flipDeltas, slotTop, reorderReducer, initialState, keyAction, sameOrder,
+  moveItem, insertIndexFromMidpoints, othersMidpoints, flipDeltas, slotTop, reorderReducer, initialState, keyAction, sameOrder,
   type Item, type ReorderState,
 } from "../app/lib/reorder-core.ts";
 
@@ -29,6 +29,26 @@ test("insertIndexFromMidpoints counts the midpoints above the dragged one", () =
   assert.equal(insertIndexFromMidpoints([30, 90, 150], 100), 2);
   assert.equal(insertIndexFromMidpoints([30, 90, 150], 500), 3);
   assert.equal(insertIndexFromMidpoints([], 5), 0);
+});
+
+test("dragging a row by less than half a row does not reorder; past the neighbour's midpoint it does", () => {
+  const H = 56, G = 8;
+  const target = (cur: number, top: number) => insertIndexFromMidpoints(othersMidpoints(7, cur, H, G), top + H / 2);
+  // Row 0 dragged down: stays until its midpoint passes row 1's midpoint (slot 1 mid = 92).
+  assert.equal(target(0, 0), 0);
+  assert.equal(target(0, 30), 0);
+  assert.equal(target(0, 63), 0);
+  assert.equal(target(0, 65), 1);
+  // Row 3 dragged up: it moves above row 2 once its midpoint passes row 2's midpoint (slot 2 mid = 156).
+  assert.equal(target(3, 192), 3);
+  assert.equal(target(3, 130), 3);
+  assert.equal(target(3, 127), 2);
+  // Row 3 dragged down past row 4's midpoint (slot 4 mid = 284).
+  assert.equal(target(3, 258), 4);
+  // Always inside the list.
+  assert.equal(target(6, 99999), 6);
+  assert.equal(target(0, -99999), 0);
+  assert.equal(othersMidpoints(3, 1, H, G).length, 2);
 });
 
 test("slotTop", () => {

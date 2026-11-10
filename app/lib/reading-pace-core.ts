@@ -79,6 +79,8 @@ export interface Pace {
   wpm: number | null;
   /** Time spent at the reading line, by block index, in ms. Includes time in skimmed buckets, which `activeMs` does not. */
   dwellMs: number[];
+  /** How many words of each block the reading line actually travelled through. A reader who starts mid-paragraph covers only part of it. */
+  coveredWords: number[];
 }
 
 interface Bucket {
@@ -131,7 +133,23 @@ const spread = (dwell: number[], blocks: Block[], y0: number, y1: number, ms: nu
 /** Measure pace over every sample given. */
 export const analyse = (samples: Sample[], blocks: Block[], params: PaceParams = DEFAULT_PARAMS): Pace => {
   const dwellMs = blocks.map(() => 0);
-  const out: Pace = { readWords: 0, skimmedWords: 0, rereadWords: 0, activeMs: 0, idleMs: 0, wpm: null, dwellMs };
+  const lo = blocks.map(() => Infinity);
+  const hi = blocks.map(() => -Infinity);
+  const starts: number[] = [];
+  blocks.reduce((acc, b) => (starts.push(acc), acc + b.words), 0);
+  const cover = (y0: number, y1: number) => {
+    const a = Math.min(wordsAt(y0, blocks), wordsAt(y1, blocks));
+    const z = Math.max(wordsAt(y0, blocks), wordsAt(y1, blocks));
+    blocks.forEach((b, k) => {
+      const s0 = starts[k];
+      const e0 = s0 + b.words;
+      if (z < s0 || a > e0) return;
+      lo[k] = Math.min(lo[k], Math.max(a, s0));
+      hi[k] = Math.max(hi[k], Math.min(z, e0));
+    });
+  };
+  const coveredWords: number[] = blocks.map(() => 0);
+  const out: Pace = { readWords: 0, skimmedWords: 0, rereadWords: 0, activeMs: 0, idleMs: 0, wpm: null, dwellMs, coveredWords };
   const buckets = bucketize(samples, params.bucketMs).filter((b) => b.ms >= 1000 || b.ms >= params.bucketMs);
   const idleRun = Math.max(1, Math.ceil(params.idleMs / params.bucketMs));
 
@@ -151,6 +169,7 @@ export const analyse = (samples: Sample[], blocks: Block[], params: PaceParams =
       out.idleMs += b.ms;
       return;
     }
+    cover(b.y0, b.y1);
     const dw = wordsAt(b.y1, blocks) - wordsAt(b.y0, blocks);
     if (dw < 0) {
       out.rereadWords += -dw;
@@ -170,6 +189,9 @@ export const analyse = (samples: Sample[], blocks: Block[], params: PaceParams =
     spread(dwellMs, blocks, b.y0, b.y1, b.ms);
   });
 
+  blocks.forEach((_, k) => {
+    coveredWords[k] = hi[k] > lo[k] ? hi[k] - lo[k] : 0;
+  });
   if (out.activeMs >= params.minActiveMs && out.readWords > 0) out.wpm = out.readWords / (out.activeMs / 60000);
   return out;
 };
@@ -214,6 +236,20 @@ export const classifyDwell = (dwellMs: number, words: number, wpm: number | null
   if (wpm === null || wpm <= 0 || words <= 0) return "visited";
   const ratio = dwellMs / ((words / wpm) * 60000);
   return ratio < p.skimBelow ? "skimmed" : ratio > p.lingerAbove ? "lingered" : "read";
+};
+
+/** A block the reading line has only just entered is "visited": too little of it is covered to judge. */
+export const MIN_COVERAGE = 0.25;
+
+/**
+ * Like `classifyDwell`, but judged against the words the reading line actually
+ * passed through, so starting mid-paragraph, or stopping halfway down one,
+ * does not read as skimming.
+ */
+export const classifyBlock = (dwellMs: number, coveredWords: number, blockWords: number, wpm: number | null, p: DwellParams = DEFAULT_DWELL): Dwell => {
+  if (dwellMs < 50) return "unvisited";
+  if (blockWords <= 0 || coveredWords / blockWords < MIN_COVERAGE) return "visited";
+  return classifyDwell(dwellMs, coveredWords, wpm, p);
 };
 
 /** Clamp a sample list so it cannot grow without bound. Keeps the most recent `max`. */

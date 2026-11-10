@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useSystemReducedMotion } from "./async-button";
 import {
-  DEFAULT_DWELL, DEFAULT_PARAMS, analyse, capSamples, classifyDwell, countWords, etaSeconds, formatEta, recentPace, totalWords, wordsAt,
+  DEFAULT_DWELL, DEFAULT_PARAMS, analyse, capSamples, classifyBlock, countWords, etaSeconds, formatEta, recentPace, totalWords, wordsAt,
   type Block, type Dwell, type Sample,
 } from "../reading-pace-core";
 
@@ -129,7 +129,7 @@ export function ReadingRailPanel({
     const all = analyse(samplesRef.current, blocks, DEFAULT_PARAMS);
     const recent = recentPace(samplesRef.current, blocks, DEFAULT_PARAMS);
     const paceForEta = recent.wpm ?? all.wpm;
-    const classes = blocks.map((b, i) => classifyDwell(all.dwellMs[i] ?? 0, b.words, all.wpm, DEFAULT_DWELL));
+    const classes = blocks.map((b, i) => classifyBlock(all.dwellMs[i] ?? 0, all.coveredWords[i] ?? 0, b.words, all.wpm, DEFAULT_DWELL));
     const counts = emptyCounts();
     classes.forEach((c) => counts[c]++);
     const sc = scrollerRef.current;

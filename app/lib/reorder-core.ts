@@ -28,6 +28,17 @@ export const insertIndexFromMidpoints = (othersMid: readonly number[], draggedMi
   return n;
 };
 
+/**
+ * Midpoints of the rows other than the one at `dragged`, where each row keeps
+ * the slot it currently occupies (the dragged row's slot is simply skipped).
+ * Pair with `insertIndexFromMidpoints`.
+ */
+export const othersMidpoints = (count: number, dragged: number, rowHeight: number, gap: number): number[] => {
+  const out: number[] = [];
+  for (let i = 0; i < count; i++) if (i !== dragged) out.push(slotTop(i, rowHeight, gap) + rowHeight / 2);
+  return out;
+};
+
 export interface Rect {
   x: number;
   y: number;

@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  analyse, recentPace, wordsAt, blockIndexAt, totalWords, countWords, etaSeconds, formatEta, classifyDwell,
+  analyse, recentPace, wordsAt, blockIndexAt, totalWords, countWords, etaSeconds, formatEta, classifyDwell, classifyBlock,
   capSamples, DEFAULT_PARAMS, type Block, type Sample,
 } from "../app/lib/reading-pace-core.ts";
 
@@ -146,6 +146,25 @@ test("classifyDwell compares time spent with time at your own pace", () => {
   assert.equal(classifyDwell(5000, 100, 200), "skimmed");
   assert.equal(classifyDwell(30000, 100, 200), "read");
   assert.equal(classifyDwell(60000, 100, 200), "lingered");
+});
+
+test("coverage: starting mid-paragraph covers only the rest of it, and is not judged as skimming", () => {
+  // Start half way through block 0 and read 150 words at 200 wpm.
+  const p = analyse(steady(200, 45, 50), blocks);
+  assert.ok(Math.abs(p.coveredWords[0] - 50) < 3, `covered ${p.coveredWords[0]}`);
+  assert.ok(p.coveredWords[1] > 97, `covered ${p.coveredWords[1]}`);
+  assert.equal(p.coveredWords[8], 0);
+  // Half the block's words in half the full-block time: "read", not "skimmed".
+  assert.equal(classifyBlock(p.dwellMs[0], p.coveredWords[0], 100, p.wpm), "read");
+  assert.equal(classifyBlock(p.dwellMs[1], p.coveredWords[1], 100, p.wpm), "read");
+});
+
+test("classifyBlock: barely entered is visited, and a long stop on a block is a linger", () => {
+  assert.equal(classifyBlock(4000, 10, 100, 200), "visited");
+  assert.equal(classifyBlock(0, 0, 100, 200), "unvisited");
+  // Fully covered (about 30 s at 200 wpm) but sat on for 70 s.
+  assert.equal(classifyBlock(70000, 100, 100, 200), "lingered");
+  assert.equal(classifyBlock(3000, 100, 100, 200), "skimmed");
 });
 
 test("capSamples keeps the newest", () => {

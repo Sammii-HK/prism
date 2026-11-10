@@ -1,9 +1,10 @@
 "use client";
+import { flushSync } from "react-dom";
 import { useCallback, useEffect, useId, useLayoutEffect, useReducer, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { useSystemReducedMotion } from "./async-button";
 import { pastelColour } from "../primitives/gradient";
 import {
-  flipDeltas, initialState, insertIndexFromMidpoints, keyAction, reorderReducer, slotTop,
+  flipDeltas, initialState, insertIndexFromMidpoints, keyAction, othersMidpoints, reorderReducer, slotTop,
   type Item, type Rect,
 } from "../reorder-core";
 
@@ -196,12 +197,12 @@ export function FlipReorderPanel({
       const n = stateRef.current.items.length;
       const top = Math.max(0, Math.min(slotTop(n - 1, ROW_H, GAP), d.startTop + (ev.clientY - d.startY)));
       d.ty = top;
-      const others = Array.from({ length: n - 1 }, (_, j) => slotTop(j, ROW_H, GAP) + ROW_H / 2);
-      const to = insertIndexFromMidpoints(others, top + ROW_H / 2);
       const cur = stateRef.current.items.findIndex((i) => i.id === d.id);
+      const to = insertIndexFromMidpoints(othersMidpoints(n, cur, ROW_H, GAP), top + ROW_H / 2);
       if (to !== cur) {
         snapshot("pointer");
-        dispatch({ type: "pointerMove", id: d.id, to });
+        // Commit now, inside the event, so the new order and the FLIP start are painted together.
+        flushSync(() => dispatch({ type: "pointerMove", id: d.id, to }));
       } else {
         applyDragTransform();
       }
