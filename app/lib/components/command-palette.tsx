@@ -720,7 +720,7 @@ export const CommandPalette = ({
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ color: "rgba(255,255,255,0.35)", flexShrink: 0 }}
+            style={{ color: "rgba(255,255,255,0.5)", flexShrink: 0 }}
             aria-hidden="true"
           >
             <circle cx="11" cy="11" r="7" />
@@ -774,7 +774,7 @@ export const CommandPalette = ({
             style={{
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",
-              color: "rgba(255,255,255,0.45)",
+              color: "rgba(255,255,255,0.5)",
             }}
           >
             esc
@@ -829,12 +829,12 @@ export const CommandPalette = ({
             ) : flatItems.length === 0 ? (
               <div
                 className="flex flex-col items-center justify-center gap-3 py-14"
-                style={{ color: "rgba(255,255,255,0.35)" }}
+                style={{ color: "rgba(255,255,255,0.5)" }}
               >
                 <PulseDot size={8} />
                 <p className="text-sm">{emptyLabel}</p>
                 {query && (
-                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
+                  <p className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
                     for &ldquo;{query}&rdquo;
                   </p>
                 )}
@@ -855,7 +855,7 @@ export const CommandPalette = ({
                     >
                       <span
                         className="text-[10px] tracking-widest uppercase font-medium"
-                        style={{ color: "rgba(255,255,255,0.35)" }}
+                        style={{ color: "rgba(255,255,255,0.5)" }}
                       >
                         {g.label}
                       </span>
@@ -918,7 +918,7 @@ export const CommandPalette = ({
                             strokeWidth="1.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            style={{ color: "rgba(255,255,255,0.35)" }}
+                            style={{ color: "rgba(255,255,255,0.5)" }}
                             aria-hidden="true"
                           >
                             <polyline points="9 6 15 12 9 18" />
@@ -944,7 +944,7 @@ export const CommandPalette = ({
                             style={{
                               background: "rgba(255,255,255,0.04)",
                               border: "1px solid rgba(255,255,255,0.08)",
-                              color: "rgba(255,255,255,0.4)",
+                              color: "rgba(255,255,255,0.5)",
                             }}
                           >
                             {directKey}
@@ -973,14 +973,14 @@ export const CommandPalette = ({
             <LegendChip label="↑↓" />
             <span
               className="text-[10px]"
-              style={{ color: "rgba(255,255,255,0.35)" }}
+              style={{ color: "rgba(255,255,255,0.5)" }}
             >
               navigate
             </span>
             <LegendChip label="↵" />
             <span
               className="text-[10px]"
-              style={{ color: "rgba(255,255,255,0.35)" }}
+              style={{ color: "rgba(255,255,255,0.5)" }}
             >
               select
             </span>
@@ -989,7 +989,7 @@ export const CommandPalette = ({
                 <LegendChip label="⌫" />
                 <span
                   className="text-[10px]"
-                  style={{ color: "rgba(255,255,255,0.35)" }}
+                  style={{ color: "rgba(255,255,255,0.5)" }}
                 >
                   back
                 </span>
@@ -998,7 +998,7 @@ export const CommandPalette = ({
           </div>
           <span
             className="text-[10px]"
-            style={{ color: "rgba(255,255,255,0.3)" }}
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
             {flatItems.length} {flatItems.length === 1 ? "result" : "results"}
           </span>

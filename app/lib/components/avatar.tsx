@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface AvatarProps {
   /** Image URL */
@@ -42,9 +44,9 @@ export const Avatar = ({
     let proximity = 0;
     let smoothProximity = 0;
 
-    const onMove = (e: PointerEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+    const unsubscribe = subscribeAttention(({ x, y }) => {
+      mouseX = x;
+      mouseY = y;
 
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
@@ -54,16 +56,15 @@ export const Avatar = ({
       const dist = Math.sqrt(dx * dx + dy * dy);
       const range = 120;
       proximity = Math.max(0, 1 - dist / range);
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+    });
 
     let raf: number;
 
     const tick = () => {
       smoothProximity += (proximity - smoothProximity) * 0.1;
+      if (reducedMotionNow()) smoothProximity = proximity;
 
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const rect = el.getBoundingClientRect();
       const xPc = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
       const yPc = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
@@ -84,16 +85,21 @@ export const Avatar = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
 
   const fontSize = Math.round(size * 0.38);
+  // Without an image the initials are the only content, so name the avatar
+  // itself: prefer alt (e.g. a full name) and fall back to the initials.
+  const fallbackLabel = alt || fallback;
 
   return (
     <div
       ref={ref}
+      role={!src && fallbackLabel ? "img" : undefined}
+      aria-label={!src && fallbackLabel ? fallbackLabel : undefined}
       className={`relative inline-flex items-center justify-center shrink-0 select-none ${className}`}
       style={{
         width: size,
@@ -120,6 +126,7 @@ export const Avatar = ({
         />
       ) : (
         <span
+          aria-hidden={fallbackLabel ? true : undefined}
           style={{
             fontSize,
             lineHeight: 1,

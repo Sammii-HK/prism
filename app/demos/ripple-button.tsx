@@ -45,7 +45,7 @@ export default function RippleButtonDemo() {
         <p
           style={{
             margin: 0,
-            color: "rgba(255,255,255,0.28)",
+            color: "rgba(255,255,255,0.5)",
             fontSize: "13px",
             letterSpacing: "0.07em",
             textTransform: "lowercase",
@@ -132,7 +132,7 @@ export default function RippleButtonDemo() {
             <RippleButton>Save changes</RippleButton>
             <RippleButton
               glowOnHover={false}
-              style={{ color: "rgba(255,255,255,0.35)" }}
+              style={{ color: "rgba(255,255,255,0.5)" }}
             >
               Cancel
             </RippleButton>
@@ -158,7 +158,7 @@ function SettingRow({ label, enabled }: { label: string; enabled: boolean }) {
         borderBottom: "1px solid rgba(255,255,255,0.05)",
       }}
     >
-      <span style={{ color: "rgba(255,255,255,0.42)", fontSize: "13px" }}>
+      <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>
         {label}
       </span>
 

@@ -72,7 +72,7 @@ export function AsyncButtonPanel({
     <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
         <section className="flex min-w-0 flex-col gap-8">
           {!embedded && (
-            <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+            <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
               async-button
             </p>
           )}
@@ -86,7 +86,7 @@ export function AsyncButtonPanel({
           />
 
           <fieldset className="flex flex-col gap-3 border-0 p-0">
-            <legend className="mb-2 text-xs uppercase tracking-widest text-white/40">The next request</legend>
+            <legend className="mb-2 text-xs uppercase tracking-widest text-white/50">The next request</legend>
             <label className="flex flex-col gap-1 text-sm text-white/70">
               Takes {(latency / 1000).toFixed(1)} s
               <input
@@ -111,12 +111,12 @@ export function AsyncButtonPanel({
               <label className="flex items-center gap-2 text-sm text-white/70">
                 <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
                 Preview reduced motion
-                <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+                <span className="text-white/50">(system setting: {systemReduced ? "on" : "off"})</span>
               </label>
             )}
           </fieldset>
 
-          <p className="max-w-sm text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="max-w-sm text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
             Press it with the keyboard: Tab to focus, Enter or Space to press. Press it twice while it works: the
             second press is ignored. Past 1.2 s it says so instead of spinning forever.
           </p>
@@ -124,7 +124,7 @@ export function AsyncButtonPanel({
 
         <section className="flex min-w-0 flex-col gap-6" aria-label="State machine">
           <div>
-            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h3>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">State</h3>
             <ol className="flex flex-wrap gap-2">
               {STATES.map((s) => (
                 <li
@@ -146,10 +146,10 @@ export function AsyncButtonPanel({
           </div>
 
           <div>
-            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">Transitions</h3>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">Transitions</h3>
             <table className="w-full text-left text-sm text-white/60">
               <thead>
-                <tr className="text-white/30">
+                <tr className="text-white/50">
                   <th className="py-1 font-normal">from</th>
                   <th className="py-1 font-normal">event</th>
                   <th className="py-1 font-normal">to</th>
@@ -175,9 +175,9 @@ export function AsyncButtonPanel({
           </div>
 
           <div>
-            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">What just happened</h3>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">What just happened</h3>
             {log.length === 0 ? (
-              <p className="text-sm text-white/30">Nothing yet. Press the button.</p>
+              <p className="text-sm text-white/50">Nothing yet. Press the button.</p>
             ) : (
               <ul className="font-mono text-xs text-white/60">
                 {log.map((row, i) => (

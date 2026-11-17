@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { RegistryItem } from "./registry";
 import { SpotlightCard } from "./primitives";
 import { previewMap } from "./previews";
+import { labPreviewMap } from "./previews-lab";
 
 type ComponentCardProps = {
   item: RegistryItem;
@@ -12,9 +13,13 @@ type ComponentCardProps = {
 };
 
 /**
- * Card for gallery listings. Renders a live preview of the component above
- * title / tagline / tags. Off-screen cards unmount their preview so rAF
- * loops don't run in the background.
+ * Card for gallery listings: a live preview above the title, tagline and tags.
+ *
+ * The title is the only link, stretched over the whole card, so the card is
+ * one tab stop with a clear name. The preview is visual only (`inert`): its
+ * components still answer to the shared attention point, but their controls
+ * don't sit inside a link or fill the tab order. Off-screen previews unmount
+ * so their rAF loops stop.
  */
 export const ComponentCard = ({ item, featured = false }: ComponentCardProps) => {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -22,7 +27,7 @@ export const ComponentCard = ({ item, featured = false }: ComponentCardProps) =>
   // IntersectionObserver still show content. The observer pauses off-screen
   // cards after mount.
   const [visible, setVisible] = useState(true);
-  const Preview = previewMap[item.slug];
+  const Preview = previewMap[item.slug] ?? labPreviewMap[item.slug];
 
   useEffect(() => {
     if (!wrapRef.current) return;
@@ -46,44 +51,42 @@ export const ComponentCard = ({ item, featured = false }: ComponentCardProps) =>
     return () => io.disconnect();
   }, []);
 
-  const previewHeight = featured ? "h-52 sm:h-56" : "h-40";
+  const previewHeight = featured ? "h-56" : "h-48";
 
   return (
-    <Link href={`/${item.slug}`} className="block">
-      <SpotlightCard className="bg-white/[0.03] backdrop-blur-sm p-4 cursor-pointer group h-full flex flex-col">
-        {/* Live preview window */}
-        <div
-          ref={wrapRef}
-          className={`relative ${previewHeight} w-full rounded-lg bg-[#050505] border border-white/5 overflow-hidden mb-4`}
-        >
-          {visible && Preview && <Preview />}
-          {/* Subtle top-left slug badge */}
-          <span className="absolute top-2 left-2 text-[9px] font-mono text-white/20 uppercase tracking-wider pointer-events-none z-10">
-            {item.category}
-          </span>
-        </div>
+    <SpotlightCard className="group relative flex h-full flex-col rounded-2xl bg-white/[0.025] p-3 backdrop-blur-sm transition-colors has-[a:focus-visible]:bg-white/[0.05]">
+      <div
+        ref={wrapRef}
+        inert
+        aria-hidden="true"
+        className={`relative ${previewHeight} w-full overflow-hidden rounded-xl border border-white/[0.05] bg-[#050505]`}
+      >
+        {visible && Preview && <Preview />}
+      </div>
 
-        {/* Meta */}
-        <div className="flex items-baseline justify-between mb-1.5 gap-2">
-          <h2 className="text-sm font-light text-white/85 group-hover:text-white transition-colors">
-            {item.title}
-          </h2>
-          <span className="text-[10px] font-mono text-white/25 shrink-0">{item.date}</span>
-        </div>
-        <p className="text-xs text-white/40 leading-relaxed mb-3 flex-1">
-          {item.tagline ?? item.description}
-        </p>
-        <div className="flex flex-wrap gap-1.5">
-          {item.tech.slice(0, 2).map((t) => (
-            <span
-              key={t}
-              className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/5 text-white/35"
+      <div className="flex flex-1 flex-col px-2 pb-2 pt-4">
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="text-[15px] font-light text-white/90">
+            <Link
+              href={`/${item.slug}`}
+              className="rounded-sm outline-none after:absolute after:inset-0 after:rounded-2xl after:content-[''] focus-visible:after:ring-2 focus-visible:after:ring-white/60"
             >
+              {item.title}
+            </Link>
+          </h3>
+          {item.type === "component" && (
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.18em] text-white/50">{item.category}</span>
+          )}
+        </div>
+        <p className="mt-1.5 flex-1 text-[13px] leading-relaxed text-white/55">{item.tagline ?? item.description}</p>
+        <div className="mt-4 flex flex-wrap gap-1.5">
+          {item.tech.slice(0, 3).map((t) => (
+            <span key={t} className="rounded-full bg-white/[0.05] px-2 py-0.5 font-mono text-[10px] text-white/55">
               {t}
             </span>
           ))}
         </div>
-      </SpotlightCard>
-    </Link>
+      </div>
+    </SpotlightCard>
   );
 };

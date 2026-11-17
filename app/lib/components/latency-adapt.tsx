@@ -235,7 +235,7 @@ export const LatencyAdapt = <T,>({
         className="min-h-[132px] rounded-xl p-5"
         style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        {phase === "idle" && <p className="text-sm text-white/30">Nothing loaded yet.</p>}
+        {phase === "idle" && <p className="text-sm text-white/50">Nothing loaded yet.</p>}
 
         {phase === "waiting" &&
           (data ? (

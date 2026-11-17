@@ -156,7 +156,7 @@ export default function CommandPaletteDemo() {
         <div className="flex flex-col items-center gap-2">
           <p
             className="text-xs tracking-widest uppercase"
-            style={{ color: "rgba(255,255,255,0.3)" }}
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
             command palette
           </p>
@@ -193,7 +193,7 @@ export default function CommandPaletteDemo() {
 
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Try typing, arrow keys, ⌘1 to fire the first match.
         </p>

@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type DockItem = {
   icon: ReactNode;
@@ -66,7 +68,7 @@ export const FloatingDock = ({
     const DAMPING = 0.75;
     const MAX_LIFT = -18;
 
-    const onMove = (e: PointerEvent) => {
+    const onMove = (e: { clientX: number; clientY: number }) => {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
     };
@@ -76,13 +78,21 @@ export const FloatingDock = ({
       mouseRef.current.y = Infinity;
     };
 
-    dock.addEventListener("pointermove", onMove);
-    dock.addEventListener("pointerleave", onLeave);
+    // Mouse, touch and keyboard focus all move the attention point. Only a
+    // point over the dock counts, matching the old pointermove/pointerleave.
+    const unsubscribe = subscribeAttention(({ x, y }) => {
+      const rect = dock.getBoundingClientRect();
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        onMove({ clientX: x, clientY: y });
+      } else {
+        onLeave();
+      }
+    });
 
     let raf: number;
 
     const tick = () => {
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
 
@@ -111,6 +121,14 @@ export const FloatingDock = ({
           targetScale = 1 + (maxScale - 1) * cosProximity;
           targetLift = MAX_LIFT * cosProximity;
           targetGlow = cosProximity;
+        }
+
+        // Reduced motion: no magnify or lift. Glow still responds.
+        if (reducedMotionNow()) {
+          targetScale = 1;
+          targetLift = 0;
+          s.scale = 1; s.scaleVel = 0;
+          s.liftY = 0; s.liftVel = 0;
         }
 
         // Spring physics
@@ -157,8 +175,7 @@ export const FloatingDock = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      dock.removeEventListener("pointermove", onMove);
-      dock.removeEventListener("pointerleave", onLeave);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [items.length, iconSize, maxScale]);
@@ -191,6 +208,16 @@ export const FloatingDock = ({
               iconsRef.current[i] = el;
             }}
             onClick={() => handleClick(i)}
+            // Reachable and operable from the keyboard like a real button.
+            role="button"
+            tabIndex={0}
+            aria-label={item.label}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleClick(i);
+              }
+            }}
             className="rounded-xl border border-white/[0.08] bg-white/[0.04] flex items-center justify-center cursor-pointer select-none"
             style={{
               width: iconSize,

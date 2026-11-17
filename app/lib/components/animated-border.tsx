@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type AnimatedBorderProps = {
   children: ReactNode;
@@ -48,23 +50,27 @@ export const AnimatedBorder = ({
     const SPRING = 0.06;
     const DAMPING = 0.82;
 
-    const onMove = (e: PointerEvent) => {
-      stateRef.current.mouseX = (e.clientX / window.innerWidth) * 100;
-      stateRef.current.mouseY = (e.clientY / window.innerHeight) * 100;
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") {
+        // Attention released (finger lifted, focus left): keep the colour where it was, drop the hover glow
+        stateRef.current.hovered = false;
+        return;
+      }
+      stateRef.current.mouseX = (x / window.innerWidth) * 100;
+      stateRef.current.mouseY = (y / window.innerHeight) * 100;
 
       // Track if cursor is over this element
       const rect = el.getBoundingClientRect();
       stateRef.current.hovered =
-        e.clientX >= rect.left && e.clientX <= rect.right &&
-        e.clientY >= rect.top && e.clientY <= rect.bottom;
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+        x >= rect.left && x <= rect.right &&
+        y >= rect.top && y <= rect.bottom;
+    });
 
     let raf: number;
     const tick = () => {
       const s = stateRef.current;
-      const t = performance.now() / 1000;
+      const t = motionTime();
+      const reduced = reducedMotionNow();
 
       // Spring physics for cursor tracking
       s.velX += (s.mouseX - s.currentX) * SPRING;
@@ -73,10 +79,17 @@ export const AnimatedBorder = ({
       s.velY *= DAMPING;
       s.currentX += s.velX;
       s.currentY += s.velY;
+      if (reduced) {
+        s.currentX = s.mouseX;
+        s.currentY = s.mouseY;
+        s.velX = 0;
+        s.velY = 0;
+      }
 
       // Glow eases in on hover
       const targetGlow = s.hovered ? 1 : 0.3;
       s.glow += (targetGlow - s.glow) * 0.12;
+      if (reduced) s.glow = targetGlow;
 
       // Cursor-position-mapped colour with sine/cosine wave layers
       const rPc = Math.max(0, Math.min(100, s.currentX + Math.sin(t * 1.1) * 28));
@@ -98,7 +111,7 @@ export const AnimatedBorder = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);

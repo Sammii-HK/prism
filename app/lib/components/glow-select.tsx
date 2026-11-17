@@ -1,6 +1,8 @@
 "use client";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention, type Attention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowSelectOption {
   value: string;
@@ -48,6 +50,18 @@ export const GlowSelect = ({
 }: GlowSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  // Keyboard-highlighted option while open (aria-activedescendant)
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const activeRef = useRef(-1);
+  useEffect(() => {
+    activeRef.current = isOpen ? activeIndex : -1;
+  }, [isOpen, activeIndex]);
+  const typeahead = useRef({ text: "", timer: 0 });
+
+  const baseId = useId();
+  const labelId = `${baseId}-label`;
+  const listboxId = `${baseId}-listbox`;
+  const optionId = (i: number) => `${baseId}-option-${i}`;
 
   const wrapRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -57,6 +71,7 @@ export const GlowSelect = ({
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const selectedOption = options.find((o) => o.value === value);
+  const selectedIndex = options.findIndex((o) => o.value === value);
 
   // Live values for rAF reads
   const live = useRef({
@@ -109,6 +124,91 @@ export const GlowSelect = ({
     [onChange]
   );
 
+  const openAt = (index: number) => {
+    setIsOpen(true);
+    setIsFocused(true);
+    setActiveIndex(Math.max(0, Math.min(options.length - 1, index)));
+  };
+
+  // Select-only combobox keyboard model (WAI-ARIA APG): focus stays on the trigger
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (disabled || options.length === 0) return;
+    const last = options.length - 1;
+    const current = activeIndex >= 0 ? activeIndex : Math.max(0, selectedIndex);
+
+    // Type-ahead: jump to the next option whose label starts with the typed text
+    if (e.key.length === 1 && e.key !== " " && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      const ta = typeahead.current;
+      window.clearTimeout(ta.timer);
+      ta.text += e.key.toLowerCase();
+      ta.timer = window.setTimeout(() => {
+        ta.text = "";
+      }, 500);
+      const from = ta.text.length === 1 ? current + 1 : current;
+      for (let n = 0; n < options.length; n++) {
+        const i = (from + n) % options.length;
+        if (options[i].label.toLowerCase().startsWith(ta.text)) {
+          openAt(i);
+          break;
+        }
+      }
+      return;
+    }
+
+    if (!isOpen) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openAt(selectedIndex >= 0 ? selectedIndex : 0);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        openAt(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        openAt(last);
+      }
+      return;
+    }
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex(Math.min(last, current + 1));
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex(Math.max(0, current - 1));
+        break;
+      case "Home":
+        e.preventDefault();
+        setActiveIndex(0);
+        break;
+      case "End":
+        e.preventDefault();
+        setActiveIndex(last);
+        break;
+      case "PageDown":
+        e.preventDefault();
+        setActiveIndex(Math.min(last, current + 10));
+        break;
+      case "PageUp":
+        e.preventDefault();
+        setActiveIndex(Math.max(0, current - 10));
+        break;
+      case "Enter":
+      case " ":
+        e.preventDefault();
+        handleSelect(options[current].value);
+        break;
+      case "Escape":
+        e.preventDefault();
+        setIsOpen(false);
+        break;
+      case "Tab":
+        setIsOpen(false);
+        break;
+    }
+  };
+
   useEffect(() => {
     const step = (
       pos: number,
@@ -128,22 +228,25 @@ export const GlowSelect = ({
     let smoothY = 50;
     let proximity = 0;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
+    const onMove = ({ x: clientX, y: clientY, kind }: Attention) => {
+      // Released attention (FAR_AWAY) only fades proximity; colour keeps its last point
+      if (kind !== "none") {
+        rawX = (clientX / window.innerWidth) * 100;
+        rawY = (clientY / window.innerHeight) * 100;
+      }
 
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(e.clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(e.clientY - cy) - rect.height / 2);
+        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
+        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         const range = 120;
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
 
@@ -164,13 +267,15 @@ export const GlowSelect = ({
       const targetDropOpacity = open ? 1 : 0;
       const targetDropY = open ? 0 : -8;
 
-      // Integrate springs
-      const [ly, lyv] = step(s.labelY, s.labelYVel, targetLabelY, 180, 22);
-      const [ls, lsv] = step(s.labelScale, s.labelScaleVel, targetLabelScale, 180, 22);
+      // Integrate springs — with reduced motion, label, chevron and dropdown
+      // jump straight to their end state instead of springing
+      const reduce = reducedMotionNow();
+      const [ly, lyv] = reduce ? [targetLabelY, 0] : step(s.labelY, s.labelYVel, targetLabelY, 180, 22);
+      const [ls, lsv] = reduce ? [targetLabelScale, 0] : step(s.labelScale, s.labelScaleVel, targetLabelScale, 180, 22);
       const [gw, gwv] = step(s.glow, s.glowVel, targetGlow, 120, 18);
-      const [cr, crv] = step(s.chevronRot, s.chevronRotVel, targetChevronRot, 200, 24);
-      const [dop, dopv] = step(s.dropOpacity, s.dropOpacityVel, targetDropOpacity, 200, 24);
-      const [dy, dyv] = step(s.dropY, s.dropYVel, targetDropY, 200, 24);
+      const [cr, crv] = reduce ? [targetChevronRot, 0] : step(s.chevronRot, s.chevronRotVel, targetChevronRot, 200, 24);
+      const [dop, dopv] = reduce ? [targetDropOpacity, 0] : step(s.dropOpacity, s.dropOpacityVel, targetDropOpacity, 200, 24);
+      const [dy, dyv] = reduce ? [targetDropY, 0] : step(s.dropY, s.dropYVel, targetDropY, 200, 24);
 
       s.labelY = ly;
       s.labelYVel = lyv;
@@ -186,7 +291,7 @@ export const GlowSelect = ({
       s.dropYVel = dyv;
 
       const glowClamped = Math.max(0, Math.min(1, gw));
-      const t = performance.now() / 1000;
+      const t = motionTime();
 
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
@@ -199,7 +304,7 @@ export const GlowSelect = ({
           const lb = Math.round(255 + (b - 255) * glowClamped);
           labelRef.current.style.color = `rgba(${lr},${lg},${lb},0.9)`;
         } else {
-          labelRef.current.style.color = "rgba(255,255,255,0.35)";
+          labelRef.current.style.color = "rgba(255,255,255,0.5)";
         }
       }
 
@@ -246,6 +351,10 @@ export const GlowSelect = ({
         if (opt && opt.value === live.current.value) {
           el.style.color = "rgba(255,255,255,0.9)";
           el.style.backgroundColor = `rgba(${r},${g},${b},0.12)`;
+        } else if (i === activeRef.current) {
+          // Keyboard-active option reuses the existing hover treatment
+          el.style.backgroundColor = "rgba(255,255,255,0.06)";
+          el.style.color = "rgba(255,255,255,0.7)";
         } else {
           el.style.color = "rgba(255,255,255,0.5)";
           el.style.backgroundColor = "transparent";
@@ -258,7 +367,7 @@ export const GlowSelect = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [options]);
@@ -272,10 +381,22 @@ export const GlowSelect = ({
       <button
         ref={triggerRef}
         type="button"
+        role="combobox"
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        aria-controls={listboxId}
+        aria-labelledby={labelId}
+        aria-activedescendant={isOpen && activeIndex >= 0 ? optionId(activeIndex) : undefined}
+        onKeyDown={handleKeyDown}
+        onKeyUp={(e) => {
+          // Space is handled on keydown; stop the native button click on keyup
+          if (e.key === " ") e.preventDefault();
+        }}
         onClick={() => {
           if (!disabled) {
             setIsOpen((prev) => !prev);
             setIsFocused(true);
+            setActiveIndex(Math.max(0, selectedIndex));
           }
         }}
         onFocus={() => setIsFocused(true)}
@@ -296,7 +417,7 @@ export const GlowSelect = ({
           boxShadow: "0 0 0 1px rgba(255,255,255,0.1)",
         }}
       >
-        <span className={selectedOption ? "text-white" : "text-white/30"}>
+        <span className={selectedOption ? "text-white" : "text-white/50"}>
           {selectedOption ? selectedOption.label : (isFocused || isOpen ? placeholder : "")}
         </span>
 
@@ -312,7 +433,7 @@ export const GlowSelect = ({
           strokeLinecap="round"
           strokeLinejoin="round"
           className="shrink-0 ml-2 will-change-transform"
-          style={{ color: "rgba(255,255,255,0.35)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           <path d="M4 6l4 4 4-4" />
         </svg>
@@ -321,9 +442,10 @@ export const GlowSelect = ({
       {/* Floating label */}
       <span
         ref={labelRef}
+        id={labelId}
         className="absolute left-4 top-5 pointer-events-none text-sm inline-block will-change-transform origin-top-left"
         style={{
-          color: "rgba(255,255,255,0.35)",
+          color: "rgba(255,255,255,0.5)",
           transform: `translateY(${startsFloated ? -24 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
         }}
       >
@@ -333,6 +455,10 @@ export const GlowSelect = ({
       {/* Dropdown */}
       <div
         ref={dropdownRef}
+        id={listboxId}
+        role="listbox"
+        aria-labelledby={labelId}
+        aria-hidden={!isOpen}
         className="absolute left-0 right-0 top-full mt-2 rounded-xl border overflow-hidden z-50"
         style={{
           backgroundColor: "rgba(20,20,20,0.95)",
@@ -352,6 +478,10 @@ export const GlowSelect = ({
               optionRefs.current[i] = el;
             }}
             type="button"
+            id={optionId(i)}
+            role="option"
+            aria-selected={opt.value === value}
+            tabIndex={-1}
             onClick={() => handleSelect(opt.value)}
             className="w-full text-left px-4 py-2.5 text-sm outline-none cursor-pointer"
             style={{

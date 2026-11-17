@@ -10,6 +10,7 @@ import {
 } from "react";
 import { usePointer } from "../hooks/use-pointer";
 import { pastelColour } from "../primitives/gradient";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -84,6 +85,11 @@ function AnimatedRipple({
       const force = (scale - springPos) * 140 - springVel * 14;
       springVel += force * dt;
       springPos += springVel * dt;
+      // Reduced motion: no bloom, show the ripple at full size and let it fade.
+      if (reducedMotionNow()) {
+        springPos = scale;
+        springVel = 0;
+      }
 
       // Linear opacity decay
       const opacity = Math.max(0, 0.6 * (1 - elapsed / duration));
@@ -197,9 +203,13 @@ export const RippleButton = ({
     if (disabled) return;
 
     const rect = buttonRef.current!.getBoundingClientRect();
+    // A keyboard click (Enter/Space) reports 0,0; ripple from the centre instead.
+    const keyboard = e.detail === 0;
+    const clientX = keyboard ? rect.left + rect.width / 2 : e.clientX;
+    const clientY = keyboard ? rect.top + rect.height / 2 : e.clientY;
     // Pixel offset relative to button top-left
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     // Base circle large enough to cover the button at scale 1
     const size = Math.max(rect.width, rect.height) * 2;
 
@@ -207,9 +217,9 @@ export const RippleButton = ({
     // sequential clicks from the same position still shift hue
     let r = 200, g = 200, b = 200;
     if (usePointerColour) {
-      const vxPc = (e.clientX / window.innerWidth) * 100;
-      const vyPc = (e.clientY / window.innerHeight) * 100;
-      ({ r, g, b } = pastelColour(vxPc, vyPc, performance.now() / 1000));
+      const vxPc = (clientX / window.innerWidth) * 100;
+      const vyPc = (clientY / window.innerHeight) * 100;
+      ({ r, g, b } = pastelColour(vxPc, vyPc, motionTime()));
     }
 
     setRipples(prev => [
@@ -239,6 +249,12 @@ export const RippleButton = ({
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      // Keyboard focus lights the glow the way hover does. Mouse clicks that
+      // focus the button are not :focus-visible, so they don't hold it on.
+      onFocus={(e) => {
+        if (e.currentTarget.matches(":focus-visible")) setIsHovered(true);
+      }}
+      onBlur={() => setIsHovered(false)}
       disabled={disabled}
       style={{
         position: "relative",

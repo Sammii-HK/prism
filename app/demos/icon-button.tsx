@@ -9,7 +9,7 @@ export default function IconButtonDemo() {
       style={{ background: "#050505" }}
     >
       <div className="flex flex-col items-center gap-8">
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           icon-button
         </p>
 
@@ -36,7 +36,7 @@ export default function IconButtonDemo() {
 
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Hover and click the buttons.
         </p>

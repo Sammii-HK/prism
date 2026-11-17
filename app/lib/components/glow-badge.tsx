@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention, type Attention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowBadgeProps {
   children: ReactNode;
@@ -40,22 +42,25 @@ export const GlowBadge = ({
     let smoothY = 50;
     let proximity = 0;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
+    const onMove = ({ x: clientX, y: clientY, kind }: Attention) => {
+      // Released attention (FAR_AWAY) only fades proximity; colour keeps its last point
+      if (kind !== "none") {
+        rawX = (clientX / window.innerWidth) * 100;
+        rawY = (clientY / window.innerHeight) * 100;
+      }
 
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(e.clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(e.clientY - cy) - rect.height / 2);
+        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
+        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         const range = 100;
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
 
@@ -63,7 +68,7 @@ export const GlowBadge = ({
       smoothX += (rawX - smoothX) * 0.08;
       smoothY += (rawY - smoothY) * 0.08;
 
-      const t = performance.now() / 1000;
+      const t = motionTime();
 
       // Resolve colour
       let r: number, g: number, b: number;
@@ -77,8 +82,8 @@ export const GlowBadge = ({
         ({ r, g, b } = pastelColour(smoothX, smoothY, t));
       }
 
-      // Breathing opacity via sine wave (~2s period)
-      const breathe = pulse
+      // Breathing opacity via sine wave (~2s period) — held still under reduced motion
+      const breathe = pulse && !reducedMotionNow()
         ? 0.6 + 0.4 * ((Math.sin(t * Math.PI) + 1) / 2)
         : 1;
 
@@ -98,7 +103,7 @@ export const GlowBadge = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [variant, pulse]);

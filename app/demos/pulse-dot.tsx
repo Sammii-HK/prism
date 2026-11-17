@@ -8,13 +8,13 @@ export default function PulseDotDemo() {
       style={{ background: "#050505" }}
     >
       <div className="flex flex-col items-center gap-10">
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           pulse-dot
         </p>
 
         {/* Cursor-reactive at different sizes */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-xs font-mono mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="text-xs font-mono mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
             cursor-reactive
           </p>
           <div className="flex items-center gap-6">
@@ -27,7 +27,7 @@ export default function PulseDotDemo() {
 
         {/* Fixed colours */}
         <div className="flex flex-col items-center gap-2">
-          <p className="text-xs font-mono mb-3" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="text-xs font-mono mb-3" style={{ color: "rgba(255,255,255,0.5)" }}>
             fixed colours
           </p>
           <div className="flex items-center gap-6">
@@ -40,7 +40,7 @@ export default function PulseDotDemo() {
 
         <p
           className="text-xs italic mt-4"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Top row follows your cursor. Bottom row stays fixed.
         </p>

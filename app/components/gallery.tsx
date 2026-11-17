@@ -9,6 +9,8 @@ import { SiteNav } from "../lib/site-nav";
 import { usePointer } from "../lib/hooks/use-pointer";
 import { colourField } from "../lib/primitives/gradient";
 import { CursorGlow } from "../lib/primitives";
+import { SiteFooter } from "../lib/shell/site-footer";
+import { Container, Eyebrow } from "../lib/shell/ui";
 
 type CategoryTab = "all" | Category;
 
@@ -78,60 +80,54 @@ export const ComponentsGallery = () => {
   }, [activeTabIdx, query]);
 
   return (
-    <div
-      className="min-h-screen relative"
-      style={mounted ? colourField(xPc, yPc, time, 5) : undefined}
-    >
+    <div className="relative min-h-screen" style={mounted ? colourField(xPc, yPc, time, 5) : undefined}>
       {mounted && <CursorGlow size={400} blur={40} opacity={0.04} />}
       <SiteNav />
 
-      <header className="px-6 pt-16 pb-8 text-center">
-        <h1 className="text-3xl sm:text-4xl font-light tracking-tight text-white/90">
-          Components
-        </h1>
-        <p className="mt-3 text-sm text-white/45 font-mono tracking-wide">
-          Production-ready, cursor-reactive, hand-built.
-        </p>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col gap-6 pb-6">
-        {/* Filter row */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="overflow-x-auto -mx-1 px-1">
-            <MorphTabs
-              tabs={TAB_CATEGORIES.map(tabLabel)}
-              activeIndex={activeTabIdx}
-              onChange={setActiveTabIdx}
-            />
+      <main id="main">
+        <Container as="header" className="pb-10 pt-16 sm:pt-20">
+          <Eyebrow>Library</Eyebrow>
+          <div className="mt-5 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h1 className="text-[44px] font-light leading-none tracking-[-0.035em] text-white/90 sm:text-6xl">Components</h1>
+              <p className="mt-5 max-w-md text-base leading-relaxed text-white/60">
+                Production-ready, cursor-reactive, hand-built. Each one works with a mouse, a finger or the
+                keyboard, and holds still when you ask for reduced motion.
+              </p>
+            </div>
+            <div ref={searchRef} className="w-full lg:w-80">
+              <GlowInput label="Search" value={query} onChange={setQuery} placeholder="Press / to search" />
+            </div>
           </div>
-          <div ref={searchRef} className="w-full md:w-72">
-            <GlowInput
-              label="Search"
-              value={query}
-              onChange={setQuery}
-              placeholder="Press / to search"
-            />
-          </div>
-        </div>
+        </Container>
 
-        <p className="text-[11px] font-mono text-white/30 tracking-wide">
-          {filtered.length} {filtered.length === 1 ? "component" : "components"}
-        </p>
-      </div>
-
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-24">
-        {filtered.length === 0 ? (
-          <p className="text-center text-white/40 text-sm py-16">
-            No components match {query ? `"${query}"` : "that filter"}.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((item) => (
-              <ComponentCard key={item.slug} item={item} />
-            ))}
+        <Container className="sticky top-14 z-30 -mt-px border-y border-white/[0.06] bg-[#050505]/75 py-3 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-4">
+            <div className="-mx-1 overflow-x-auto px-1 no-scrollbar">
+              <MorphTabs tabs={TAB_CATEGORIES.map(tabLabel)} activeIndex={activeTabIdx} onChange={setActiveTabIdx} />
+            </div>
+            <p className="hidden shrink-0 font-mono text-[11px] tabular-nums text-white/50 sm:block" aria-live="polite">
+              {filtered.length} {filtered.length === 1 ? "component" : "components"}
+            </p>
           </div>
-        )}
+        </Container>
+
+        <Container className="pt-8">
+          {filtered.length === 0 ? (
+            <p className="py-24 text-center text-sm text-white/55">
+              No components match {query ? `"${query}"` : "that filter"}.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((item) => (
+                <ComponentCard key={item.slug} item={item} />
+              ))}
+            </div>
+          )}
+        </Container>
       </main>
+
+      <SiteFooter />
     </div>
   );
 };

@@ -329,7 +329,7 @@ export function FocusTrailPanel({
   return (
     <div ref={rootRef} className="mx-auto grid w-full max-w-4xl gap-10 md:grid-cols-2">
       <section className="flex min-w-0 flex-col gap-5" aria-label="Dialog">
-        {!embedded && <p className="text-xs uppercase tracking-widest text-white/25">focus-trail</p>}
+        {!embedded && <p className="text-xs uppercase tracking-widest text-white/50">focus-trail</p>}
         <div className="flex flex-wrap items-center gap-3">
           <button type="button" className={btn} style={btnStyle} onClick={show} data-testid="open-dialog">
             Rename project
@@ -396,25 +396,25 @@ export function FocusTrailPanel({
       </section>
 
       <section className="flex min-w-0 flex-col gap-3" aria-label="Focus trail">
-        <h3 className="text-xs uppercase tracking-widest text-white/40">Focus trail</h3>
+        <h3 className="text-xs uppercase tracking-widest text-white/50">Focus trail</h3>
         {entries.length === 0 ? (
-          <p className="text-sm text-white/40" data-testid="trail-empty">
+          <p className="text-sm text-white/50" data-testid="trail-empty">
             Nothing yet. Tab to a control, or press “Rename project”.
           </p>
         ) : (
           <ol data-testid="trail-log" className="flex max-h-72 flex-col gap-1 overflow-y-auto pr-1 font-mono text-xs text-white/65">
             {entries.map((e) => (
               <li key={e.n} data-via={e.via} data-inside={e.inside} className="grid grid-cols-[4.5rem_1fr] gap-x-2">
-                <span className="text-white/45">+{e.atMs} ms</span>
+                <span className="text-white/50">+{e.atMs} ms</span>
                 <span className="min-w-0 break-words">
                   <span className="text-white/90">{e.label}</span>
-                  <span className="text-white/45"> · {e.via}</span>
+                  <span className="text-white/50"> · {e.via}</span>
                 </span>
               </li>
             ))}
           </ol>
         )}
-        <p className="max-w-sm text-xs italic leading-relaxed text-white/40">
+        <p className="max-w-sm text-xs italic leading-relaxed text-white/50">
           Times are performance.now() since the first move in the trail. Only moves inside this demo are listed. Newest first.
         </p>
       </section>

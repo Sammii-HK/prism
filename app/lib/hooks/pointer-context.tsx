@@ -1,5 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { subscribeAttention } from "./attention";
+import { motionTime } from "./reduced-motion";
 
 type PointerSnapshot = {
   xPc: number;
@@ -56,16 +58,15 @@ export const PointerProvider = ({ children, lerp = 0.08, throttleMs = 60 }: Prop
     let currentY = 50;
     let lastEmit = 0;
 
-    const onMove = (e: PointerEvent) => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      targetX = (e.clientX / vw) * 100;
-      targetY = (e.clientY / vh) * 100;
-      targetClientX = e.clientX;
-      targetClientY = e.clientY;
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the shared point. When attention
+    // is released (a finger lifts, focus leaves) the colour stays where it was.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      targetX = (x / window.innerWidth) * 100;
+      targetY = (y / window.innerHeight) * 100;
+      targetClientX = x;
+      targetClientY = y;
+    });
 
     let raf: number;
     const tick = () => {
@@ -75,7 +76,7 @@ export const PointerProvider = ({ children, lerp = 0.08, throttleMs = 60 }: Prop
       const next: PointerSnapshot = {
         xPc: currentX,
         yPc: currentY,
-        time: now / 1000,
+        time: motionTime(),
         clientX: targetClientX,
         clientY: targetClientY,
         mounted: true,
@@ -90,7 +91,7 @@ export const PointerProvider = ({ children, lerp = 0.08, throttleMs = 60 }: Prop
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [lerp, throttleMs]);

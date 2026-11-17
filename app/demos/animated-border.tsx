@@ -9,7 +9,7 @@ export default function AnimatedBorderDemo() {
           <h2 className="text-white/90 text-xl font-medium tracking-tight">
             Animated border
           </h2>
-          <p className="text-white/40 text-sm leading-relaxed font-light">
+          <p className="text-white/50 text-sm leading-relaxed font-light">
             A rotating conic gradient border whose colours shift with your
             cursor position. Every spot on screen produces a unique palette.
           </p>

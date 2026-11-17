@@ -36,10 +36,6 @@
       "types": "./dist/floating-dock.d.ts",
       "import": "./dist/floating-dock.js"
     },
-    "./fluid-tooltip": {
-      "types": "./dist/fluid-tooltip.d.ts",
-      "import": "./dist/fluid-tooltip.js"
-    },
     "./glow-badge": {
       "types": "./dist/glow-badge.d.ts",
       "import": "./dist/glow-badge.js"
@@ -72,10 +68,6 @@
       "types": "./dist/icon-button.d.ts",
       "import": "./dist/icon-button.js"
     },
-    "./magnetic-button": {
-      "types": "./dist/magnetic-button.d.ts",
-      "import": "./dist/magnetic-button.js"
-    },
     "./morph-tabs": {
       "types": "./dist/morph-tabs.d.ts",
       "import": "./dist/morph-tabs.js"
@@ -92,10 +84,6 @@
       "types": "./dist/ripple-button.d.ts",
       "import": "./dist/ripple-button.js"
     },
-    "./shimmer-text": {
-      "types": "./dist/shimmer-text.d.ts",
-      "import": "./dist/shimmer-text.js"
-    },
     "./skeleton": {
       "types": "./dist/skeleton.d.ts",
       "import": "./dist/skeleton.js"
@@ -108,10 +96,6 @@
       "types": "./dist/spring-toggle.d.ts",
       "import": "./dist/spring-toggle.js"
     },
-    "./tilt-card": {
-      "types": "./dist/tilt-card.d.ts",
-      "import": "./dist/tilt-card.js"
-    },
     "./cursor-glow": {
       "types": "./dist/cursor-glow.d.ts",
       "import": "./dist/cursor-glow.js"
@@ -123,6 +107,10 @@
     "./use-pointer": {
       "types": "./dist/hooks/use-pointer.d.ts",
       "import": "./dist/hooks/use-pointer.js"
+    },
+    "./tooltip": {
+      "types": "./dist/tooltip.d.ts",
+      "import": "./dist/tooltip.js"
     }
   },
   "scripts": {

@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface PulseDotProps {
   /** Dot diameter in pixels */
@@ -38,14 +40,14 @@ export const PulseDot = ({
     let smoothX = 50;
     let smoothY = 50;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
-    };
-
-    if (!colour) {
-      window.addEventListener("pointermove", onMove, { passive: true });
-    }
+    // Released attention parks at FAR_AWAY; keep the last colour instead of following it
+    const unsubscribe = colour
+      ? () => {}
+      : subscribeAttention(({ x, y, kind }) => {
+          if (kind === "none") return;
+          rawX = (x / window.innerWidth) * 100;
+          rawY = (y / window.innerHeight) * 100;
+        });
 
     let raf: number;
 
@@ -53,7 +55,8 @@ export const PulseDot = ({
       smoothX += (rawX - smoothX) * 0.08;
       smoothY += (rawY - smoothY) * 0.08;
 
-      const t = performance.now() / 1000;
+      const t = motionTime();
+      const reduced = reducedMotionNow();
 
       // Resolve colour
       let colourStr: string;
@@ -78,15 +81,19 @@ export const PulseDot = ({
       ring.style.opacity = String(ringOpacity);
       ring.style.borderColor = colourStr;
 
+      // Reduced motion: no breathing ring, just the dot (the ring's resting state)
+      if (reduced) {
+        ring.style.transform = "scale(1)";
+        ring.style.opacity = "0";
+      }
+
       raf = requestAnimationFrame(tick);
     };
 
     raf = requestAnimationFrame(tick);
 
     return () => {
-      if (!colour) {
-        window.removeEventListener("pointermove", onMove);
-      }
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [colour, size]);
@@ -100,6 +107,7 @@ export const PulseDot = ({
       {/* Pulse ring */}
       <span
         ref={ringRef}
+        aria-hidden="true"
         className="absolute rounded-full border"
         style={{
           width: size,
@@ -112,6 +120,7 @@ export const PulseDot = ({
       {/* Core dot */}
       <span
         ref={dotRef}
+        aria-hidden="true"
         className="absolute rounded-full"
         style={{
           width: size,

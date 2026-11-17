@@ -16,7 +16,7 @@ export default function GlowTextareaDemo() {
     >
       <div className="w-full max-w-sm flex flex-col gap-5 rounded-2xl">
         {/* Eyebrow */}
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           glow-textarea
         </p>
 
@@ -49,7 +49,7 @@ export default function GlowTextareaDemo() {
         {/* Footer hint */}
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Focus any field. Move your cursor.
         </p>
