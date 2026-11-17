@@ -7,7 +7,6 @@ const groups: Array<{ title: string; links: Array<{ label: string; href: string;
     links: [
       { label: "Showcase", href: "/showcase" },
       { label: "Components", href: "/components" },
-      { label: "Playground", href: "/playground" },
       { label: "Interaction Lab", href: "/lab" },
       { label: "Atoms reference", href: "/atoms" },
     ],

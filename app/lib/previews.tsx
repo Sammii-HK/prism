@@ -10,7 +10,6 @@ import {
   AnimatedBorder,
   Avatar,
   FloatingDock,
-  FluidTooltip,
   GlowBadge,
   GlowCheckbox,
   GlowInput,
@@ -19,16 +18,14 @@ import {
   GlowTextarea,
   HoverReveal,
   IconButton,
-  MagneticButton,
   MorphTabs,
   ProgressBar,
   PulseDot,
   RippleButton,
-  ShimmerText,
   Skeleton,
   SpringToggle,
-  TiltCard,
   SpotlightCard,
+  Tooltip,
 } from "./components";
 import { Heart, Home, Search, Settings, User } from "lucide-react";
 
@@ -48,12 +45,6 @@ const AnimatedBorderPreview = () => (
         <p className="text-[10px] text-white/50 mt-1">Conic gradient</p>
       </div>
     </AnimatedBorder>
-  </Frame>
-);
-
-const MagneticButtonPreview = () => (
-  <Frame>
-    <MagneticButton>Magnetic</MagneticButton>
   </Frame>
 );
 
@@ -135,27 +126,6 @@ const FloatingDockPreview = () => (
   </Frame>
 );
 
-const TiltCardPreview = () => (
-  <Frame>
-    <TiltCard className="w-48">
-      <div className="p-4">
-        <p className="text-xs text-white/60">Tilt card</p>
-        <p className="text-[10px] text-white/50 mt-1">Perspective tilt</p>
-      </div>
-    </TiltCard>
-  </Frame>
-);
-
-const FluidTooltipPreview = () => (
-  <Frame>
-    <FluidTooltip content="Drag to reorder">
-      <button className="px-4 py-2 rounded-xl bg-white/[0.06] border border-white/[0.12] text-white/60 text-xs">
-        Hover me
-      </button>
-    </FluidTooltip>
-  </Frame>
-);
-
 const MorphTabsPreview = () => {
   const [i, setI] = useState(0);
   return (
@@ -178,19 +148,6 @@ const HoverRevealPreview = () => (
       >
         <p className="text-xs text-white/60">Features</p>
       </HoverReveal>
-    </div>
-  </Frame>
-);
-
-const ShimmerTextPreview = () => (
-  <Frame>
-    <div className="flex flex-col items-center gap-1">
-      <ShimmerText className="text-lg font-light text-white/80">
-        Design engineering
-      </ShimmerText>
-      <ShimmerText className="text-[11px] text-white/50" speed={0.7}>
-        Components with soul
-      </ShimmerText>
     </div>
   </Frame>
 );
@@ -297,35 +254,14 @@ const RippleButtonPreview = () => (
   </Frame>
 );
 
-// --- Playground previews ----------------------------------------------------
-// Playground items are full-canvas experiments. Render in a contained box.
-
-import dynamic from "next/dynamic";
-
-const ColourFieldPlayground = dynamic(() => import("../playground/colour-field"), { ssr: false });
-const FluidMeshPlayground = dynamic(() => import("../playground/fluid-mesh"), { ssr: false });
-const TextDissolvePlayground = dynamic(() => import("../playground/text-dissolve"), { ssr: false });
-const GravityWellsPlayground = dynamic(() => import("../playground/gravity-wells"), { ssr: false });
-const ShaderMarblingPlayground = dynamic(() => import("../playground/shader-marbling"), { ssr: false });
-
-const PlaygroundFrame = ({ children }: { children: React.ReactNode }) => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none">{children}</div>
-);
-
-const ColourFieldPreview = () => (
-  <PlaygroundFrame><ColourFieldPlayground /></PlaygroundFrame>
-);
-const FluidMeshPreview = () => (
-  <PlaygroundFrame><FluidMeshPlayground /></PlaygroundFrame>
-);
-const TextDissolvePreview = () => (
-  <PlaygroundFrame><TextDissolvePlayground /></PlaygroundFrame>
-);
-const GravityWellsPreview = () => (
-  <PlaygroundFrame><GravityWellsPlayground /></PlaygroundFrame>
-);
-const ShaderMarblingPreview = () => (
-  <PlaygroundFrame><ShaderMarblingPlayground /></PlaygroundFrame>
+const TooltipPreview = () => (
+  <Frame>
+    <Tooltip content="Drag to reorder">
+      <button className="px-4 py-2 rounded-xl bg-white/[0.06] border border-white/[0.12] text-white/60 text-xs">
+        Hover me
+      </button>
+    </Tooltip>
+  </Frame>
 );
 
 export const previewMap: Record<string, React.ComponentType> = {
@@ -338,24 +274,16 @@ export const previewMap: Record<string, React.ComponentType> = {
   "glow-slider": GlowSliderPreview,
   "glow-textarea": GlowTextareaPreview,
   "icon-button": IconButtonPreview,
-  "magnetic-button": MagneticButtonPreview,
   "spotlight-card": SpotlightCardPreview,
   "ripple-button": RippleButtonPreview,
+  "tooltip": TooltipPreview,
   "floating-dock": FloatingDockPreview,
-  "fluid-tooltip": FluidTooltipPreview,
   "spring-toggle": SpringTogglePreview,
-  "tilt-card": TiltCardPreview,
   "hover-reveal": HoverRevealPreview,
   "morph-tabs": MorphTabsPreview,
-  "shimmer-text": ShimmerTextPreview,
   "skeleton": SkeletonPreview,
   "glow-badge": GlowBadgePreview,
   "progress-bar": ProgressBarPreview,
   "pulse-dot": PulseDotPreview,
   // Playground
-  "colour-field": ColourFieldPreview,
-  "fluid-mesh": FluidMeshPreview,
-  "text-dissolve": TextDissolvePreview,
-  "gravity-wells": GravityWellsPreview,
-  "shader-marbling": ShaderMarblingPreview,
 };

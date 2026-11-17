@@ -5,17 +5,14 @@ import { SiteFooter } from "../lib/shell/site-footer";
 import { usePointer } from "../lib/hooks/use-pointer";
 import { colourField } from "../lib/primitives/gradient";
 import { CursorGlow } from "../lib/primitives";
-import { MagneticButton } from "../lib/components/magnetic-button";
 import { RippleButton } from "../lib/components/ripple-button";
 import { SpotlightCard } from "../lib/primitives/spotlight-card";
-import { TiltCard } from "../lib/components/tilt-card";
 import { AnimatedBorder } from "../lib/components/animated-border";
 import { GlowInput } from "../lib/components/glow-input";
 import { SpringToggle } from "../lib/components/spring-toggle";
 import { MorphTabs } from "../lib/components/morph-tabs";
 import { FloatingDock } from "../lib/components/floating-dock";
-import { FluidTooltip } from "../lib/components/fluid-tooltip";
-import { ShimmerText } from "../lib/components/shimmer-text";
+import { Tooltip } from "../lib/components/tooltip";
 import { GlowBadge } from "../lib/components/glow-badge";
 import { PulseDot } from "../lib/components/pulse-dot";
 import { HoverReveal } from "../lib/components/hover-reveal";
@@ -83,7 +80,6 @@ export default function AtomsPage() {
       <main id="main" className="max-w-4xl mx-auto px-6 pb-24 flex flex-col gap-16">
         {/* --- Buttons --- */}
         <Section title="Buttons">
-          <MagneticButton>Magnetic</MagneticButton>
           <RippleButton>Ripple</RippleButton>
         </Section>
 
@@ -95,14 +91,6 @@ export default function AtomsPage() {
               Cursor-reactive pastel border
             </p>
           </SpotlightCard>
-          <TiltCard className="w-64">
-            <div className="p-6">
-              <p className="text-sm text-white/60">Tilt card</p>
-              <p className="text-xs text-white/50 mt-2">
-                Perspective tilt toward cursor
-              </p>
-            </div>
-          </TiltCard>
           <AnimatedBorder className="w-64">
             <div className="p-6">
               <p className="text-sm text-white/60">Animated border</p>
@@ -202,11 +190,11 @@ export default function AtomsPage() {
 
         {/* --- Feedback --- */}
         <Section title="Feedback">
-          <FluidTooltip content="Save your progress">
+          <Tooltip content="Save your progress">
             <button className="px-4 py-2 rounded-xl bg-white/[0.06] border border-white/[0.12] text-white/60 text-sm">
               Hover me
             </button>
-          </FluidTooltip>
+          </Tooltip>
           <div className="flex items-center gap-4">
             <GlowBadge>Active</GlowBadge>
             <GlowBadge variant="success">Shipped</GlowBadge>
@@ -258,18 +246,6 @@ export default function AtomsPage() {
           <IconButton size="md"><Heart size={16} /></IconButton>
           <IconButton size="lg"><Settings size={20} /></IconButton>
           <IconButton size="md"><Plus size={16} /></IconButton>
-        </Section>
-
-        {/* --- Typography --- */}
-        <Section title="Typography">
-          <div className="flex flex-col gap-3">
-            <ShimmerText className="text-2xl font-light text-white/80">
-              Design engineering
-            </ShimmerText>
-            <ShimmerText className="text-sm text-white/50" speed={0.7}>
-              Components with soul
-            </ShimmerText>
-          </div>
         </Section>
 
         {/* --- Disclosure --- */}

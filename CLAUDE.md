@@ -18,12 +18,12 @@ Design engineering component library by Sammii. Reusable, cursor-reactive UI com
 
 ```
 app/
-  page.tsx                  Gallery grid (components + playground sections)
+  page.tsx                  Home: hero stage, showcase, principles, featured
   [slug]/
     page.tsx                Dynamic route with explicit componentMap (Turbopack requirement)
-    experiment-layout.tsx   Shared nav bar wrapper
+    item-detail.tsx         Detail template: stage, usage and props read from source
   lib/
-    registry.ts             Component/playground metadata (type: "component" | "playground")
+    registry.ts             Component metadata (the lab is the one non-component entry)
     components/
       <slug>.tsx            Reusable components (named exports, props interface)
       index.ts              Barrel exports
@@ -33,14 +33,19 @@ app/
       spotlight-card.tsx    Cursor-reactive pastel border card
       index.ts              Barrel export
     hooks/
+      attention.ts          Shared attention point: mouse, touch and keyboard focus
+      reduced-motion.ts     reducedMotionNow / motionTime / useReducedMotion
       use-pointer.ts        Shared pointer tracking hook with lerp smoothing
+    shell/                  Site layout kit, nav, footer, hero stage, readout
+    docs/                   Build-time docs read from component source
   demos/
     <slug>.tsx              Demo pages for components (default export)
-  playground/
-    <slug>.tsx              Visual experiments (default export)
+  showcase/                 Applied demos: darkroom, console, synth
 scripts/
   record.ts                Playwright screen recorder (1080x1080, organic cursor, ffmpeg)
 ```
+
+Components that are fun but not usable (things that move the target, chase the cursor or loop forever) belong in the separate chaos-components repo, not here. Prism is a usable collection.
 
 ## Adding a new component
 

@@ -23,7 +23,6 @@ import {
 import { usePointer } from "../lib/hooks/use-pointer";
 import { colourField } from "../lib/primitives/gradient";
 import { CursorGlow } from "../lib/primitives";
-import { ShimmerText } from "../lib/components/shimmer-text";
 import { SiteNav } from "../lib/site-nav";
 import { SiteFooter } from "../lib/shell/site-footer";
 
@@ -282,9 +281,7 @@ export const HireView = () => {
           Hire — Sammii Kellow
         </p>
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-tight leading-[1.1] max-w-4xl">
-          <ShimmerText className="text-white/90 block">
-            Senior frontend / design engineer.
-          </ShimmerText>
+          <span className="block text-white/90">Senior frontend / design engineer.</span>
           <span className="text-white/45 block mt-3 text-xl sm:text-2xl md:text-3xl">
             London. UK citizen. Available for permanent or contract.
           </span>

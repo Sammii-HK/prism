@@ -17,7 +17,7 @@ import {
   AsyncButton,
   Avatar,
   CommandPalette,
-  FluidTooltip,
+  Tooltip,
   GlowBadge,
   GlowSelect,
   HoverReveal,
@@ -159,7 +159,7 @@ export const ConsoleShowcase = () => (
       { slug: "spring-toggle", title: "Spring toggle" },
       { slug: "glow-slider", title: "Glow slider" },
       { slug: "morph-tabs", title: "Morph tabs" },
-      { slug: "fluid-tooltip", title: "Fluid tooltip" },
+      { slug: "tooltip", title: "Tooltip" },
       { slug: "icon-button", title: "Icon button" },
       { slug: "hover-reveal", title: "Hover reveal" },
       { slug: "spotlight-card", title: "Spotlight card" },
@@ -630,11 +630,11 @@ const ConsoleApp = () => {
                 </li>
               ))}
             </ul>
-            <FluidTooltip content="Command bar  ⌘K">
+            <Tooltip content="Command bar  ⌘K">
               <IconButton aria-label="Open command bar" aria-keyshortcuts="Meta+K" onClick={() => setPaletteOpen(true)}>
                 <CommandIcon size={16} strokeWidth={1.5} aria-hidden />
               </IconButton>
-            </FluidTooltip>
+            </Tooltip>
           </div>
         </div>
       </header>

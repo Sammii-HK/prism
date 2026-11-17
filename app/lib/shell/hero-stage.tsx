@@ -7,7 +7,7 @@ import {
   GlowBadge,
   GlowSelect,
   GlowSlider,
-  MagneticButton,
+  RippleButton,
   SpringToggle,
 } from "../components";
 import { SpotlightCard } from "../primitives";
@@ -78,9 +78,9 @@ export const HeroStage = () => {
         </div>
 
         <div className="mt-7 flex justify-end">
-          <MagneticButton className="text-sm" onClick={() => setSaved(true)}>
+          <RippleButton className="text-sm" onClick={() => setSaved(true)}>
             Save changes
-          </MagneticButton>
+          </RippleButton>
         </div>
       </SpotlightCard>
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } 
 import { Redo2, RotateCcw, Undo2 } from "lucide-react";
 import {
   AsyncButton,
-  FluidTooltip,
+  Tooltip,
   GlowBadge,
   GlowSelect,
   GlowSlider,
@@ -268,7 +268,7 @@ export const DarkroomShowcase = () => {
         { slug: "glow-select", title: "Glow select" },
         { slug: "spring-toggle", title: "Spring toggle" },
         { slug: "icon-button", title: "Icon button" },
-        { slug: "fluid-tooltip", title: "Fluid tooltip" },
+        { slug: "tooltip", title: "Tooltip" },
         { slug: "glow-badge", title: "Glow badge" },
         { slug: "async-button", title: "Async button" },
       ]}
@@ -302,21 +302,21 @@ export const DarkroomShowcase = () => {
             <GlowSelect label="Preset" value={presetId} onChange={applyPreset} options={presetOptions} />
           </div>
           <div className="flex items-center gap-1.5">
-            <FluidTooltip content="Undo (⌘Z)">
+            <Tooltip content="Undo (⌘Z)">
               <IconButton size="sm" onClick={undo} disabled={!history.past.length} aria-label="Undo">
                 <Undo2 size={15} />
               </IconButton>
-            </FluidTooltip>
-            <FluidTooltip content="Redo (⇧⌘Z)">
+            </Tooltip>
+            <Tooltip content="Redo (⇧⌘Z)">
               <IconButton size="sm" onClick={redo} disabled={!history.future.length} aria-label="Redo">
                 <Redo2 size={15} />
               </IconButton>
-            </FluidTooltip>
-            <FluidTooltip content="Reset grade">
+            </Tooltip>
+            <Tooltip content="Reset grade">
               <IconButton size="sm" onClick={reset} disabled={!edited} aria-label="Reset grade">
                 <RotateCcw size={15} />
               </IconButton>
-            </FluidTooltip>
+            </Tooltip>
           </div>
           <div className="ml-auto flex items-center gap-4">
             <label className="flex items-center gap-2.5 text-[13px] text-white/60">

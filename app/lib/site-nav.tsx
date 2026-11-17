@@ -9,7 +9,6 @@ import { pastelColour } from "./primitives/gradient";
 const links = [
   { href: "/showcase", label: "Showcase" },
   { href: "/components", label: "Components" },
-  { href: "/playground", label: "Playground" },
   { href: "/lab", label: "Lab" },
   { href: "/hire", label: "Hire" },
 ];

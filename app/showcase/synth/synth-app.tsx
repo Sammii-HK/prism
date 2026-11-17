@@ -2,12 +2,12 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Square } from "lucide-react";
 import {
-  FluidTooltip,
+  RippleButton,
+  Tooltip,
   GlowBadge,
   GlowSelect,
   GlowSlider,
   IconButton,
-  MagneticButton,
   MorphTabs,
   ProgressBar,
   PulseDot,
@@ -228,9 +228,9 @@ export const SynthShowcase = () => {
         { slug: "spring-toggle", title: "Spring toggle" },
         { slug: "morph-tabs", title: "Morph tabs" },
         { slug: "glow-select", title: "Glow select" },
-        { slug: "magnetic-button", title: "Magnetic button" },
+        { slug: "ripple-button", title: "Ripple button" },
         { slug: "icon-button", title: "Icon button" },
-        { slug: "fluid-tooltip", title: "Fluid tooltip" },
+        { slug: "tooltip", title: "Tooltip" },
         { slug: "glow-badge", title: "Glow badge" },
         { slug: "pulse-dot", title: "Pulse dot" },
         { slug: "progress-bar", title: "Progress bar" },
@@ -293,23 +293,23 @@ export const SynthShowcase = () => {
                 <GlowSelect label="Preset" value={preset} onChange={applyPreset} options={presetOptions} />
               </div>
               <div role="group" aria-label="Octave" className="flex items-center gap-1.5">
-                <FluidTooltip content="Octave down (Z)">
+                <Tooltip content="Octave down (Z)">
                   <IconButton aria-label="Octave down" onClick={() => shiftOctave(-1)} disabled={octave <= OCTAVE_MIN}>
                     <ChevronLeft size={16} aria-hidden="true" />
                   </IconButton>
-                </FluidTooltip>
+                </Tooltip>
                 <span className="w-12 text-center font-mono text-xs tabular-nums text-white/75">{lowNote}</span>
-                <FluidTooltip content="Octave up (X)">
+                <Tooltip content="Octave up (X)">
                   <IconButton aria-label="Octave up" onClick={() => shiftOctave(1)} disabled={octave >= OCTAVE_MAX}>
                     <ChevronRight size={16} aria-hidden="true" />
                   </IconButton>
-                </FluidTooltip>
+                </Tooltip>
               </div>
-              <FluidTooltip content="Stop every note (Esc)">
+              <Tooltip content="Stop every note (Esc)">
                 <IconButton aria-label="Stop every note" onClick={panic}>
                   <Square size={13} aria-hidden="true" />
                 </IconButton>
-              </FluidTooltip>
+              </Tooltip>
             </div>
           </div>
 
@@ -330,9 +330,9 @@ export const SynthShowcase = () => {
                 <Scope engine={engine} wave={params.wave} tint={tint} summary={summary} />
                 {snap.status === "off" && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#060606]/70 p-4 text-center backdrop-blur-[2px]">
-                    <MagneticButton className="px-6 py-3 text-sm" onClick={start}>
+                    <RippleButton className="px-6 py-3 text-sm" onClick={start}>
                       Tap to start sound
-                    </MagneticButton>
+                    </RippleButton>
                     <p className="text-xs text-white/55">or play any key. It starts quiet.</p>
                   </div>
                 )}

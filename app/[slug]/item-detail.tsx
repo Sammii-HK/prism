@@ -27,13 +27,12 @@ const SUPPORT = [
 ];
 
 /**
- * The page template for every component and playground item: header, a live
+ * The page template for every component: header, a live
  * stage holding the demo, then usage, props and input support read from the
  * component's own source.
  */
 export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
-  const isPlayground = item.type === "playground";
-  const section = isPlayground ? { href: "/playground", label: "Playground" } : { href: "/components", label: "Components" };
+  const section = { href: "/components", label: "Components" };
   const importName = docs?.componentName;
 
   return (
@@ -45,14 +44,10 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
             <Link href={section.href} className="transition-colors hover:text-white">
               {section.label}
             </Link>
-            {!isPlayground && (
-              <>
-                <span aria-hidden="true" className="mx-2 text-white/30">
-                  /
-                </span>
-                <span>{item.category}</span>
-              </>
-            )}
+            <span aria-hidden="true" className="mx-2 text-white/30">
+              /
+            </span>
+            <span>{item.category}</span>
           </nav>
           <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
@@ -74,9 +69,7 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
         <Container>
           <section
             aria-label={`${item.title} demo`}
-            className={`relative overflow-hidden [transform:translateZ(0)] [&_.h-screen]:h-full [&_.min-h-screen]:min-h-full rounded-3xl border border-white/[0.08] bg-[#050505] ${
-              isPlayground ? "h-[min(78vh,820px)] min-h-[520px]" : "h-[min(70vh,680px)] min-h-[480px]"
-            }`}
+            className={`relative overflow-hidden [transform:translateZ(0)] [&_.h-screen]:h-full [&_.min-h-screen]:min-h-full rounded-3xl border border-white/[0.08] bg-[#050505] h-[min(70vh,680px)] min-h-[480px]`}
           >
             {children}
             <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden sm:block">
@@ -85,7 +78,6 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
           </section>
         </Container>
 
-        {!isPlayground && (
           <Container className="mt-20 grid gap-16 lg:grid-cols-[200px_1fr] lg:gap-12">
             <aside className="hidden lg:block">
               <div className="sticky top-24 flex flex-col gap-2 text-sm">
@@ -182,7 +174,6 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
               </section>
             </div>
           </Container>
-        )}
 
         {(prev || next) && (
           <Container as="nav" className="mt-24">

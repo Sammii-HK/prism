@@ -4,7 +4,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 /** Hands the focusable log element up, so "L" and the command bar can focus it. */
 type RegionRef = (el: HTMLDivElement | null) => void;
 import { ArrowDown } from "lucide-react";
-import { FluidTooltip, IconButton, LatencyAdapt, Skeleton } from "../../lib/components";
+import { Tooltip, IconButton, LatencyAdapt, Skeleton } from "../../lib/components";
 import { useReducedMotion } from "../../lib/hooks/reduced-motion";
 import { fmtStamp, historicLatency, historicLogs, type Deployment, type LogLevel, type LogLine } from "./sim";
 
@@ -113,11 +113,11 @@ export const LiveLog = ({ lines, label, empty, regionRef }: LiveProps) => {
       </div>
       {!pinned && (
         <div className="absolute bottom-3 right-3">
-          <FluidTooltip content={unseen > 0 ? `${unseen} new ${unseen === 1 ? "line" : "lines"}` : "Back to the newest line"}>
+          <Tooltip content={unseen > 0 ? `${unseen} new ${unseen === 1 ? "line" : "lines"}` : "Back to the newest line"}>
             <IconButton size="sm" aria-label={unseen > 0 ? `Jump to latest, ${unseen} new lines` : "Jump to latest"} onClick={jump}>
               <ArrowDown size={14} strokeWidth={1.5} aria-hidden />
             </IconButton>
-          </FluidTooltip>
+          </Tooltip>
         </div>
       )}
     </div>

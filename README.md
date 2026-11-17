@@ -37,11 +37,13 @@ Every component library ships static components. Even "animated" ones use fixed 
 
 ## Shipped so far
 
-22 components, 5 experimental playgrounds. Every demo is a live route on the site.
+26 components, three applied showcases and an interaction lab. Every demo is a live route on the site.
 
-**Components** — [animated-border](https://prism.sammii.dev/animated-border), [avatar](https://prism.sammii.dev/avatar), [floating-dock](https://prism.sammii.dev/floating-dock), [fluid-tooltip](https://prism.sammii.dev/fluid-tooltip), [glow-badge](https://prism.sammii.dev/glow-badge), [glow-checkbox](https://prism.sammii.dev/glow-checkbox), [glow-input](https://prism.sammii.dev/glow-input), [glow-select](https://prism.sammii.dev/glow-select), [glow-slider](https://prism.sammii.dev/glow-slider), [glow-textarea](https://prism.sammii.dev/glow-textarea), [hover-reveal](https://prism.sammii.dev/hover-reveal), [icon-button](https://prism.sammii.dev/icon-button), [magnetic-button](https://prism.sammii.dev/magnetic-button), [morph-tabs](https://prism.sammii.dev/morph-tabs), [progress-bar](https://prism.sammii.dev/progress-bar), [pulse-dot](https://prism.sammii.dev/pulse-dot), [ripple-button](https://prism.sammii.dev/ripple-button), [shimmer-text](https://prism.sammii.dev/shimmer-text), [skeleton](https://prism.sammii.dev/skeleton), [spotlight-card](https://prism.sammii.dev/spotlight-card), [spring-toggle](https://prism.sammii.dev/spring-toggle), [tilt-card](https://prism.sammii.dev/tilt-card)
+**Components** — [animated-border](https://prism.sammii.dev/animated-border), [async-button](https://prism.sammii.dev/async-button), [avatar](https://prism.sammii.dev/avatar), [command-palette](https://prism.sammii.dev/command-palette), [floating-dock](https://prism.sammii.dev/floating-dock), [focus-trail](https://prism.sammii.dev/focus-trail), [glow-badge](https://prism.sammii.dev/glow-badge), [glow-checkbox](https://prism.sammii.dev/glow-checkbox), [glow-input](https://prism.sammii.dev/glow-input), [glow-select](https://prism.sammii.dev/glow-select), [glow-slider](https://prism.sammii.dev/glow-slider), [glow-textarea](https://prism.sammii.dev/glow-textarea), [hover-reveal](https://prism.sammii.dev/hover-reveal), [icon-button](https://prism.sammii.dev/icon-button), [latency-adapt](https://prism.sammii.dev/latency-adapt), [morph-tabs](https://prism.sammii.dev/morph-tabs), [motion-compare](https://prism.sammii.dev/motion-compare), [progress-bar](https://prism.sammii.dev/progress-bar), [pulse-dot](https://prism.sammii.dev/pulse-dot), [radial-menu](https://prism.sammii.dev/radial-menu), [ripple-button](https://prism.sammii.dev/ripple-button), [skeleton](https://prism.sammii.dev/skeleton), [spotlight-card](https://prism.sammii.dev/spotlight-card), [spring-toggle](https://prism.sammii.dev/spring-toggle), [token-compose](https://prism.sammii.dev/token-compose), [tooltip](https://prism.sammii.dev/tooltip)
 
-**Playground** — [colour-field](https://prism.sammii.dev/colour-field), [fluid-mesh](https://prism.sammii.dev/fluid-mesh), [gravity-wells](https://prism.sammii.dev/gravity-wells), [shader-marbling](https://prism.sammii.dev/shader-marbling), [text-dissolve](https://prism.sammii.dev/text-dissolve)
+**Showcase** — [darkroom](https://prism.sammii.dev/showcase/darkroom), [release console](https://prism.sammii.dev/showcase/console), [synth](https://prism.sammii.dev/showcase/synth)
+
+The fun-but-unusable experiments (magnetic button, fluid tooltip, shimmer text, tilt card and the canvas toys) moved to [chaos-components](https://github.com/Sammii-HK/chaos-components).
 
 ## The colour system
 
@@ -74,7 +76,7 @@ app/
   [slug]/page.tsx           Dynamic component route (explicit componentMap for Turbopack)
   atoms/page.tsx            All primitives rendered together
   lib/
-    registry.ts             Component/playground metadata
+    registry.ts             Component metadata
     primitives/
       gradient.ts           colourField, colourBlend, cursorColour, pastelColour
       cursor-glow.tsx       Lerp-smoothed cursor glow
@@ -82,7 +84,7 @@ app/
     hooks/use-pointer.ts    Shared smoothed pointer hook
     components/<slug>.tsx   Each component, one file, named export + props interface
   demos/<slug>.tsx          Demo page per component
-  playground/<slug>.tsx     Visual experiments
+  showcase/<name>/          Applied demos built from the components
 scripts/
   record.ts                 Playwright screen recorder
 ```
