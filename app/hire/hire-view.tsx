@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import {
   Archive,
@@ -26,6 +25,7 @@ import { colourField } from "../lib/primitives/gradient";
 import { CursorGlow } from "../lib/primitives";
 import { ShimmerText } from "../lib/components/shimmer-text";
 import { SiteNav } from "../lib/site-nav";
+import { SiteFooter } from "../lib/shell/site-footer";
 
 import { RippleButton } from "../lib/components/ripple-button";
 import { FloatingDock } from "../lib/components/floating-dock";
@@ -277,8 +277,8 @@ export const HireView = () => {
       {/* ------------------------------------------------------------------ */}
       {/* Hero — positioning sentence                                        */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative px-6 pt-20 sm:pt-28 pb-14 sm:pb-20 flex flex-col items-center text-center">
-        <p className="text-[11px] font-mono text-white/35 uppercase tracking-[0.25em] mb-6">
+      <section id="main" className="relative mx-auto w-full max-w-6xl px-5 pt-16 pb-14 sm:px-8 sm:pt-24 sm:pb-20 flex flex-col items-start text-left">
+        <p className="text-[11px] font-mono text-white/50 uppercase tracking-[0.25em] mb-6">
           Hire — Sammii Kellow
         </p>
         <h1 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-tight leading-[1.1] max-w-4xl">
@@ -338,7 +338,7 @@ export const HireView = () => {
       {/* Roles targeted                                                      */}
       {/* ------------------------------------------------------------------ */}
       <section className="max-w-4xl mx-auto px-6 py-10 border-t border-white/[0.06]">
-        <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-4 text-center">
+        <p className="text-[10px] tracking-[0.2em] text-white/50 uppercase mb-4 text-center">
           Roles targeted
         </p>
         <ul className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
@@ -358,7 +358,7 @@ export const HireView = () => {
       {/* ------------------------------------------------------------------ */}
       <section className="max-w-5xl mx-auto px-6 py-16 border-t border-white/[0.06]">
         <div className="mb-10">
-          <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-2">
+          <p className="text-[10px] tracking-[0.2em] text-white/50 uppercase mb-2">
             What Prism proves
           </p>
           <h2 className="text-2xl sm:text-3xl font-light text-white/85">
@@ -369,7 +369,7 @@ export const HireView = () => {
         <ol className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
           {PROOF_BULLETS.map((bullet, i) => (
             <li key={bullet.title} className="flex flex-col gap-3">
-              <span className="text-[10px] font-mono text-white/30 tracking-wider">
+              <span className="text-[10px] font-mono text-white/50 tracking-wider">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="text-lg font-light text-white/90 leading-snug">
@@ -388,13 +388,13 @@ export const HireView = () => {
       {/* ------------------------------------------------------------------ */}
       <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-white/[0.06]">
         <div className="mb-10 px-1">
-          <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-2">
+          <p className="text-[10px] tracking-[0.2em] text-white/50 uppercase mb-2">
             Featured components
           </p>
           <h2 className="text-2xl sm:text-3xl font-light text-white/85">
             Four live demos, rendered inline.
           </h2>
-          <p className="mt-2 text-sm text-white/45 leading-relaxed max-w-2xl">
+          <p className="mt-2 text-sm text-white/50 leading-relaxed max-w-2xl">
             No screenshots. No iframes. These are the same components as on the
             rest of the site, running in the same React tree as this page.
           </p>
@@ -506,7 +506,7 @@ export const HireView = () => {
       {/* Links out                                                           */}
       {/* ------------------------------------------------------------------ */}
       <section className="max-w-5xl mx-auto px-6 py-16 border-t border-white/[0.06]">
-        <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-6">
+        <p className="text-[10px] tracking-[0.2em] text-white/50 uppercase mb-6">
           Get in touch
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -536,33 +536,7 @@ export const HireView = () => {
         </div>
       </section>
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Footer                                                              */}
-      {/* ------------------------------------------------------------------ */}
-      <footer className="border-t border-white/[0.06] mt-8">
-        <div className="max-w-5xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-[10px] font-mono text-white/25 tracking-wide">
-            © Sammii · The work is the portfolio.
-          </p>
-          <div className="flex items-center gap-4 text-[11px] font-mono text-white/40">
-            <Link href="/" className="hover:text-white/70 transition-colors">
-              Home
-            </Link>
-            <Link
-              href="/components"
-              className="hover:text-white/70 transition-colors"
-            >
-              Components
-            </Link>
-            <Link
-              href="/playground"
-              className="hover:text-white/70 transition-colors"
-            >
-              Playground
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };
@@ -583,7 +557,7 @@ const DemoFrame = ({
   <div className="flex flex-col rounded-2xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
     <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.05]">
       <code className="text-[11px] font-mono text-white/50">{label}</code>
-      <span className="text-[10px] font-mono text-white/25 tracking-wider uppercase">
+      <span className="text-[10px] font-mono text-white/50 tracking-wider uppercase">
         live
       </span>
     </div>
@@ -591,7 +565,7 @@ const DemoFrame = ({
       {children}
     </div>
     <div className="px-4 py-3 border-t border-white/[0.05]">
-      <p className="text-[11px] text-white/45 leading-relaxed">{caption}</p>
+      <p className="text-[11px] text-white/50 leading-relaxed">{caption}</p>
     </div>
   </div>
 );
@@ -614,12 +588,12 @@ const ContactLink = ({
       : {})}
     className="group flex flex-col gap-1 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.14] transition-colors"
   >
-    <span className="text-[10px] font-mono text-white/35 tracking-[0.2em] uppercase">
+    <span className="text-[10px] font-mono text-white/50 tracking-[0.2em] uppercase">
       {label}
     </span>
     <span className="text-sm text-white/80 group-hover:text-white/95 transition-colors">
       {value}{" "}
-      <span className="text-white/40 group-hover:translate-x-0.5 inline-block transition-transform">
+      <span className="text-white/50 group-hover:translate-x-0.5 inline-block transition-transform">
         →
       </span>
     </span>

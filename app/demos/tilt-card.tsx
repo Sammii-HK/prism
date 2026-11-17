@@ -37,7 +37,7 @@ export default function TiltCardDemo() {
         <span className="text-sm font-medium text-white/80 tracking-tight">
           Cursor reactive
         </span>
-        <span className="text-xs text-white/40 mt-1">
+        <span className="text-xs text-white/50 mt-1">
           Colour mapped to pointer position
         </span>
       </TiltCard>
@@ -49,19 +49,19 @@ export default function TiltCardDemo() {
             <div className="text-2xl font-semibold text-white/90 tracking-tight">
               120
             </div>
-            <div className="text-xs text-white/40 mt-0.5">Spring stiffness</div>
+            <div className="text-xs text-white/50 mt-0.5">Spring stiffness</div>
           </div>
           <div>
             <div className="text-2xl font-semibold text-white/90 tracking-tight">
               18
             </div>
-            <div className="text-xs text-white/40 mt-0.5">Damping coefficient</div>
+            <div className="text-xs text-white/50 mt-0.5">Damping coefficient</div>
           </div>
           <div>
             <div className="text-2xl font-semibold text-white/90 tracking-tight">
               3&deg;
             </div>
-            <div className="text-xs text-white/40 mt-0.5">Maximum tilt angle</div>
+            <div className="text-xs text-white/50 mt-0.5">Maximum tilt angle</div>
           </div>
         </div>
       </TiltCard>

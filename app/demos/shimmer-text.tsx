@@ -8,7 +8,7 @@ export default function ShimmerTextDemo() {
       style={{ background: "#050505" }}
     >
       <div className="flex flex-col items-center gap-6">
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           shimmer-text
         </p>
 
@@ -26,7 +26,7 @@ export default function ShimmerTextDemo() {
 
         <p
           className="text-xs italic mt-8"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Move your cursor. Watch the shimmer.
         </p>

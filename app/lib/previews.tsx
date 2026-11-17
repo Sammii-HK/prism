@@ -45,7 +45,7 @@ const AnimatedBorderPreview = () => (
     <AnimatedBorder className="w-48">
       <div className="p-4">
         <p className="text-xs text-white/60">Animated</p>
-        <p className="text-[10px] text-white/30 mt-1">Conic gradient</p>
+        <p className="text-[10px] text-white/50 mt-1">Conic gradient</p>
       </div>
     </AnimatedBorder>
   </Frame>
@@ -61,7 +61,7 @@ const SpotlightCardPreview = () => (
   <Frame>
     <SpotlightCard className="bg-white/[0.03] p-4 w-48">
       <p className="text-xs text-white/60">Spotlight card</p>
-      <p className="text-[10px] text-white/30 mt-1">Pastel border</p>
+      <p className="text-[10px] text-white/50 mt-1">Pastel border</p>
     </SpotlightCard>
   </Frame>
 );
@@ -140,7 +140,7 @@ const TiltCardPreview = () => (
     <TiltCard className="w-48">
       <div className="p-4">
         <p className="text-xs text-white/60">Tilt card</p>
-        <p className="text-[10px] text-white/30 mt-1">Perspective tilt</p>
+        <p className="text-[10px] text-white/50 mt-1">Perspective tilt</p>
       </div>
     </TiltCard>
   </Frame>
@@ -169,12 +169,12 @@ const HoverRevealPreview = () => (
   <Frame>
     <div className="w-48 flex flex-col gap-1">
       <HoverReveal
-        revealContent={<p className="text-[10px] text-white/35 pt-1">From $9/mo</p>}
+        revealContent={<p className="text-[10px] text-white/50 pt-1">From $9/mo</p>}
       >
         <p className="text-xs text-white/60">Pricing</p>
       </HoverReveal>
       <HoverReveal
-        revealContent={<p className="text-[10px] text-white/35 pt-1">Spring physics</p>}
+        revealContent={<p className="text-[10px] text-white/50 pt-1">Spring physics</p>}
       >
         <p className="text-xs text-white/60">Features</p>
       </HoverReveal>
@@ -188,7 +188,7 @@ const ShimmerTextPreview = () => (
       <ShimmerText className="text-lg font-light text-white/80">
         Design engineering
       </ShimmerText>
-      <ShimmerText className="text-[11px] text-white/45" speed={0.7}>
+      <ShimmerText className="text-[11px] text-white/50" speed={0.7}>
         Components with soul
       </ShimmerText>
     </div>

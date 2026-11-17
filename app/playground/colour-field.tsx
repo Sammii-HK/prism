@@ -78,8 +78,10 @@ export default function ColourField() {
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
-      w = window.innerWidth;
-      h = window.innerHeight;
+      // Size to the box the canvas sits in (the page stage or a card preview).
+      const box = (canvas.parentElement ?? canvas).getBoundingClientRect();
+      w = box.width;
+      h = box.height;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       canvas.style.width = `${w}px`;
@@ -131,8 +133,8 @@ export default function ColourField() {
         },
         // Extra blob that follows cursor more directly
         {
-          x: (pointerRef.current.clientX || w / 2),
-          y: (pointerRef.current.clientY || h / 2),
+          x: pointerRef.current.clientX ? pointerRef.current.clientX - canvas.getBoundingClientRect().left : w / 2,
+          y: pointerRef.current.clientY ? pointerRef.current.clientY - canvas.getBoundingClientRect().top : h / 2,
           r: c(xPc),
           g: c(yPc),
           b: 255 - c(xPc),
@@ -189,8 +191,7 @@ export default function ColourField() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full cursor-crosshair"
-      style={{ height: "calc(100vh - 41px)", top: "41px" }}
+      className="absolute inset-0 h-full w-full cursor-crosshair"
       onClick={(e) => spawnParticles(e.clientX, e.clientY)}
     />
   );

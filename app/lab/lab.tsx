@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ASYNC_BUTTON_TRANSITIONS, useSystemReducedMotion, type AsyncButtonState } from "../lib/components/async-button";
 import { LATENCY_TRANSITIONS, type LatencyLogEntry } from "../lib/components/latency-adapt";
@@ -14,6 +13,8 @@ import {
 } from "../lib/components/token-compose";
 import { FocusTrailPanel, type FocusObservation, type TrailEntry } from "../lib/components/focus-trail";
 import { LabSection, type EvidenceRow } from "./parts";
+import { SiteNav } from "../lib/site-nav";
+import { SiteFooter } from "../lib/shell/site-footer";
 
 const NOT_YET = "not measured yet";
 
@@ -485,14 +486,10 @@ export function Lab() {
       >
         Skip to the experiments
       </a>
+      <SiteNav skipTo={null} />
 
       <header className="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
-        <div className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.22em] text-white/55">
-          <Link href="/" className="rounded-sm hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-            Prism
-          </Link>
-          <span>Interaction Lab</span>
-        </div>
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/55">Interaction Lab</p>
         <h1
           className="mt-14 max-w-4xl text-[38px] font-light leading-[1.04] tracking-tight text-white sm:mt-24 sm:text-7xl"
         >
@@ -592,6 +589,7 @@ export function Lab() {
           </div>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

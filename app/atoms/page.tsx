@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { SiteNav } from "../lib/site-nav";
+import { SiteFooter } from "../lib/shell/site-footer";
 import { usePointer } from "../lib/hooks/use-pointer";
 import { colourField } from "../lib/primitives/gradient";
 import { CursorGlow } from "../lib/primitives";
@@ -37,7 +39,7 @@ const Section = ({
   <section className="flex flex-col gap-4">
     <p
       className="text-[10px] tracking-[0.2em] uppercase select-none"
-      style={{ color: "rgba(255,255,255,0.25)" }}
+      style={{ color: "rgba(255,255,255,0.5)" }}
     >
       {title}
     </p>
@@ -67,16 +69,18 @@ export default function AtomsPage() {
     >
       {mounted && <CursorGlow size={400} blur={40} opacity={0.04} />}
 
-      <header className="pt-16 pb-8 px-6 text-center">
-        <h1 className="text-4xl font-light tracking-tight text-white/90">
+      <SiteNav />
+      <header className="mx-auto w-full max-w-4xl px-6 pb-12 pt-16 sm:pt-20">
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/50">Reference</p>
+        <h1 className="mt-5 text-[44px] font-light leading-none tracking-[-0.035em] text-white/90 sm:text-6xl">
           Atoms
         </h1>
-        <p className="mt-2 text-sm text-white/30 font-mono tracking-wide">
+        <p className="mt-5 max-w-lg text-base leading-relaxed text-white/60">
           Every base component in the design system
         </p>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 pb-24 flex flex-col gap-16">
+      <main id="main" className="max-w-4xl mx-auto px-6 pb-24 flex flex-col gap-16">
         {/* --- Buttons --- */}
         <Section title="Buttons">
           <MagneticButton>Magnetic</MagneticButton>
@@ -87,14 +91,14 @@ export default function AtomsPage() {
         <Section title="Cards">
           <SpotlightCard className="bg-white/[0.03] p-6 w-64">
             <p className="text-sm text-white/60">Spotlight card</p>
-            <p className="text-xs text-white/30 mt-2">
+            <p className="text-xs text-white/50 mt-2">
               Cursor-reactive pastel border
             </p>
           </SpotlightCard>
           <TiltCard className="w-64">
             <div className="p-6">
               <p className="text-sm text-white/60">Tilt card</p>
-              <p className="text-xs text-white/30 mt-2">
+              <p className="text-xs text-white/50 mt-2">
                 Perspective tilt toward cursor
               </p>
             </div>
@@ -102,7 +106,7 @@ export default function AtomsPage() {
           <AnimatedBorder className="w-64">
             <div className="p-6">
               <p className="text-sm text-white/60">Animated border</p>
-              <p className="text-xs text-white/30 mt-2">
+              <p className="text-xs text-white/50 mt-2">
                 Rotating conic gradient
               </p>
             </div>
@@ -138,7 +142,7 @@ export default function AtomsPage() {
             </div>
             <div className="flex items-center gap-3">
               <SpringToggle checked={false} onChange={() => {}} disabled />
-              <span className="text-sm text-white/30">Disabled</span>
+              <span className="text-sm text-white/50">Disabled</span>
             </div>
           </div>
           <div className="flex flex-col gap-3">
@@ -187,7 +191,7 @@ export default function AtomsPage() {
 
         {/* --- Navigation --- */}
         <Section title="Navigation">
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-md overflow-x-auto no-scrollbar">
             <MorphTabs
               tabs={["Overview", "Analytics", "Settings", "Billing"]}
               activeIndex={activeTab}
@@ -212,11 +216,11 @@ export default function AtomsPage() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
               <PulseDot size={8} />
-              <span className="text-xs text-white/40">Online</span>
+              <span className="text-xs text-white/50">Online</span>
             </div>
             <div className="flex items-center gap-2">
               <PulseDot size={10} colour="#ff9b91" />
-              <span className="text-xs text-white/40">Alert</span>
+              <span className="text-xs text-white/50">Alert</span>
             </div>
           </div>
         </Section>
@@ -273,7 +277,7 @@ export default function AtomsPage() {
           <div className="w-full max-w-sm flex flex-col gap-2">
             <HoverReveal
               revealContent={
-                <p className="text-xs text-white/35 pt-2">
+                <p className="text-xs text-white/50 pt-2">
                   Starting at $9/month for individuals
                 </p>
               }
@@ -282,7 +286,7 @@ export default function AtomsPage() {
             </HoverReveal>
             <HoverReveal
               revealContent={
-                <p className="text-xs text-white/35 pt-2">
+                <p className="text-xs text-white/50 pt-2">
                   Spring physics, cursor-reactive colour, pastel glows
                 </p>
               }
@@ -291,7 +295,7 @@ export default function AtomsPage() {
             </HoverReveal>
             <HoverReveal
               revealContent={
-                <p className="text-xs text-white/35 pt-2">
+                <p className="text-xs text-white/50 pt-2">
                   24/7 live chat and email support
                 </p>
               }
@@ -317,6 +321,7 @@ export default function AtomsPage() {
           </div>
         </Section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

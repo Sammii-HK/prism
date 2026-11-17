@@ -8,7 +8,7 @@ export default function ProgressBarDemo() {
       style={{ background: "#050505" }}
     >
       <div className="flex flex-col items-center gap-8 w-full max-w-md">
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           progress-bar
         </p>
 
@@ -21,7 +21,7 @@ export default function ProgressBarDemo() {
 
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Move your cursor near the bars.
         </p>

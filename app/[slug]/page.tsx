@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { registry } from "../lib/registry";
-import { ExperimentLayout } from "./experiment-layout";
+import { ItemDetail } from "./item-detail";
+import { loadSourceDocs } from "../lib/docs/source-docs";
 import dynamic from "next/dynamic";
 
 // Explicit component map — add new entries here when adding components/playground items
@@ -67,9 +68,15 @@ export default async function ItemPage({ params }: { params: Promise<{ slug: str
   const Component = componentMap[slug];
   if (!Component) notFound();
 
+  // Neighbours within the same section, in registry order, for prev / next.
+  const siblings = registry.filter((r) => r.type === item.type && r.slug !== "lab");
+  const at = siblings.findIndex((r) => r.slug === slug);
+  const neighbour = (i: number) => (siblings[i] ? { slug: siblings[i].slug, title: siblings[i].title } : null);
+  const docs = item.type === "component" ? await loadSourceDocs(slug) : null;
+
   return (
-    <ExperimentLayout experiment={item}>
+    <ItemDetail item={item} docs={docs} prev={neighbour(at - 1)} next={neighbour(at + 1)}>
       <Component />
-    </ExperimentLayout>
+    </ItemDetail>
   );
 }

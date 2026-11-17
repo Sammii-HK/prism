@@ -53,8 +53,10 @@ export default function TextDissolve() {
 
     const init = () => {
       const dpr = Math.min(window.devicePixelRatio, 2);
-      w = window.innerWidth;
-      h = window.innerHeight - 41;
+      // Size to the box the canvas sits in (the page stage or a card preview).
+      const box = (canvas.parentElement ?? canvas).getBoundingClientRect();
+      w = box.width;
+      h = box.height;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       canvas.style.width = `${w}px`;
@@ -111,8 +113,9 @@ export default function TextDissolve() {
       ctx.clearRect(0, 0, w, h);
 
       const { clientX, clientY } = pointerRef.current;
-      const mx = clientX;
-      const my = clientY - 41;
+      const at = canvas.getBoundingClientRect();
+      const mx = clientX - at.left;
+      const my = clientY - at.top;
 
       for (const p of particlesRef.current) {
         const dx = mx - p.x;
@@ -188,8 +191,7 @@ export default function TextDissolve() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 cursor-crosshair"
-      style={{ top: "41px", height: "calc(100vh - 41px)" }}
+      className="absolute inset-0 cursor-crosshair"
       onClick={handleClick}
     />
   );

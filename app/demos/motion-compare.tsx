@@ -16,7 +16,7 @@ export function MotionComparePanel({
   return (
     <div className="mx-auto flex w-full max-w-3xl min-w-0 flex-col gap-8">
       {!embedded && (
-        <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.5)" }}>
           motion-compare
         </p>
       )}
@@ -25,10 +25,10 @@ export function MotionComparePanel({
         <label className="flex items-center gap-2 text-sm text-white/70">
           <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
           Preview reduced motion
-          <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+          <span className="text-white/50">(system setting: {systemReduced ? "on" : "off"})</span>
         </label>
       )}
-      <p className="max-w-xl text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+      <p className="max-w-xl text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
         Every number is read in this browser during the run, from the dot&apos;s rendered position in each
         requestAnimationFrame. Frame gaps follow your display refresh and whatever else the page is doing, so
         they say little about the cost of each approach in isolation. Run it a few times; the values move.

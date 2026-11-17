@@ -14,7 +14,7 @@ export default function SpringToggleDemo() {
     >
       <div className="w-full max-w-sm flex flex-col gap-6 rounded-2xl">
         {/* Eyebrow */}
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           spring-toggle
         </p>
 
@@ -32,14 +32,14 @@ export default function SpringToggleDemo() {
 
         {/* (c) Beta features — disabled */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/40">Beta features</span>
+          <span className="text-sm text-white/50">Beta features</span>
           <SpringToggle checked={beta} onChange={setBeta} disabled />
         </div>
 
         {/* Footer hint */}
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Click to toggle. Move your cursor near the track.
         </p>

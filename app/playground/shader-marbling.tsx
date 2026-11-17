@@ -160,8 +160,10 @@ export default function ShaderMarbling() {
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio, 1.5);
-      w = window.innerWidth;
-      h = window.innerHeight - 41;
+      // Size to the box the canvas sits in (the page stage or a card preview).
+      const box = (canvas.parentElement ?? canvas).getBoundingClientRect();
+      w = box.width;
+      h = box.height;
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       canvas.style.width = `${w}px`;
@@ -202,8 +204,7 @@ export default function ShaderMarbling() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 cursor-crosshair"
-      style={{ top: "41px", height: "calc(100vh - 41px)" }}
+      className="absolute inset-0 cursor-crosshair"
       onClick={handleClick}
     />
   );

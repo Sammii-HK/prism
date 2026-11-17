@@ -14,7 +14,7 @@ export default function GlowSelectDemo() {
     >
       <div className="w-full max-w-sm flex flex-col gap-5 rounded-2xl">
         {/* Eyebrow */}
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           glow-select
         </p>
 
@@ -60,7 +60,7 @@ export default function GlowSelectDemo() {
         {/* Footer hint */}
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Click to open. Move your cursor around.
         </p>
