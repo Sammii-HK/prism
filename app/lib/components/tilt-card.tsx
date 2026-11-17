@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type TiltCardProps = {
   children: ReactNode;
@@ -63,7 +65,7 @@ export const TiltCard = ({
     const K = 120;
     const D = 18;
 
-    const onMove = (e: PointerEvent) => {
+    const onMove = (e: { clientX: number; clientY: number }) => {
       const rect = el.getBoundingClientRect();
       const s = stateRef.current;
 
@@ -93,12 +95,19 @@ export const TiltCard = ({
       }
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    const unsubscribe = subscribeAttention(({ x, y }) => onMove({ clientX: x, clientY: y }));
 
     let raf: number;
     const tick = () => {
       const s = stateRef.current;
       const dt = 1 / 60; // fixed timestep for spring stability
+
+      // Reduced motion: no tilt. Snap flat; glow still follows the point.
+      if (reducedMotionNow()) {
+        s.targetX = 0; s.targetY = 0;
+        s.rotX = 0; s.rotY = 0; s.velX = 0; s.velY = 0;
+      }
 
       // Spring physics: F = -k*x - d*v
       const forceX = -K * (s.rotX - s.targetX) - D * s.velX;
@@ -118,7 +127,7 @@ export const TiltCard = ({
       s.glow += (targetGlow - s.glow) * 0.1;
 
       // Pastel colour from cursor position on screen
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const xPc = s.smoothLocalX * 100;
       const yPc = s.smoothLocalY * 100;
       const { r, g, b } = pastelColour(xPc, yPc, t);
@@ -151,7 +160,7 @@ export const TiltCard = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [tiltMax, perspective, glowIntensity]);

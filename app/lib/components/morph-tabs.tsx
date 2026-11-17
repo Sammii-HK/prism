@@ -1,12 +1,21 @@
 "use client";
 import { useRef, useEffect, useCallback } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type MorphTabsProps = {
   tabs: string[];
   activeIndex: number;
   onChange: (index: number) => void;
   className?: string;
+  /** Accessible name for the tab list. */
+  ariaLabel?: string;
+  /**
+   * When set, tabs get ids `${idPrefix}-tab-${i}` and point at panels with ids
+   * `${idPrefix}-panel-${i}`, so the page can wire up role="tabpanel".
+   */
+  idPrefix?: string;
 };
 
 /**
@@ -26,6 +35,8 @@ export const MorphTabs = ({
   activeIndex,
   onChange,
   className = "",
+  ariaLabel,
+  idPrefix,
 }: MorphTabsProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -84,12 +95,13 @@ export const MorphTabs = ({
     const d = 22;
     const dt = 1 / 60;
 
-    const onMove = (e: PointerEvent) => {
-      s.mouseX = e.clientX;
-      s.mouseY = e.clientY;
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    // When it is released, keep the last colour rather than jump off-screen.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      s.mouseX = x;
+      s.mouseY = y;
+    });
 
     // Initial measurement
     measureTarget();
@@ -104,6 +116,12 @@ export const MorphTabs = ({
         s.targetW = tr.width;
       }
 
+      // Reduced motion: the indicator jumps straight to the active tab.
+      if (reducedMotionNow()) {
+        s.x = s.targetX; s.xVel = 0;
+        s.w = s.targetW; s.wVel = 0;
+      }
+
       // Spring physics for x
       const forceX = -k * (s.x - s.targetX) - d * s.xVel;
       s.xVel += forceX * dt;
@@ -115,7 +133,7 @@ export const MorphTabs = ({
       s.w += s.wVel * dt;
 
       // Cursor-mapped colour
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const xPc = (s.mouseX / window.innerWidth) * 100;
       const yPc = (s.mouseY / window.innerHeight) * 100;
       const target = pastelColour(xPc, yPc, t);
@@ -142,7 +160,7 @@ export const MorphTabs = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [activeIndex, measureTarget]);
@@ -150,11 +168,14 @@ export const MorphTabs = ({
   return (
     <div
       ref={containerRef}
+      role="tablist"
+      aria-label={ariaLabel}
       className={`relative inline-flex items-center gap-0 rounded-xl bg-white/[0.04] border border-white/[0.08] p-1 ${className}`}
     >
       {/* Spring indicator */}
       <div
         ref={indicatorRef}
+        aria-hidden="true"
         className="absolute top-1 h-[calc(100%-8px)] rounded-lg border pointer-events-none"
         style={{
           willChange: "transform, width",
@@ -168,10 +189,29 @@ export const MorphTabs = ({
           key={label}
           ref={(el) => { tabRefs.current[i] = el; }}
           onClick={() => onChange(i)}
+          // Tab pattern: one tab stop for the whole list, arrows move between tabs.
+          role="tab"
+          id={idPrefix ? `${idPrefix}-tab-${i}` : undefined}
+          aria-controls={idPrefix ? `${idPrefix}-panel-${i}` : undefined}
+          aria-selected={i === activeIndex}
+          tabIndex={i === activeIndex ? 0 : -1}
+          onKeyDown={(e) => {
+            const last = tabs.length - 1;
+            const next =
+              e.key === "ArrowRight" ? (i === last ? 0 : i + 1)
+              : e.key === "ArrowLeft" ? (i === 0 ? last : i - 1)
+              : e.key === "Home" ? 0
+              : e.key === "End" ? last
+              : null;
+            if (next === null) return;
+            e.preventDefault();
+            onChange(next);
+            tabRefs.current[next]?.focus();
+          }}
           className={`relative z-10 px-5 py-2.5 text-sm font-medium tracking-tight rounded-lg cursor-pointer select-none transition-colors duration-150 ${
             i === activeIndex
               ? "text-white/90"
-              : "text-white/35 hover:text-white/55"
+              : "text-white/50 hover:text-white/70"
           }`}
           style={{ background: "transparent", border: "none" }}
         >

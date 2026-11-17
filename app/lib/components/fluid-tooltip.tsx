@@ -3,10 +3,15 @@ import {
   useRef,
   useEffect,
   useState,
+  useId,
+  cloneElement,
+  isValidElement,
+  type ReactElement,
   type ReactNode,
   type HTMLAttributes,
 } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type FluidTooltipProps = HTMLAttributes<HTMLDivElement> & {
   /** Content rendered inside the tooltip */
@@ -39,6 +44,12 @@ export const FluidTooltip = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  // Keyboard users get the tooltip on focus; Escape dismisses it until the
+  // next hover or focus (WCAG 1.4.13).
+  const [focused, setFocused] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const open = (hovered || focused) && !dismissed;
+  const tooltipId = useId();
 
   const stateRef = useRef({
     // Current lerped position
@@ -77,6 +88,7 @@ export const FluidTooltip = ({
       s.targetX = e.clientX;
       s.targetY = e.clientY;
       s.active = true;
+      setDismissed(false);
       setHovered(true);
     };
 
@@ -84,9 +96,36 @@ export const FluidTooltip = ({
       setHovered(false);
     };
 
+    const onFocusIn = (e: FocusEvent) => {
+      const s = stateRef.current;
+      // No cursor to follow: anchor below the focused element's left edge
+      if (!hovered && e.target instanceof Element) {
+        const rect = e.target.getBoundingClientRect();
+        s.x = rect.left;
+        s.y = rect.bottom;
+        s.targetX = rect.left;
+        s.targetY = rect.bottom;
+      }
+      s.active = true;
+      setDismissed(false);
+      setFocused(true);
+    };
+
+    const onFocusOut = (e: FocusEvent) => {
+      if (e.relatedTarget instanceof Node && wrapper.contains(e.relatedTarget)) return;
+      setFocused(false);
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open) setDismissed(true);
+    };
+
     wrapper.addEventListener("pointerenter", onEnter, { passive: true });
     wrapper.addEventListener("pointerleave", onLeave, { passive: true });
     wrapper.addEventListener("pointermove", onMove, { passive: true });
+    wrapper.addEventListener("focusin", onFocusIn);
+    wrapper.addEventListener("focusout", onFocusOut);
+    document.addEventListener("keydown", onKeyDown);
 
     // Spring constants
     const k = 200;
@@ -98,13 +137,19 @@ export const FluidTooltip = ({
       const dt = Math.min((now - lastTime) / 1000, 0.032); // Cap at ~30fps min
       lastTime = now;
 
+      const reduced = reducedMotionNow();
+
       // Lerp position toward cursor
       s.x += (s.targetX - s.x) * 0.08;
       s.y += (s.targetY - s.y) * 0.08;
+      if (reduced) {
+        s.x = s.targetX;
+        s.y = s.targetY;
+      }
 
       // Spring physics for opacity and scale
-      const targetOpacity = hovered ? 1 : 0;
-      const targetScale = hovered ? 1 : 0.95;
+      const targetOpacity = open ? 1 : 0;
+      const targetScale = open ? 1 : 0.95;
 
       const opacityForce = k * (targetOpacity - s.opacity) - d * s.opacityVel;
       s.opacityVel += opacityForce * dt;
@@ -114,11 +159,16 @@ export const FluidTooltip = ({
       const scaleForce = k * (targetScale - s.scale) - d * s.scaleVel;
       s.scaleVel += scaleForce * dt;
       s.scale += s.scaleVel * dt;
+      if (reduced) {
+        // Fade only: no scale spring
+        s.scale = 1;
+        s.scaleVel = 0;
+      }
 
       // Apply to DOM
       const xPc = (s.x / window.innerWidth) * 100;
       const yPc = (s.y / window.innerHeight) * 100;
-      const t = now / 1000;
+      const t = motionTime();
       const { r, g, b } = pastelColour(xPc, yPc, t);
 
       tooltip.style.left = `${s.x + offset}px`;
@@ -128,7 +178,7 @@ export const FluidTooltip = ({
       tooltip.style.borderColor = `rgb(${r} ${g} ${b} / 0.3)`;
 
       // Stop rAF when fully faded out and not hovered
-      if (!hovered && s.opacity < 0.005) {
+      if (!open && s.opacity < 0.005) {
         s.active = false;
         s.opacity = 0;
         tooltip.style.opacity = "0";
@@ -139,7 +189,7 @@ export const FluidTooltip = ({
     };
 
     // Always run when hovered, keep running until fade-out completes
-    if (hovered || stateRef.current.active) {
+    if (open || stateRef.current.active) {
       stateRef.current.active = true;
       lastTime = performance.now();
       raf = requestAnimationFrame(tick);
@@ -149,15 +199,32 @@ export const FluidTooltip = ({
       wrapper.removeEventListener("pointerenter", onEnter);
       wrapper.removeEventListener("pointerleave", onLeave);
       wrapper.removeEventListener("pointermove", onMove);
+      wrapper.removeEventListener("focusin", onFocusIn);
+      wrapper.removeEventListener("focusout", onFocusOut);
+      document.removeEventListener("keydown", onKeyDown);
       cancelAnimationFrame(raf);
     };
-  }, [hovered, offset]);
+  }, [open, hovered, offset]);
+
+  // aria-describedby has to sit on the focusable trigger, not the wrapper
+  const trigger = isValidElement<{ "aria-describedby"?: string }>(children)
+    ? cloneElement(children as ReactElement<{ "aria-describedby"?: string }>, {
+        "aria-describedby": [children.props["aria-describedby"], tooltipId].filter(Boolean).join(" "),
+      })
+    : children;
 
   return (
-    <div ref={wrapperRef} className={`relative inline-block ${className}`} {...rest}>
-      {children}
+    <div
+      ref={wrapperRef}
+      className={`relative inline-block ${className}`}
+      aria-describedby={isValidElement(children) ? undefined : tooltipId}
+      {...rest}
+    >
+      {trigger}
       <div
         ref={tooltipRef}
+        id={tooltipId}
+        role="tooltip"
         className="fixed pointer-events-none z-50 rounded-lg px-3 py-1.5 text-xs text-white/70 whitespace-nowrap"
         style={{
           opacity: 0,

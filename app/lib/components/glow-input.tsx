@@ -1,6 +1,8 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention, type Attention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowInputProps {
   /** Floating label text that springs above the input on focus or when a value is present */
@@ -41,6 +43,8 @@ export const GlowInput = ({
   className = "",
 }: GlowInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const fieldId = useId();
+  const errorId = `${fieldId}-error`;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const labelRef = useRef<HTMLLabelElement>(null);
@@ -92,23 +96,26 @@ export const GlowInput = ({
     let smoothY = 50;
     let proximity = 0; // 0–1, how close cursor is to the input
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
+    const onMove = ({ x: clientX, y: clientY, kind }: Attention) => {
+      // Released attention (FAR_AWAY) only fades proximity; colour keeps its last point
+      if (kind !== "none") {
+        rawX = (clientX / window.innerWidth) * 100;
+        rawY = (clientY / window.innerHeight) * 100;
+      }
 
       // Calculate proximity to this input for hover glow
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(e.clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(e.clientY - cy) - rect.height / 2);
+        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
+        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         const range = 120; // px — glow starts fading in from this distance
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
 
@@ -128,9 +135,10 @@ export const GlowInput = ({
       // Proximity gives cursor-reactive border colour, focus adds outer glow
       const targetGlow = dis ? 0 : focused || Boolean(err) ? 1 : Math.min(proximity, 0.45);
 
-      // Integrate springs
-      const [ly, lyv] = step(s.labelY, s.labelYVel, targetLabelY, 180, 22);
-      const [ls, lsv] = step(s.labelScale, s.labelScaleVel, targetLabelScale, 180, 22);
+      // Integrate springs — with reduced motion the label snaps instead of springing
+      const reduce = reducedMotionNow();
+      const [ly, lyv] = reduce ? [targetLabelY, 0] : step(s.labelY, s.labelYVel, targetLabelY, 180, 22);
+      const [ls, lsv] = reduce ? [targetLabelScale, 0] : step(s.labelScale, s.labelScaleVel, targetLabelScale, 180, 22);
       const [gw, gwv] = step(s.glow, s.glowVel, targetGlow, 120, 18);
 
       s.labelY = ly;
@@ -141,7 +149,7 @@ export const GlowInput = ({
       s.glowVel = gwv;
 
       const glowClamped = Math.max(0, Math.min(1, gw));
-      const t = performance.now() / 1000;
+      const t = motionTime();
 
       // Colour source: coral for error, pastel cursor-mapped otherwise
       let r: number, g: number, b: number;
@@ -162,7 +170,7 @@ export const GlowInput = ({
           const lb = Math.round(255 + (b - 255) * glowClamped);
           labelRef.current.style.color = `rgba(${lr},${lg},${lb},0.9)`;
         } else {
-          labelRef.current.style.color = "rgba(255,255,255,0.35)";
+          labelRef.current.style.color = "rgba(255,255,255,0.5)";
         }
       }
 
@@ -188,7 +196,7 @@ export const GlowInput = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -201,6 +209,9 @@ export const GlowInput = ({
     >
       <input
         ref={inputRef}
+        id={fieldId}
+        aria-invalid={error ? true : undefined}
+        aria-describedby={error ? errorId : undefined}
         type={type}
         value={value}
         onChange={(e) => onChange?.(e.target.value)}
@@ -217,16 +228,17 @@ export const GlowInput = ({
       />
       <label
         ref={labelRef}
+        htmlFor={fieldId}
         className="absolute left-4 top-5 pointer-events-none text-sm inline-block will-change-transform origin-top-left"
         style={{
-          color: "rgba(255,255,255,0.35)",
+          color: "rgba(255,255,255,0.5)",
           transform: `translateY(${startsFloated ? -24 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
         }}
       >
         {label}
       </label>
       {error && (
-        <p className="mt-1.5 text-xs" style={{ color: "rgb(255,155,145)" }}>
+        <p id={errorId} className="mt-1.5 text-xs" style={{ color: "rgb(255,155,145)" }}>
           {error}
         </p>
       )}

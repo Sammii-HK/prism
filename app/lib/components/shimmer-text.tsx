@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface ShimmerTextProps {
   children: ReactNode;
@@ -35,11 +37,12 @@ export const ShimmerText = ({
     let smoothX = 50;
     let smoothY = 50;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Released attention parks at FAR_AWAY; keep the last colour instead of following it
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      rawX = (x / window.innerWidth) * 100;
+      rawY = (y / window.innerHeight) * 100;
+    });
 
     let raf: number;
 
@@ -47,7 +50,14 @@ export const ShimmerText = ({
       smoothX += (rawX - smoothX) * 0.08;
       smoothY += (rawY - smoothY) * 0.08;
 
-      const t = performance.now() / 1000;
+      // Reduced motion: no sweeping band, hold the resting flat fill
+      if (reducedMotionNow()) {
+        el.style.backgroundImage = "linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.5))";
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
+      const t = motionTime();
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
       // Band position: 0–100% on a sine-ish loop
@@ -79,7 +89,7 @@ export const ShimmerText = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [speed]);

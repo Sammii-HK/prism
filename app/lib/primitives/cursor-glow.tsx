@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { cursorColour } from "./gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { reducedMotionNow } from "../hooks/reduced-motion";
 
 type CursorGlowProps = {
   /** Size of the glow in pixels. Default: 350 */
@@ -26,10 +28,14 @@ export const CursorGlow = ({
   useEffect(() => {
     if (window.matchMedia("(hover: none)").matches) return;
 
-    const onMove = (e: MouseEvent) => {
-      target.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
+    // A floating light only makes sense with a real cursor: for touch, keyboard
+    // or no attention it stays where it is and fades out.
+    let visible = 0;
+    let targetVisible = 0;
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      targetVisible = kind === "mouse" ? 1 : 0;
+      if (kind === "mouse") target.current = { x, y };
+    });
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     let raf: number;
@@ -37,6 +43,13 @@ export const CursorGlow = ({
     const tick = () => {
       pos.current.x = lerp(pos.current.x, target.current.x, lerpFactor);
       pos.current.y = lerp(pos.current.y, target.current.y, lerpFactor);
+      visible = lerp(visible, targetVisible, lerpFactor);
+      if (reducedMotionNow()) {
+        // No trailing: sit under the cursor, appear/disappear without easing
+        pos.current.x = target.current.x;
+        pos.current.y = target.current.y;
+        visible = targetVisible;
+      }
 
       if (ref.current) {
         const xPc = Math.min(100, (pos.current.x * 2 / window.innerWidth) * 100);
@@ -45,6 +58,7 @@ export const CursorGlow = ({
 
         ref.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px)`;
         ref.current.style.background = `radial-gradient(circle, rgb(${r} ${g} ${b} / ${opacity * 100}%) 0%, transparent 70%)`;
+        ref.current.style.opacity = String(visible);
       }
 
       raf = requestAnimationFrame(tick);
@@ -53,7 +67,7 @@ export const CursorGlow = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("mousemove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [lerpFactor, opacity, size]);

@@ -278,7 +278,7 @@ export const MotionCompare = ({
               <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
                 <div>
                   <h3 className="text-sm font-medium text-white/90">{a.title}</h3>
-                  <p className="text-xs text-white/40">{a.how}</p>
+                  <p className="text-xs text-white/50">{a.how}</p>
                 </div>
                 <button
                   type="button"
@@ -323,7 +323,7 @@ export const MotionCompare = ({
                   ] as [string, string | null][]
                 ).map(([k, v]) => (
                   <div key={k} data-stat={k}>
-                    <dt className="text-white/30">{k}</dt>
+                    <dt className="text-white/50">{k}</dt>
                     <dd className="font-mono text-white/80">{cell(v)}</dd>
                   </div>
                 ))}

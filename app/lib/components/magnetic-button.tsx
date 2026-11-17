@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode, type ButtonHTMLAttributes } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 type MagneticButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   children: ReactNode;
@@ -52,12 +54,11 @@ export const MagneticButton = ({
     let mouseX = 0;
     let mouseY = 0;
 
-    const onMove = (e: PointerEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    };
-
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    const unsubscribe = subscribeAttention(({ x, y }) => {
+      mouseX = x;
+      mouseY = y;
+    });
 
     const tick = () => {
       const s = stateRef.current;
@@ -79,8 +80,23 @@ export const MagneticButton = ({
         const angle = Math.atan2(dy, dx);
         targetX = Math.cos(angle) * pull;
         targetY = Math.sin(angle) * pull;
+        // Dead centre (keyboard focus lands here) has no direction to pull in;
+        // atan2(0, 0) would shove it sideways at full strength.
+        if (dist < 1) {
+          targetX = 0;
+          targetY = 0;
+        }
         targetScale = 1 + (1 - dist / radius) * 0.15;
         targetGlow = 1 - dist / radius;
+      }
+
+      // Reduced motion: no pull or swell, hold at rest. Glow still responds.
+      if (reducedMotionNow()) {
+        targetX = 0;
+        targetY = 0;
+        targetScale = 1;
+        s.offsetX = 0; s.offsetY = 0; s.velX = 0; s.velY = 0;
+        s.scale = 1; s.scaleVel = 0;
       }
 
       s.velX += (targetX - s.offsetX) * spring;
@@ -96,7 +112,7 @@ export const MagneticButton = ({
       s.scale += s.scaleVel;
       s.glow += (targetGlow - s.glow) * 0.12;
 
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const localXPc = ((cx + s.offsetX) / window.innerWidth) * 100;
       const localYPc = ((cy + s.offsetY) / window.innerHeight) * 100;
       const { r, g, b } = pastelColour(localXPc, localYPc, t);
@@ -115,7 +131,7 @@ export const MagneticButton = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [radius, strength, spring, damping, glowIntensity]);

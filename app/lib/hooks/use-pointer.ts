@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { usePointerContext } from "./pointer-context";
+import { subscribeAttention } from "./attention";
+import { motionTime } from "./reduced-motion";
 
 type PointerState = {
   /** Smoothed cursor X as 0-100 percentage of viewport width */
@@ -66,35 +68,24 @@ export const usePointer = (options: UsePointerOptions = {}): PointerState => {
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-    const onMove = (e: PointerEvent | TouchEvent) => {
-      let clientX: number, clientY: number;
-      if ("touches" in e && e.touches.length > 0) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else if ("clientX" in e) {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      } else {
-        return;
-      }
-
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      targetRef.current = {
-        x: (clientX / vw) * 100,
-        y: (clientY / vh) * 100,
-        clientX,
-        clientY,
-      };
-      hoveringRef.current = true;
-    };
-
     const onLeave = () => {
       hoveringRef.current = false;
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("touchmove", onMove as EventListener, { passive: true });
+    // Mouse, touch and keyboard focus all count as the user being here.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") {
+        hoveringRef.current = false;
+        return;
+      }
+      targetRef.current = {
+        x: (x / window.innerWidth) * 100,
+        y: (y / window.innerHeight) * 100,
+        clientX: x,
+        clientY: y,
+      };
+      hoveringRef.current = true;
+    });
     document.addEventListener("mouseleave", onLeave);
 
     let raf: number;
@@ -105,7 +96,7 @@ export const usePointer = (options: UsePointerOptions = {}): PointerState => {
       setState({
         xPc: currentRef.current.x,
         yPc: currentRef.current.y,
-        time: performance.now() / 1000,
+        time: motionTime(),
         clientX: targetRef.current.clientX,
         clientY: targetRef.current.clientY,
         isHovering: hoveringRef.current,
@@ -118,8 +109,7 @@ export const usePointer = (options: UsePointerOptions = {}): PointerState => {
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("touchmove", onMove as EventListener);
+      unsubscribe();
       document.removeEventListener("mouseleave", onLeave);
       cancelAnimationFrame(raf);
     };
