@@ -7,192 +7,156 @@ import { CursorGlow } from "./lib/primitives";
 import { ComponentCard } from "./lib/component-card";
 import { ShimmerText } from "./lib/components/shimmer-text";
 import { SiteNav } from "./lib/site-nav";
+import { SiteFooter } from "./lib/shell/site-footer";
+import { Container, Eyebrow, Rule, SectionHeading } from "./lib/shell/ui";
+import { AttentionReadout } from "./lib/shell/attention-readout";
+import { HeroStage } from "./lib/shell/hero-stage";
+import { ShowcaseCards } from "./showcase/showcase-cards";
+
+const principles = [
+  {
+    title: "Spring physics, not CSS transitions",
+    body: "Every motion integrates position and velocity every frame. Overshoot, damping, settle — motion that feels alive.",
+  },
+  {
+    title: "Cursor-reactive colour",
+    body: "A single pastel function maps pointer position to RGB. Borders, glows, fills — one palette, always in sync with you.",
+  },
+  {
+    title: "Hand-built, zero deps",
+    body: "No animation libraries, no UI kits. Just React refs, rAF, and physics primitives. One file per component.",
+  },
+  {
+    title: "Any input, same feel",
+    body: "The colour follows a cursor, a finger or keyboard focus. With reduced motion on, nothing moves but everything still answers.",
+  },
+];
 
 export default function LandingPage() {
   const { xPc, yPc, time, mounted } = usePointer({ lerp: 0.08 });
   const componentCount = registry.filter((r) => r.type === "component").length;
 
   return (
-    <div
-      className="min-h-screen relative"
-      style={mounted ? colourField(xPc, yPc, time, 10) : undefined}
-    >
+    <div className="relative min-h-screen overflow-x-clip" style={mounted ? colourField(xPc, yPc, time, 10) : undefined}>
       {mounted && <CursorGlow size={500} blur={60} opacity={0.06} />}
       <SiteNav />
 
-      {/* ------------------------------------------------------------------ */}
-      {/* Hero                                                                */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="relative px-6 pt-24 sm:pt-32 pb-20 sm:pb-28 flex flex-col items-center text-center">
-        <p className="text-[11px] font-mono text-white/35 uppercase tracking-[0.25em] mb-6">
-          Sammii — Design engineering
-        </p>
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-light tracking-tight leading-[1.05] max-w-4xl">
-          <ShimmerText className="text-white/90 block">
-            Design engineering by Sammii.
-          </ShimmerText>
-        </h1>
-        <p className="mt-6 text-sm sm:text-base text-white/55 max-w-xl leading-relaxed">
-          Spring physics, cursor-reactive colour, production components.
-          Hand-built, zero dependencies.
-        </p>
-        <div className="mt-10 flex flex-col sm:flex-row gap-3 items-center">
-          <Link
-            href="/components"
-            className="group inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.06] border border-white/[0.14] text-sm text-white/85 hover:bg-white/[0.09] hover:border-white/[0.22] transition-colors"
-          >
-            Browse {componentCount} components
-            <span className="text-white/50 group-hover:translate-x-0.5 transition-transform">→</span>
-          </Link>
-          <Link
-            href="/playground"
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm text-white/55 hover:text-white/80 transition-colors"
-          >
-            See playground
-          </Link>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Ethos strip                                                         */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-white/[0.06]">
-        <EthosItem
-          index="01"
-          title="Spring physics, not CSS transitions"
-          body="Every motion integrates position and velocity every frame. Overshoot, damping, settle — motion that feels alive."
-        />
-        <EthosItem
-          index="02"
-          title="Cursor-reactive colour"
-          body="A single pastel function maps pointer position to RGB. Borders, glows, fills — one palette, always in sync with you."
-        />
-        <EthosItem
-          index="03"
-          title="Hand-built, zero deps"
-          body="No animation libraries, no UI kits. Just React refs, rAF, and physics primitives. One file per component."
-        />
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Featured work                                                       */}
-      {/* ------------------------------------------------------------------ */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-16 border-t border-white/[0.06]">
-        <div className="flex items-end justify-between mb-8 px-1">
+      <main id="main">
+        {/* Hero ------------------------------------------------------------ */}
+        <Container as="section" className="grid items-center gap-16 pb-24 pt-16 sm:pt-24 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:pb-32">
           <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-2">
-              Featured work
+            <Eyebrow>Sammii — Design engineering</Eyebrow>
+            <h1 className="mt-6 text-[44px] font-light leading-[0.98] tracking-[-0.035em] sm:text-6xl lg:text-[72px]">
+              <ShimmerText className="block text-white/90">Design engineering by Sammii.</ShimmerText>
+            </h1>
+            <p className="mt-7 max-w-md text-base leading-relaxed text-white/60">
+              Prism is a hand-built React library where every component answers to you. Spring physics,
+              cursor-reactive colour, zero dependencies.
             </p>
-            <h2 className="text-2xl sm:text-3xl font-light text-white/85">
-              Signature interactions
-            </h2>
+
+            <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+              <Link
+                href="/components"
+                className="group inline-flex items-center gap-2 rounded-xl border border-white/[0.14] bg-white/[0.06] px-5 py-3 text-sm text-white/90 transition-colors hover:border-white/[0.22] hover:bg-white/[0.09] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
+                Browse {componentCount} components
+                <span aria-hidden="true" className="text-white/50 transition-transform group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
+              <Link
+                href="/lab"
+                className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+              >
+                Read the Interaction Lab
+              </Link>
+            </div>
+
+            <div className="mt-12">
+              <p className="mb-3 text-xs text-white/50">Everything here is reading this:</p>
+              <AttentionReadout />
+            </div>
           </div>
+
+          <HeroStage />
+        </Container>
+
+        <Rule />
+
+        {/* Showcase -------------------------------------------------------- */}
+        <Container as="section" className="py-20 sm:py-24">
+          <SectionHeading
+            eyebrow="Showcase"
+            title="Built into real products"
+            aside={
+              <Link href="/showcase" className="transition-colors hover:text-white">
+                All showcase →
+              </Link>
+            }
+          />
+          <ShowcaseCards />
+        </Container>
+
+        <Rule />
+
+        {/* Principles ------------------------------------------------------ */}
+        <Container as="section" className="py-20 sm:py-24">
+          <SectionHeading eyebrow="Principles" title="How it's made" />
+          <ol className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {principles.map((p, i) => (
+              <li key={p.title} className="border-t border-white/[0.08] pt-6">
+                <span className="font-mono text-[11px] tabular-nums text-white/50">0{i + 1}</span>
+                <h3 className="mt-4 text-lg font-light leading-snug text-white/90">{p.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-white/55">{p.body}</p>
+              </li>
+            ))}
+          </ol>
+        </Container>
+
+        <Rule />
+
+        {/* Featured -------------------------------------------------------- */}
+        <Container as="section" className="py-20 sm:py-24">
+          <SectionHeading
+            eyebrow="Featured work"
+            title="Signature interactions"
+            aside={
+              <Link href="/components" className="transition-colors hover:text-white">
+                All components →
+              </Link>
+            }
+          />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {featured.map((item) => (
+              <ComponentCard key={item.slug} item={item} featured />
+            ))}
+          </div>
+        </Container>
+
+        {/* Lab ------------------------------------------------------------- */}
+        <Container as="section" className="pt-4">
           <Link
-            href="/components"
-            className="hidden sm:inline-block text-sm text-white/50 hover:text-white/80 transition-colors"
+            href="/lab"
+            className="group block rounded-3xl border border-white/[0.08] bg-white/[0.02] p-8 transition-colors hover:border-white/[0.16] hover:bg-white/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:p-12"
           >
-            Browse all →
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {featured.map((item) => (
-            <ComponentCard key={item.slug} item={item} featured />
-          ))}
-        </div>
-
-        <div className="mt-10 text-center sm:hidden">
-          <Link
-            href="/components"
-            className="inline-block text-sm text-white/60 hover:text-white/90 transition-colors"
-          >
-            Browse all →
-          </Link>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* Footer                                                              */}
-      {/* ------------------------------------------------------------------ */}
-      <footer className="border-t border-white/[0.06] mt-8">
-        <div className="max-w-5xl mx-auto px-6 py-14 grid grid-cols-1 sm:grid-cols-3 gap-10">
-          <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">About</p>
-            <p className="text-sm text-white/55 leading-relaxed">
-              Prism is a craft catalogue — cursor-reactive UI primitives by Sammii,
-              a design engineer in London.
+            <Eyebrow>Interaction Lab</Eyebrow>
+            <p className="mt-6 max-w-3xl text-[28px] font-light leading-[1.12] tracking-[-0.02em] text-white/90 sm:text-[40px]">
+              Can interfaces become expressive without sacrificing usability?
             </p>
-          </div>
-          <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">Soon</p>
-            <p className="text-sm text-white/55 leading-relaxed">
-              Coming to npm — drop these components into your app with one install.
+            <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/55">
+              Six small experiments, each built so the expressive layer can be taken away and the interface still works.
             </p>
-          </div>
-          <div>
-            <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">Links</p>
-            <ul className="text-sm space-y-2">
-              <li>
-                <a
-                  href="https://github.com/Sammii-HK/prism"
-                  target="_blank"
-                  rel="noopener"
-                  className="text-white/55 hover:text-white/85 transition-colors"
-                >
-                  GitHub →
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://x.com/technicalyblond"
-                  target="_blank"
-                  rel="noopener"
-                  className="text-white/55 hover:text-white/85 transition-colors"
-                >
-                  X / @technicalyblond →
-                </a>
-              </li>
-              <li>
-                <Link
-                  href="/hire"
-                  className="text-white/55 hover:text-white/85 transition-colors"
-                >
-                  Hiring me →
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/atoms"
-                  className="text-white/55 hover:text-white/85 transition-colors"
-                >
-                  Atoms reference →
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="max-w-5xl mx-auto px-6 pb-10 pt-2">
-          <p className="text-[10px] font-mono text-white/25 tracking-wide">
-            © Sammii · Built on Next.js, Tailwind, spring physics.
-          </p>
-        </div>
-      </footer>
+            <span className="mt-8 inline-flex items-center gap-2 text-sm text-white/75 transition-colors group-hover:text-white">
+              Open the lab
+              <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
+                →
+              </span>
+            </span>
+          </Link>
+        </Container>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }
-
-const EthosItem = ({
-  index,
-  title,
-  body,
-}: {
-  index: string;
-  title: string;
-  body: string;
-}) => (
-  <div className="flex flex-col gap-3">
-    <span className="text-[10px] font-mono text-white/30 tracking-wider">{index}</span>
-    <h3 className="text-lg font-light text-white/90 leading-snug">{title}</h3>
-    <p className="text-sm text-white/50 leading-relaxed">{body}</p>
-  </div>
-);
