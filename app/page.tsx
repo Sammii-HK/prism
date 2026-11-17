@@ -5,7 +5,6 @@ import { usePointer } from "./lib/hooks/use-pointer";
 import { colourField } from "./lib/primitives/gradient";
 import { CursorGlow } from "./lib/primitives";
 import { ComponentCard } from "./lib/component-card";
-import { ShimmerText } from "./lib/components/shimmer-text";
 import { SiteNav } from "./lib/site-nav";
 import { SiteFooter } from "./lib/shell/site-footer";
 import { Container, Eyebrow, Rule, SectionHeading } from "./lib/shell/ui";
@@ -45,13 +44,13 @@ export default function LandingPage() {
         {/* Hero ------------------------------------------------------------ */}
         <Container as="section" className="grid items-center gap-16 pb-24 pt-16 sm:pt-24 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:pb-32">
           <div>
-            <Eyebrow>Sammii — Design engineering</Eyebrow>
-            <h1 className="mt-6 text-[44px] font-light leading-[0.98] tracking-[-0.035em] sm:text-6xl lg:text-[72px]">
-              <ShimmerText className="block text-white/90">Design engineering by Sammii.</ShimmerText>
+            <Eyebrow>Prism — hand-built React components</Eyebrow>
+            <h1 className="mt-6 text-[44px] font-light leading-[0.98] tracking-[-0.035em] text-white/90 sm:text-6xl lg:text-[72px]">
+              Design engineering by Sammii.
             </h1>
             <p className="mt-7 max-w-md text-base leading-relaxed text-white/60">
-              Prism is a hand-built React library where every component answers to you. Spring physics,
-              cursor-reactive colour, zero dependencies.
+              Every component answers to you. Spring physics, cursor-reactive colour and zero dependencies,
+              with every value tuned by hand.
             </p>
 
             <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
@@ -127,7 +126,7 @@ export default function LandingPage() {
             }
           />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((item) => (
+            {featured.slice(0, 6).map((item) => (
               <ComponentCard key={item.slug} item={item} featured />
             ))}
           </div>
