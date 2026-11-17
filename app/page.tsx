@@ -120,7 +120,7 @@ export default function LandingPage() {
             <p className="text-[10px] tracking-[0.2em] text-white/30 uppercase mb-3">About</p>
             <p className="text-sm text-white/55 leading-relaxed">
               Prism is a craft catalogue — cursor-reactive UI primitives by Sammii,
-              a design engineer shipping every day.
+              a design engineer in London.
             </p>
           </div>
           <div>
@@ -144,12 +144,12 @@ export default function LandingPage() {
               </li>
               <li>
                 <a
-                  href="https://x.com/sammiihk"
+                  href="https://x.com/technicalyblond"
                   target="_blank"
                   rel="noopener"
                   className="text-white/55 hover:text-white/85 transition-colors"
                 >
-                  X / @sammiihk →
+                  X / @technicalyblond →
                 </a>
               </li>
               <li>

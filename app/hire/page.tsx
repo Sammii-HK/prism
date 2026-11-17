@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Hire Sammii — Senior Frontend / Design Engineer",
     description:
       "London · UK citizen · permanent or contract · remote or hybrid. Prism is the proof-of-craft.",
-    creator: "@sammiihk",
+    creator: "@technicalyblond",
   },
 };
 

@@ -13,7 +13,7 @@ import {
   type TokenObservation,
 } from "../lib/components/token-compose";
 import { FocusTrailPanel, type FocusObservation, type TrailEntry } from "../lib/components/focus-trail";
-import { LabSection, SERIF, type EvidenceRow } from "./parts";
+import { LabSection, type EvidenceRow } from "./parts";
 
 const NOT_YET = "not measured yet";
 
@@ -494,12 +494,11 @@ export function Lab() {
           <span>Interaction Lab</span>
         </div>
         <h1
-          className="mt-14 max-w-4xl text-[38px] font-normal leading-[1.04] tracking-tight text-white sm:mt-24 sm:text-7xl"
-          style={{ fontFamily: SERIF }}
+          className="mt-14 max-w-4xl text-[38px] font-light leading-[1.04] tracking-tight text-white sm:mt-24 sm:text-7xl"
         >
           Can interfaces become expressive without sacrificing usability?
         </h1>
-        <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg" style={{ fontFamily: SERIF }}>
+        <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
           Six small experiments, each built so the expressive layer can be taken away and the interface still works.
           They are live below. Use them with a mouse, then use them again with only the keyboard.
         </p>
@@ -581,7 +580,7 @@ export function Lab() {
           style={{ borderColor: "rgba(255,255,255,0.1)" }}
         >
           <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-            <h2 id="limits-heading" className="text-2xl text-white/90 sm:text-3xl" style={{ fontFamily: SERIF }}>
+            <h2 id="limits-heading" className="text-2xl font-light text-white/90 sm:text-3xl">
               What this page does not claim
             </h2>
             <ul className="mt-6 flex max-w-2xl flex-col gap-3 text-[15px] leading-relaxed text-white/70">

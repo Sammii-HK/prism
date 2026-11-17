@@ -5,7 +5,7 @@ Read the shared context layer at `~/.claude/projects/-Users-sammii-development/m
 
 ---
 
-Design engineering component library by Sammii. Reusable, cursor-reactive UI components with spring physics and position-mapped colour. Autonomous pipeline researches, builds, records, and publishes daily.
+Design engineering component library by Sammii. Reusable, cursor-reactive UI components with spring physics and position-mapped colour.
 
 ## Architecture
 
@@ -42,7 +42,7 @@ scripts/
   record.ts                Playwright screen recorder (1080x1080, organic cursor, ffmpeg)
 ```
 
-## Adding a new component (builder agent does this automatically)
+## Adding a new component
 
 1. Write component to `app/lib/components/<slug>.tsx` (named export, props interface)
 2. Write demo to `app/demos/<slug>.tsx` (default export)
@@ -59,32 +59,6 @@ scripts/
 - `usePointer({ lerp })` — hook returning smoothed xPc, yPc, time, clientX, clientY
 - `<CursorGlow />` — floating cursor light
 - `<SpotlightCard />` — card with reactive pastel border
-
-## Pipeline (autonomous)
-
-```
-pipeline/
-  orchestrator.sh           Shell orchestrator (auto, inspire, build, record, publish)
-  agents/
-    scout.json              Haiku + Chrome — browse X for UI interactions & component patterns
-    curator.json            Sonnet — pick today's component, write detailed build brief
-    builder.json            Sonnet — build the component, demo, registry, verify build
-    publisher.json          Haiku — upload video + create/score/schedule tweet via Spellcast
-  mcp-configs/              Agent-specific MCP configs (gitignored)
-  state/                    Runtime state (gitignored)
-    queue/                  Inter-agent data (scout-findings, daily-brief, builder-result, etc.)
-```
-
-Commands:
-```bash
-./pipeline/orchestrator.sh auto              # Full autonomous: scout → curator → builder → record → publish
-./pipeline/orchestrator.sh inspire           # Scout + Curator only (get today's brief)
-./pipeline/orchestrator.sh build             # Build from existing brief
-./pipeline/orchestrator.sh record [slug]     # Record component as mp4 (auto-starts dev server)
-./pipeline/orchestrator.sh publish           # Post to X via Spellcast
-./pipeline/orchestrator.sh run <agent>       # Run single agent
-./pipeline/orchestrator.sh status            # Show pipeline + queue status
-```
 
 ## Screen recording
 

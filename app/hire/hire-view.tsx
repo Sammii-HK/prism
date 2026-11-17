@@ -64,10 +64,6 @@ const PROOF_BULLETS: Array<{ title: string; body: string }> = [
     title: "Accessibility as craft, not checklist",
     body: "The command palette below has a real focus trap, `aria-activedescendant` between input and list, keyboard-only navigation, and a `prefers-reduced-motion` guard that swaps spring animation for an instant state change.",
   },
-  {
-    title: "Autonomous systems",
-    body: "A Claude-driven pipeline scouts patterns, curates a brief, builds the component, records a video, and publishes to X — every day. Code on GitHub, daily log on the portfolio.",
-  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -296,8 +292,8 @@ export const HireView = () => {
 
         <p className="mt-8 text-sm sm:text-base text-white/55 max-w-2xl leading-relaxed">
           Prism is the proof-of-craft — cursor-reactive UI primitives, spring
-          physics, zero runtime dependencies, shipped every day by an
-          autonomous pipeline I built and maintain.
+          physics, zero runtime dependencies. Every curve and colour tuned
+          by hand, by eye.
         </p>
 
         {/* Availability / location line */}
@@ -533,8 +529,8 @@ export const HireView = () => {
           />
           <ContactLink
             label="X"
-            value="@sammiihk"
-            href="https://x.com/sammiihk"
+            value="@technicalyblond"
+            href="https://x.com/technicalyblond"
             external
           />
         </div>
