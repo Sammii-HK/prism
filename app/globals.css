@@ -27,3 +27,41 @@ body {
   scrollbar-width: none;
 }
 
+
+/* Reserved tabs use view transitions for the indicator only; the rest of the page must not cross-fade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* Editorial: a native range, squared off. No transitions. */
+.editorial-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 24px;
+  background: transparent;
+}
+.editorial-range::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #fff;
+}
+.editorial-range::-moz-range-track {
+  height: 2px;
+  background: #fff;
+}
+.editorial-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 22px;
+  margin-top: -10px;
+  background: #050505;
+  border: 2px solid #fff;
+  border-radius: 0;
+}
+.editorial-range::-moz-range-thumb {
+  width: 12px;
+  height: 18px;
+  background: #050505;
+  border: 2px solid #fff;
+  border-radius: 0;
+}

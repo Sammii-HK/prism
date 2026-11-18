@@ -10,6 +10,7 @@ import { XrayToggle } from "./xray";
 const links = [
   { href: "/showcase", label: "Showcase" },
   { href: "/components", label: "Components" },
+  { href: "/expressions", label: "Expressions" },
   { href: "/lab", label: "Lab" },
   { href: "/hire", label: "Hire" },
 ];
