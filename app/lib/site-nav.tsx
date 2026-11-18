@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import { subscribeAttention } from "./hooks/attention";
 import { motionTime } from "./hooks/reduced-motion";
 import { pastelColour } from "./primitives/gradient";
+import { XrayToggle } from "./xray";
 
 const links = [
   { href: "/showcase", label: "Showcase" },
@@ -81,6 +82,9 @@ export const SiteNav = ({ skipTo = "#main" }: { skipTo?: string | null } = {}) =
               </li>
             );
           })}
+          <li className="ml-1 sm:ml-2">
+            <XrayToggle />
+          </li>
         </ul>
       </nav>
     </header>
