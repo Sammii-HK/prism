@@ -193,10 +193,10 @@ export function TokenComposePanel({
     <div className="mx-auto grid w-full max-w-4xl gap-10 md:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
       <style>{`@keyframes prism-compose-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }`}</style>
       <section className="flex min-w-0 flex-col gap-6" aria-label="Composer">
-        {!embedded && <p className="text-xs uppercase tracking-widest text-white/25">token-compose</p>}
+        {!embedded && <p className="text-xs uppercase tracking-widest text-white/50">token-compose</p>}
 
         <fieldset className="flex flex-col gap-3 border-0 p-0">
-          <legend className="mb-2 text-xs uppercase tracking-widest text-white/40">Compositions to generate</legend>
+          <legend className="mb-2 text-xs uppercase tracking-widest text-white/50">Compositions to generate</legend>
           <div role="radiogroup" aria-label="How many compositions" className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/75">
             {TOKEN_COUNTS.map((n) => (
               <label key={n} className="flex items-center gap-2">
@@ -248,7 +248,7 @@ export function TokenComposePanel({
 
       <section className="flex min-w-0 flex-col gap-6" aria-label="Validator">
         <div>
-          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">Try to break it</h3>
+          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">Try to break it</h3>
           <div className="flex flex-wrap gap-3">
             <button type="button" className={btn} style={btnStyle} onClick={inject} data-testid="inject">
               Inject an off-token value
@@ -280,7 +280,7 @@ export function TokenComposePanel({
         </div>
 
         <div>
-          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">The closed vocabulary</h3>
+          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">The closed vocabulary</h3>
           <dl className="flex flex-col gap-3">
             <Tokens label="Spacing (px)" values={SPACING_STEPS} />
             <Tokens label="Radius (px)" values={RADII} />

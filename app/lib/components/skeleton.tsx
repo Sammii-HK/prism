@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface SkeletonProps {
   /** Width — number (px) or CSS string */
@@ -39,11 +41,12 @@ export const Skeleton = ({
     let smoothX = 50;
     let smoothY = 50;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Released attention parks at FAR_AWAY; keep the last colour instead of following it
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      rawX = (x / window.innerWidth) * 100;
+      rawY = (y / window.innerHeight) * 100;
+    });
 
     let raf: number;
 
@@ -51,7 +54,14 @@ export const Skeleton = ({
       smoothX += (rawX - smoothX) * 0.08;
       smoothY += (rawY - smoothY) * 0.08;
 
-      const t = performance.now() / 1000;
+      // Reduced motion: no travelling band, hold the plain resting fill
+      if (reducedMotionNow()) {
+        el.style.backgroundImage = "";
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+
+      const t = motionTime();
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
       // Shimmer band position (~2s loop)
@@ -76,7 +86,7 @@ export const Skeleton = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -91,6 +101,8 @@ export const Skeleton = ({
   return (
     <div
       ref={ref}
+      // Purely visual placeholder: the loading region that holds it should set aria-busy
+      aria-hidden="true"
       className={`${rounded} ${className}`}
       style={style}
     />

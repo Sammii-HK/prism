@@ -8,7 +8,7 @@ export default function SkeletonDemo() {
       style={{ background: "#050505" }}
     >
       <div className="flex flex-col items-center gap-8">
-        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        <p className="text-xs tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.5)" }}>
           skeleton
         </p>
 
@@ -34,7 +34,7 @@ export default function SkeletonDemo() {
 
         <p
           className="text-xs italic"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Move your cursor to tint the shimmer.
         </p>

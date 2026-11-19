@@ -58,6 +58,6 @@ export default {
 
 ## Components
 
-22 client components (all ship with `"use client"` preserved): animated-border, avatar, floating-dock, fluid-tooltip, glow-badge, glow-checkbox, glow-input, glow-select, glow-slider, glow-textarea, hover-reveal, icon-button, magnetic-button, morph-tabs, progress-bar, pulse-dot, ripple-button, shimmer-text, skeleton, spotlight-card, spring-toggle, tilt-card.
+19 client components (all ship with `"use client"` preserved): animated-border, avatar, floating-dock, glow-badge, glow-checkbox, glow-input, glow-select, glow-slider, glow-textarea, hover-reveal, icon-button, morph-tabs, progress-bar, pulse-dot, ripple-button, skeleton, spotlight-card, spring-toggle, tooltip.
 
 Plus the core primitives (`cursor-glow`, `gradient`) and the `use-pointer` hook.

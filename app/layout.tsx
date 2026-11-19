@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s · Prism",
   },
   description:
-    "Cursor-reactive React component library by Sammii Kellow. Spring physics, zero runtime dependencies, one file per component. Built in public — a new component every day.",
+    "Cursor-reactive React component library by Sammii Kellow. Spring physics, zero runtime dependencies, one file per component. Every spring and colour tuned by hand.",
   keywords: [
     "react components",
     "ui library",
@@ -29,14 +29,13 @@ export const metadata: Metadata = {
     "tailwindcss",
     "design engineering",
     "next.js",
-    "build in public",
   ],
   authors: [{ name: "Sammii Kellow", url: "https://sammii.dev" }],
   creator: "Sammii Kellow",
   openGraph: {
     title: "Prism — cursor-reactive design engineering components",
     description:
-      "Spring physics, zero runtime dependencies, one file per component. Built in public.",
+      "Spring physics, zero runtime dependencies, one file per component.",
     url: "https://prism.sammii.dev",
     siteName: "Prism",
     type: "website",
@@ -44,7 +43,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    creator: "@sammiihk",
+    creator: "@technicalyblond",
   },
   alternates: {
     canonical: "https://prism.sammii.dev",
@@ -57,10 +56,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#050505] text-white`}
-      >
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable}`}
+    >
+      <body className="antialiased bg-[#050505] text-white">
         <PointerProvider>{children}</PointerProvider>
       </body>
     </html>

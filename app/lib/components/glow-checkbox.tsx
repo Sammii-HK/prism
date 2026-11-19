@@ -1,6 +1,8 @@
 "use client";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention, type Attention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowCheckboxProps {
   /** Whether the checkbox is checked */
@@ -33,6 +35,10 @@ export const GlowCheckbox = ({
 }: GlowCheckboxProps) => {
   const boxRef = useRef<HTMLButtonElement>(null);
   const tickRef = useRef<SVGSVGElement>(null);
+  const labelId = useId();
+
+  // Keyboard focus — lights the box with the same glow path as proximity
+  const focusVisible = useRef(false);
 
   // Live values — read inside rAF to avoid stale closures
   const live = useRef({
@@ -78,22 +84,25 @@ export const GlowCheckbox = ({
     let smoothY = 50;
     let proximity = 0;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
+    const onMove = ({ x: clientX, y: clientY, kind }: Attention) => {
+      // Released attention (FAR_AWAY) only fades proximity; colour keeps its last point
+      if (kind !== "none") {
+        rawX = (clientX / window.innerWidth) * 100;
+        rawY = (clientY / window.innerHeight) * 100;
+      }
 
       if (el) {
         const rect = el.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(e.clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(e.clientY - cy) - rect.height / 2);
+        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
+        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         const range = 120;
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
 
@@ -107,11 +116,12 @@ export const GlowCheckbox = ({
       // Spring targets
       const targetFill = on ? 1 : 0;
       const targetTickScale = on ? 1 : 0;
-      const targetGlow = dis ? 0 : Math.min(proximity, 0.45);
+      const targetGlow = dis ? 0 : focusVisible.current ? 1 : Math.min(proximity, 0.45);
 
-      // Integrate springs
-      const [fl, flv] = step(s.fill, s.fillVel, targetFill, 180, 22);
-      const [ts, tsv] = step(s.tickScale, s.tickScaleVel, targetTickScale, 200, 22);
+      // Integrate springs — with reduced motion the tick and fill jump to their end state
+      const reduce = reducedMotionNow();
+      const [fl, flv] = reduce ? [targetFill, 0] : step(s.fill, s.fillVel, targetFill, 180, 22);
+      const [ts, tsv] = reduce ? [targetTickScale, 0] : step(s.tickScale, s.tickScaleVel, targetTickScale, 200, 22);
       const [gw, gwv] = step(s.glow, s.glowVel, targetGlow, 120, 18);
 
       s.fill = fl;
@@ -124,7 +134,7 @@ export const GlowCheckbox = ({
       const fillClamped = Math.max(0, Math.min(1, fl));
       const tickClamped = Math.max(0, ts); // allow overshoot above 1
       const glowClamped = Math.max(0, Math.min(1, gw));
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
       // Box background — transparent when unchecked, pastel fill when checked
@@ -163,7 +173,7 @@ export const GlowCheckbox = ({
     raf = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -180,10 +190,18 @@ export const GlowCheckbox = ({
     >
       <button
         ref={boxRef}
+        type="button"
         role="checkbox"
         aria-checked={checked}
+        aria-labelledby={label ? labelId : undefined}
         disabled={disabled}
         onClick={handleClick}
+        onFocus={(e) => {
+          focusVisible.current = e.currentTarget.matches(":focus-visible");
+        }}
+        onBlur={() => {
+          focusVisible.current = false;
+        }}
         className="relative flex items-center justify-center rounded-md outline-none shrink-0"
         style={{
           width: 20,
@@ -218,7 +236,7 @@ export const GlowCheckbox = ({
         </svg>
       </button>
       {label && (
-        <span className="text-sm text-white/60">{label}</span>
+        <span id={labelId} className="text-sm text-white/60">{label}</span>
       )}
     </label>
   );

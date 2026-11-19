@@ -1,6 +1,8 @@
 "use client";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention, type Attention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowSliderProps {
   /** Current value */
@@ -21,6 +23,8 @@ export interface GlowSliderProps {
   disabled?: boolean;
   /** Additional class names applied to the outermost wrapper */
   className?: string;
+  /** Accessible name when no visible `label` is given */
+  ariaLabel?: string;
 }
 
 /**
@@ -42,7 +46,9 @@ export const GlowSlider = ({
   showValue = true,
   disabled = false,
   className = "",
+  ariaLabel,
 }: GlowSliderProps) => {
+  const labelId = useId();
   const wrapRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
@@ -76,6 +82,9 @@ export const GlowSlider = ({
     fillIntensity: 0,
     fillIntensityVel: 0,
   });
+
+  // Keyboard focus on the thumb — drives the same glow as dragging
+  const focusVisible = useRef(false);
 
   const onChangeRef = useRef(onChange);
   useEffect(() => {
@@ -132,22 +141,25 @@ export const GlowSlider = ({
     let smoothY = 50;
     let proximity = 0;
 
-    const onMove = (e: PointerEvent) => {
-      rawX = (e.clientX / window.innerWidth) * 100;
-      rawY = (e.clientY / window.innerHeight) * 100;
+    const onMove = ({ x: clientX, y: clientY, kind }: Attention) => {
+      // Released attention (FAR_AWAY) only fades proximity; colour keeps its last point
+      if (kind !== "none") {
+        rawX = (clientX / window.innerWidth) * 100;
+        rawY = (clientY / window.innerHeight) * 100;
+      }
 
       if (wrap) {
         const rect = wrap.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(e.clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(e.clientY - cy) - rect.height / 2);
+        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
+        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
         const dist = Math.sqrt(dx * dx + dy * dy);
         const range = 120;
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
 
@@ -159,12 +171,14 @@ export const GlowSlider = ({
       const { value: val, min: mn, max: mx, disabled: dis, dragging } = live.current;
 
       // Spring targets
-      const targetThumbScale = dragging ? 1.18 : 1;
-      const targetGlow = dis ? 0 : dragging ? 1 : Math.min(proximity, 0.45);
+      const reduce = reducedMotionNow();
+      const targetThumbScale = dragging && !reduce ? 1.18 : 1;
+      const targetGlow = dis ? 0 : dragging || focusVisible.current ? 1 : Math.min(proximity, 0.45);
       const targetFillIntensity = dragging ? 1 : 0.65;
 
       // Integrate springs
-      const [ts, tsv] = springStep(s.thumbScale, s.thumbScaleVel, targetThumbScale, 200, 22);
+      // Reduced motion: thumb stays at rest scale, no bounce
+      const [ts, tsv] = reduce ? [targetThumbScale, 0] : springStep(s.thumbScale, s.thumbScaleVel, targetThumbScale, 200, 22);
       const [gw, gwv] = springStep(s.glow, s.glowVel, targetGlow, 120, 18);
       const [fi, fiv] = springStep(s.fillIntensity, s.fillIntensityVel, targetFillIntensity, 120, 18);
 
@@ -177,7 +191,7 @@ export const GlowSlider = ({
 
       const glowClamped = Math.max(0, Math.min(1, gw));
       const fillInt = Math.max(0, Math.min(1, fi));
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
       // Fill ratio
@@ -230,7 +244,7 @@ export const GlowSlider = ({
         const vb = Math.round(255 + (b - 255) * glowClamped * 0.2);
         valueRef.current.style.color = `rgba(${vr},${vg},${vb},0.4)`;
       } else if (valueRef.current) {
-        valueRef.current.style.color = "rgba(255,255,255,0.4)";
+        valueRef.current.style.color = "rgba(255,255,255,0.5)";
       }
 
       raf = requestAnimationFrame(tick);
@@ -239,7 +253,7 @@ export const GlowSlider = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -278,6 +292,40 @@ export const GlowSlider = ({
 
   const fraction = max > min ? (value - min) / (max - min) : 0;
 
+  // Keyboard: arrows step, PageUp/PageDown jump a tenth of the range, Home/End go to the ends
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    const big = Math.max(step, (max - min) / 10);
+    let next: number;
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowUp":
+        next = value + step;
+        break;
+      case "ArrowLeft":
+      case "ArrowDown":
+        next = value - step;
+        break;
+      case "PageUp":
+        next = value + big;
+        break;
+      case "PageDown":
+        next = value - big;
+        break;
+      case "Home":
+        next = min;
+        break;
+      case "End":
+        next = max;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    const snapped = snap(next);
+    if (snapped !== value) onChangeRef.current(snapped);
+  };
+
   // Format display value
   const displayValue = step < 1 ? value.toFixed(Math.max(0, -Math.floor(Math.log10(step)))) : String(value);
 
@@ -293,6 +341,7 @@ export const GlowSlider = ({
           {label && (
             <span
               ref={labelRef}
+              id={labelId}
               className="text-sm pointer-events-none select-none"
               style={{ color: "rgba(255,255,255,0.5)" }}
             >
@@ -302,8 +351,9 @@ export const GlowSlider = ({
           {showValue && (
             <span
               ref={valueRef}
+              aria-hidden="true"
               className="text-xs font-mono pointer-events-none select-none"
-              style={{ color: "rgba(255,255,255,0.4)" }}
+              style={{ color: "rgba(255,255,255,0.5)" }}
             >
               {displayValue}
             </span>
@@ -339,6 +389,23 @@ export const GlowSlider = ({
         {/* Thumb */}
         <div
           ref={thumbRef}
+          role="slider"
+          tabIndex={disabled ? -1 : 0}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-valuetext={displayValue}
+          aria-orientation="horizontal"
+          aria-disabled={disabled || undefined}
+          aria-labelledby={label ? labelId : undefined}
+          aria-label={label ? undefined : ariaLabel}
+          onKeyDown={handleKeyDown}
+          onFocus={(e) => {
+            focusVisible.current = e.currentTarget.matches(":focus-visible");
+          }}
+          onBlur={() => {
+            focusVisible.current = false;
+          }}
           className="absolute rounded-full pointer-events-none"
           style={{
             width: 18,

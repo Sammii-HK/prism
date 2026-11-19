@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ASYNC_BUTTON_TRANSITIONS, useSystemReducedMotion, type AsyncButtonState } from "../lib/components/async-button";
 import { LATENCY_TRANSITIONS, type LatencyLogEntry } from "../lib/components/latency-adapt";
@@ -16,7 +15,9 @@ import { FocusTrailPanel, type FocusObservation, type TrailEntry } from "../lib/
 import { SpringFieldPanel, type SpringFieldObservation } from "../lib/components/spring-field";
 import { ReadingRailPanel, DEFAULT_PARAMS, DEFAULT_DWELL, type ReadingObservation } from "../lib/components/reading-rail";
 import { FlipReorderPanel, type ReorderObservation } from "../lib/components/flip-reorder";
-import { LabSection, SERIF, type EvidenceRow } from "./parts";
+import { LabSection, type EvidenceRow } from "./parts";
+import { SiteNav } from "../lib/site-nav";
+import { SiteFooter } from "../lib/shell/site-footer";
 
 const NOT_YET = "not measured yet";
 
@@ -639,21 +640,16 @@ export function Lab() {
       >
         Skip to the experiments
       </a>
+      <SiteNav skipTo={null} />
 
       <header className="mx-auto w-full max-w-5xl px-4 pb-14 pt-8 sm:px-6 sm:pb-24 sm:pt-12">
-        <div className="flex items-center justify-between gap-4 text-[11px] uppercase tracking-[0.22em] text-white/55">
-          <Link href="/" className="rounded-sm hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-            Prism
-          </Link>
-          <span>Interaction Lab</span>
-        </div>
+        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/55">Interaction Lab</p>
         <h1
-          className="mt-14 max-w-4xl text-[38px] font-normal leading-[1.04] tracking-tight text-white sm:mt-24 sm:text-7xl"
-          style={{ fontFamily: SERIF }}
+          className="mt-14 max-w-4xl text-[38px] font-light leading-[1.04] tracking-tight text-white sm:mt-24 sm:text-7xl"
         >
           Can interfaces become expressive without sacrificing usability?
         </h1>
-        <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg" style={{ fontFamily: SERIF }}>
+        <p className="mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
           Nine small experiments, each built so the expressive layer can be taken away and the interface still works.
           They are live below. Use them with a mouse, then use them again with only the keyboard.
         </p>
@@ -738,7 +734,7 @@ export function Lab() {
           style={{ borderColor: "rgba(255,255,255,0.1)" }}
         >
           <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
-            <h2 id="limits-heading" className="text-2xl text-white/90 sm:text-3xl" style={{ fontFamily: SERIF }}>
+            <h2 id="limits-heading" className="text-2xl font-light text-white/90 sm:text-3xl">
               What this page does not claim
             </h2>
             <ul className="mt-6 flex max-w-2xl flex-col gap-3 text-[15px] leading-relaxed text-white/70">
@@ -750,6 +746,7 @@ export function Lab() {
           </div>
         </section>
       </main>
+      <SiteFooter />
     </div>
   );
 }

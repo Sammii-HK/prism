@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, useCallback } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface SpringToggleProps {
   /** Whether the toggle is on */
@@ -11,6 +13,11 @@ export interface SpringToggleProps {
   disabled?: boolean;
   /** Additional class names applied to the outermost wrapper */
   className?: string;
+  /** Accessible name when there is no visible label to point at */
+  "aria-label"?: string;
+  /** Id of the visible label element that names this switch */
+  "aria-labelledby"?: string;
+  id?: string;
 }
 
 /**
@@ -27,6 +34,9 @@ export const SpringToggle = ({
   onChange,
   disabled = false,
   className = "",
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+  id,
 }: SpringToggleProps) => {
   const trackRef = useRef<HTMLButtonElement>(null);
   const thumbRef = useRef<HTMLDivElement>(null);
@@ -80,7 +90,7 @@ export const SpringToggle = ({
     let smoothY = 50;
     let proximity = 0;
 
-    const onMove = (e: PointerEvent) => {
+    const onMove = (e: { clientX: number; clientY: number }) => {
       rawX = (e.clientX / window.innerWidth) * 100;
       rawY = (e.clientY / window.innerHeight) * 100;
 
@@ -96,7 +106,15 @@ export const SpringToggle = ({
         proximity = Math.max(0, 1 - dist / range);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    // When it is released, drop the proximity glow but keep the last colour.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") {
+        proximity = 0;
+        return;
+      }
+      onMove({ clientX: x, clientY: y });
+    });
 
     let raf: number;
 
@@ -112,6 +130,14 @@ export const SpringToggle = ({
       const targetTrackFill = on ? 1 : 0;
       const targetGlow = dis ? 0 : Math.min(proximity, 0.45);
 
+      // Reduced motion: the thumb and fill jump straight to the new state.
+      if (reducedMotionNow()) {
+        s.thumbX = targetThumbX;
+        s.thumbXVel = 0;
+        s.trackFill = targetTrackFill;
+        s.trackFillVel = 0;
+      }
+
       // Integrate springs — k=180, d=22 for thumb and fill (matches glow-input)
       const [tx, txv] = step(s.thumbX, s.thumbXVel, targetThumbX, 180, 22);
       const [tf, tfv] = step(s.trackFill, s.trackFillVel, targetTrackFill, 180, 22);
@@ -126,7 +152,7 @@ export const SpringToggle = ({
 
       const glowClamped = Math.max(0, Math.min(1, gw));
       const fillClamped = Math.max(0, Math.min(1, tf));
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const { r, g, b } = pastelColour(smoothX, smoothY, t);
 
       // Track background — lerp between off (white/6%) and pastel fill
@@ -169,7 +195,7 @@ export const SpringToggle = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, []);
@@ -182,8 +208,11 @@ export const SpringToggle = ({
   return (
     <button
       ref={trackRef}
+      id={id}
       role="switch"
       aria-checked={checked}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
       disabled={disabled}
       onClick={handleClick}
       className={`relative inline-flex items-center rounded-full cursor-pointer outline-none disabled:cursor-not-allowed${className ? ` ${className}` : ""}`}

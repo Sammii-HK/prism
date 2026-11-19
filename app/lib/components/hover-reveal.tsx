@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface HoverRevealProps {
   /** Always-visible content */
@@ -68,11 +70,13 @@ export const HoverReveal = ({
     const ro = new ResizeObserver(measure);
     ro.observe(inner);
 
-    const onMove = (e: PointerEvent) => {
-      sp.current.rawX = (e.clientX / window.innerWidth) * 100;
-      sp.current.rawY = (e.clientY / window.innerHeight) * 100;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    // When it is released, keep the last colour rather than jump off-screen.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      sp.current.rawX = (x / window.innerWidth) * 100;
+      sp.current.rawY = (y / window.innerHeight) * 100;
+    });
 
     const onEnter = () => {
       sp.current.hovered = true;
@@ -80,8 +84,18 @@ export const HoverReveal = ({
     const onLeave = () => {
       sp.current.hovered = false;
     };
+    // Keyboard users open it by focusing something inside, and close it by
+    // moving focus out. Focus moving between children keeps it open.
+    const onFocusIn = (e: FocusEvent) => {
+      if (e.target instanceof Element && e.target.matches(":focus-visible")) onEnter();
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (!(e.relatedTarget instanceof Node && wrapper.contains(e.relatedTarget))) onLeave();
+    };
     wrapper.addEventListener("pointerenter", onEnter);
     wrapper.addEventListener("pointerleave", onLeave);
+    wrapper.addEventListener("focusin", onFocusIn);
+    wrapper.addEventListener("focusout", onFocusOut);
 
     // Spring step: F = k * (target - pos) - d * vel
     const step = (
@@ -107,6 +121,11 @@ export const HoverReveal = ({
 
       // Spring progress toward target — k=160, d=20
       const target = s.hovered ? 1 : 0;
+      // Reduced motion: open/close straight to the end state.
+      if (reducedMotionNow()) {
+        s.progress = target;
+        s.progressVel = 0;
+      }
       const [p, pv] = step(s.progress, s.progressVel, target, 160, 20);
       s.progress = p;
       s.progressVel = pv;
@@ -127,7 +146,7 @@ export const HoverReveal = ({
       inner.style.transform = `translateY(${ty.toFixed(2)}px)`;
 
       // Pastel border colour
-      const t = performance.now() / 1000;
+      const t = motionTime();
       const { r, g, b } = pastelColour(s.smoothX, s.smoothY, t);
       const borderAlpha = (0.35 * progress).toFixed(3);
       border.style.backgroundColor = `rgba(${r},${g},${b},${borderAlpha})`;
@@ -138,9 +157,11 @@ export const HoverReveal = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       wrapper.removeEventListener("pointerenter", onEnter);
       wrapper.removeEventListener("pointerleave", onLeave);
+      wrapper.removeEventListener("focusin", onFocusIn);
+      wrapper.removeEventListener("focusout", onFocusOut);
       ro.disconnect();
       cancelAnimationFrame(raf);
     };

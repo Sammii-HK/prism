@@ -7,6 +7,8 @@ import {
   type ButtonHTMLAttributes,
 } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -51,11 +53,13 @@ export const IconButton = ({
   useEffect(() => {
     if (disabled) return;
 
-    const onMove = (e: PointerEvent) => {
-      rawRef.current.x = (e.clientX / window.innerWidth) * 100;
-      rawRef.current.y = (e.clientY / window.innerHeight) * 100;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    // Mouse, touch and keyboard focus all move the attention point.
+    // When it is released, keep the last colour rather than jump off-screen.
+    const unsubscribe = subscribeAttention(({ x, y, kind }) => {
+      if (kind === "none") return;
+      rawRef.current.x = (x / window.innerWidth) * 100;
+      rawRef.current.y = (y / window.innerHeight) * 100;
+    });
 
     let raf: number;
     const tick = () => {
@@ -63,7 +67,7 @@ export const IconButton = ({
       smoothRef.current.y += (rawRef.current.y - smoothRef.current.y) * 0.08;
 
       if (ref.current && isHovered) {
-        const t = performance.now() / 1000;
+        const t = motionTime();
         const { r, g, b } = pastelColour(smoothRef.current.x, smoothRef.current.y, t);
         ref.current.style.boxShadow = `0 0 14px rgba(${r},${g},${b},0.25), 0 0 0 1px rgba(${r},${g},${b},0.1)`;
         ref.current.style.borderColor = `rgba(${r},${g},${b},0.3)`;
@@ -77,7 +81,7 @@ export const IconButton = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [disabled, isHovered]);
@@ -85,12 +89,16 @@ export const IconButton = ({
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
     const rect = ref.current!.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // A keyboard click (Enter/Space) reports 0,0; ripple from the centre instead.
+    const keyboard = e.detail === 0;
+    const clientX = keyboard ? rect.left + rect.width / 2 : e.clientX;
+    const clientY = keyboard ? rect.top + rect.height / 2 : e.clientY;
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
     const rippleSize = Math.max(rect.width, rect.height) * 2;
-    const vxPc = (e.clientX / window.innerWidth) * 100;
-    const vyPc = (e.clientY / window.innerHeight) * 100;
-    const { r, g, b } = pastelColour(vxPc, vyPc, performance.now() / 1000);
+    const vxPc = (clientX / window.innerWidth) * 100;
+    const vyPc = (clientY / window.innerHeight) * 100;
+    const { r, g, b } = pastelColour(vxPc, vyPc, motionTime());
 
     setRipples((prev) => [
       ...prev,
@@ -111,6 +119,12 @@ export const IconButton = ({
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      // Keyboard focus lights the glow the way hover does. Mouse clicks that
+      // focus the button are not :focus-visible, so they don't hold it on.
+      onFocus={(e) => {
+        if (e.currentTarget.matches(":focus-visible")) setIsHovered(true);
+      }}
+      onBlur={() => setIsHovered(false)}
       disabled={disabled}
       className={`relative inline-flex items-center justify-center rounded-lg border cursor-pointer select-none overflow-hidden disabled:opacity-35 disabled:pointer-events-none ${className}`}
       style={{
@@ -161,6 +175,11 @@ function RippleSpan({ x, y, size, r, g, b, onDone }: RippleData & { onDone: () =
       const force = (scale - springPos) * 140 - springVel * 14;
       springVel += force * dt;
       springPos += springVel * dt;
+      // Reduced motion: no bloom, show the ripple at full size and let it fade.
+      if (reducedMotionNow()) {
+        springPos = scale;
+        springVel = 0;
+      }
 
       const opacity = Math.max(0, 0.6 * (1 - elapsed / duration));
       el.style.transform = `translate(-50%, -50%) scale(${springPos})`;

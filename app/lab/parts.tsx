@@ -2,8 +2,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export const SERIF = 'ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif';
-
 export const Kbd = ({ children }: { children: ReactNode }) => (
   <kbd
     className="rounded border px-1.5 py-0.5 text-[11px] text-white/80"
@@ -88,8 +86,7 @@ export const LabSection = ({
       <h2
         id={`${slug}-heading`}
         tabIndex={-1}
-        className="max-w-3xl rounded-sm text-[28px] font-normal leading-[1.12] tracking-tight text-white/95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:text-5xl"
-        style={{ fontFamily: SERIF }}
+        className="max-w-3xl rounded-sm text-[28px] font-light leading-[1.12] tracking-tight text-white/95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:text-5xl"
       >
         {question}
       </h2>
@@ -115,7 +112,7 @@ export const LabSection = ({
       <div className="mt-12 grid gap-10 md:grid-cols-3 md:gap-8">
         <div className="min-w-0">
           <ColumnTitle>Why this effect exists</ColumnTitle>
-          <div className="text-[15px] leading-relaxed text-white/75" style={{ fontFamily: SERIF }}>
+          <div className="text-[15px] leading-relaxed text-white/75">
             {why}
           </div>
         </div>

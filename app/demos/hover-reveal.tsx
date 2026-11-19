@@ -11,7 +11,7 @@ export default function HoverRevealDemo() {
         {/* Eyebrow */}
         <p
           className="text-xs tracking-widest uppercase mb-4"
-          style={{ color: "rgba(255,255,255,0.25)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           hover-reveal
         </p>
@@ -19,7 +19,7 @@ export default function HoverRevealDemo() {
         {/* (a) Pricing */}
         <HoverReveal
           revealContent={
-            <p className="text-sm text-white/40 py-3 px-1">
+            <p className="text-sm text-white/50 py-3 px-1">
               Starting at $9/month. Scale as you grow.
             </p>
           }
@@ -32,7 +32,7 @@ export default function HoverRevealDemo() {
         {/* (b) Features */}
         <HoverReveal
           revealContent={
-            <ul className="text-sm text-white/40 py-3 px-1 flex flex-col gap-1">
+            <ul className="text-sm text-white/50 py-3 px-1 flex flex-col gap-1">
               <li>Spring-physics animations</li>
               <li>Cursor-reactive colour</li>
               <li>Zero dependencies</li>
@@ -48,7 +48,7 @@ export default function HoverRevealDemo() {
         <HoverReveal
           direction="up"
           revealContent={
-            <p className="text-sm text-white/40 py-3 px-1">
+            <p className="text-sm text-white/50 py-3 px-1">
               24/7 live chat with real humans.
             </p>
           }
@@ -61,7 +61,7 @@ export default function HoverRevealDemo() {
         {/* Footer hint */}
         <p
           className="text-xs italic mt-4"
-          style={{ color: "rgba(255,255,255,0.2)" }}
+          style={{ color: "rgba(255,255,255,0.5)" }}
         >
           Hover each item to reveal details.
         </p>

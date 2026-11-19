@@ -22,7 +22,7 @@ export default function SpotlightCardDemo() {
         ].map((card) => (
           <SpotlightCard key={card.title} className="bg-white/[0.03] backdrop-blur-sm p-6">
             <h3 className="text-base font-light text-white/80 mb-2">{card.title}</h3>
-            <p className="text-xs text-white/35 leading-relaxed">{card.desc}</p>
+            <p className="text-xs text-white/50 leading-relaxed">{card.desc}</p>
           </SpotlightCard>
         ))}
       </div>

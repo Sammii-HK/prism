@@ -70,7 +70,7 @@ export function LatencyAdaptPanel({
       <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
         <section className="flex min-w-0 flex-col gap-8">
           {!embedded && (
-            <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
+            <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.5)" }}>
               latency-adapt
             </p>
           )}
@@ -92,10 +92,10 @@ export function LatencyAdaptPanel({
           />
 
           <fieldset className="flex flex-col gap-3 border-0 p-0">
-            <legend className="mb-2 text-xs uppercase tracking-widest text-white/40">The next request</legend>
+            <legend className="mb-2 text-xs uppercase tracking-widest text-white/50">The next request</legend>
             <label className="flex flex-col gap-1 text-sm text-white/70">
               Takes {latency < 1000 ? `${latency} ms` : `${(latency / 1000).toFixed(1)} s`}{" "}
-              <span className="text-white/35">({bucket})</span>
+              <span className="text-white/50">({bucket})</span>
               <input
                 type="range"
                 min={0}
@@ -118,7 +118,7 @@ export function LatencyAdaptPanel({
               <label className="flex items-center gap-2 text-sm text-white/70">
                 <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
                 Preview reduced motion
-                <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+                <span className="text-white/50">(system setting: {systemReduced ? "on" : "off"})</span>
               </label>
             )}
           </fieldset>
@@ -126,7 +126,7 @@ export function LatencyAdaptPanel({
 
         <section className="flex min-w-0 flex-col gap-6" aria-label="State machine">
           <div>
-            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">State</h3>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">State</h3>
             <ol className="flex flex-wrap gap-2">
               {PHASES.map((s) => (
                 <li
@@ -146,9 +146,9 @@ export function LatencyAdaptPanel({
           </div>
 
           <div>
-            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/40">Event log</h3>
+            <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">Event log</h3>
             {log.length === 0 ? (
-              <p className="text-sm text-white/30">Nothing yet. Press Load.</p>
+              <p className="text-sm text-white/50">Nothing yet. Press Load.</p>
             ) : (
               <ul data-testid="log" className="font-mono text-xs text-white/60">
                 {log.map((row) => (
@@ -159,7 +159,7 @@ export function LatencyAdaptPanel({
               </ul>
             )}
           </div>
-          <p className="max-w-sm text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="max-w-sm text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
             Timestamps are measured with performance.now() from the moment you press Load. Timer callbacks can run a
             little late if the page is busy.
           </p>

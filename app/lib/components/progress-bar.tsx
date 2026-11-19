@@ -1,6 +1,8 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
+import { subscribeAttention } from "../hooks/attention";
+import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface ProgressBarProps {
   /** Progress value 0-100 */
@@ -9,6 +11,8 @@ export interface ProgressBarProps {
   showLabel?: boolean;
   /** Additional class names */
   className?: string;
+  /** Accessible name for the progress bar */
+  ariaLabel?: string;
 }
 
 /**
@@ -24,6 +28,7 @@ export const ProgressBar = ({
   value,
   showLabel = false,
   className = "",
+  ariaLabel,
 }: ProgressBarProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
@@ -45,9 +50,9 @@ export const ProgressBar = ({
     const k = 120;
     const d = 18;
 
-    const onMove = (e: PointerEvent) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
+    const onMove = ({ x, y }: { x: number; y: number }) => {
+      mouseX = x;
+      mouseY = y;
 
       const rect = track.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
@@ -58,7 +63,7 @@ export const ProgressBar = ({
       proximity = Math.max(0, 1 - dist / 150);
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
+    const unsubscribe = subscribeAttention(onMove);
 
     let raf: number;
     let lastTime = performance.now();
@@ -68,16 +73,22 @@ export const ProgressBar = ({
       const dt = Math.min((now - lastTime) / 1000, 0.033); // cap at ~30fps delta
       lastTime = now;
 
-      // Spring physics for fill width
+      // Spring physics for fill width — reduced motion jumps straight to the value
+      const reduce = reducedMotionNow();
       const target = Math.max(0, Math.min(100, value));
-      const force = -k * (currentWidth - target);
-      const damping = -d * velocity;
-      velocity += (force + damping) * dt;
-      currentWidth += velocity * dt;
+      if (reduce) {
+        currentWidth = target;
+        velocity = 0;
+      } else {
+        const force = -k * (currentWidth - target);
+        const damping = -d * velocity;
+        velocity += (force + damping) * dt;
+        currentWidth += velocity * dt;
+      }
 
       smoothProximity += (proximity - smoothProximity) * 0.1;
 
-      const t = now / 1000;
+      const t = motionTime();
       const rect = track.getBoundingClientRect();
       const xPc = ((rect.left + rect.width / 2) / window.innerWidth) * 100;
       const yPc = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
@@ -87,10 +98,10 @@ export const ProgressBar = ({
       fill.style.width = `${Math.max(0, currentWidth)}%`;
       fill.style.backgroundColor = `rgba(${r},${g},${b},0.5)`;
 
-      // Travelling shimmer on fill (~3s loop)
+      // Travelling shimmer on fill (~3s loop) — off under reduced motion
       const shimmerPos = ((t % 3) / 3) * 100;
       const sw = 20;
-      fill.style.backgroundImage = `linear-gradient(
+      fill.style.backgroundImage = reduce ? "none" : `linear-gradient(
         90deg,
         transparent ${shimmerPos - sw}%,
         rgba(255,255,255,0.12) ${shimmerPos}%,
@@ -117,7 +128,7 @@ export const ProgressBar = ({
     raf = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      unsubscribe();
       cancelAnimationFrame(raf);
     };
   }, [value]);
@@ -128,8 +139,9 @@ export const ProgressBar = ({
         <div className="flex justify-end mb-1.5">
           <span
             ref={labelRef}
+            aria-hidden="true"
             className="text-xs font-mono"
-            style={{ color: "rgba(255,255,255,0.4)" }}
+            style={{ color: "rgba(255,255,255,0.5)" }}
           >
             0%
           </span>
@@ -137,6 +149,11 @@ export const ProgressBar = ({
       )}
       <div
         ref={trackRef}
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(Math.max(0, Math.min(100, value)))}
+        aria-label={ariaLabel}
         className="w-full rounded-full overflow-hidden"
         style={{
           height: 6,

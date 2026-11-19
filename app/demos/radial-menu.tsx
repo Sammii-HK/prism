@@ -50,7 +50,7 @@ export function RadialMenuPanel({
       <div className="mx-auto grid w-full max-w-4xl gap-12 md:grid-cols-2">
         <section className="flex min-w-0 flex-col items-center gap-6">
           {!embedded && (
-            <p className="self-start text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.25)" }}>
+            <p className="self-start text-xs uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.5)" }}>
               radial-menu
             </p>
           )}
@@ -65,7 +65,7 @@ export function RadialMenuPanel({
             onActiveChange={onActiveChange}
             onOpenChange={onOpenChange}
           />
-          <p className="max-w-sm text-center text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.3)" }}>
+          <p className="max-w-sm text-center text-xs italic leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
             Tab to the plus, press Enter or Space. Arrow keys walk the ring, Home and End jump, type a letter to jump
             to a label, Escape closes and puts focus back on the plus.
           </p>
@@ -73,14 +73,14 @@ export function RadialMenuPanel({
 
         <section className="flex min-w-0 flex-col gap-6" aria-label="Menu state">
           <div>
-            <h3 className="mb-2 text-xs uppercase tracking-widest text-white/40">Last chosen</h3>
+            <h3 className="mb-2 text-xs uppercase tracking-widest text-white/50">Last chosen</h3>
             <p data-testid="chosen" className="text-2xl text-white/90">
-              {chosen ?? <span className="text-white/30">Nothing yet</span>}
+              {chosen ?? <span className="text-white/50">Nothing yet</span>}
             </p>
           </div>
 
           <div>
-            <h3 className="mb-2 text-xs uppercase tracking-widest text-white/40">Focus order</h3>
+            <h3 className="mb-2 text-xs uppercase tracking-widest text-white/50">Focus order</h3>
             <ol className="flex flex-wrap gap-2" data-testid="order">
               {ITEMS.map((item, i) => (
                 <li
@@ -99,7 +99,7 @@ export function RadialMenuPanel({
             <p className="mt-3 text-sm text-white/50">
               Menu is {open ? "open" : "closed"}. Only the highlighted item is a tab stop (roving tabindex).
             </p>
-            <p data-testid="trail" className="mt-1 font-mono text-xs text-white/40">
+            <p data-testid="trail" className="mt-1 font-mono text-xs text-white/50">
               Focus trail: {trail.length ? trail.join(" → ") : "none yet"}
             </p>
           </div>
@@ -108,7 +108,7 @@ export function RadialMenuPanel({
             <label className="flex items-center gap-2 text-sm text-white/70">
               <input type="checkbox" checked={localReduced} onChange={(e) => setLocalReduced(e.target.checked)} />
               Preview reduced motion
-              <span className="text-white/30">(system setting: {systemReduced ? "on" : "off"})</span>
+              <span className="text-white/50">(system setting: {systemReduced ? "on" : "off"})</span>
             </label>
           )}
         </section>
