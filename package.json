@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:tokens": "node --test --experimental-strip-types scripts/token-compose.test.ts"
+    "test:tokens": "node --test --experimental-strip-types scripts/token-compose.test.ts",
+    "test:lab": "node --test --experimental-strip-types scripts/spring-field.test.ts scripts/reading-pace.test.ts scripts/reorder.test.ts"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",
