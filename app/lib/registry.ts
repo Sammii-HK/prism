@@ -38,6 +38,7 @@ export const registry: RegistryItem[] = [
     tags: ["button", "loading", "state", "accessibility", "reduced-motion", "keyboard"],
     type: "component",
     category: "button",
+    featured: true,
   },
   {
     slug: "radial-menu",
