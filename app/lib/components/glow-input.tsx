@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
-import { subscribeAttention, type Attention } from "../hooks/attention";
+import { subscribeAttention, type Attention, proximityTo } from "../hooks/attention";
 import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowInputProps {
@@ -67,7 +67,7 @@ export const GlowInput = ({
   const startsFloated = isFilled || isFocused;
 
   const sp = useRef({
-    labelY: startsFloated ? -24 : 0,
+    labelY: startsFloated ? -12 : 0,
     labelYVel: 0,
     labelScale: startsFloated ? 0.75 : 1,
     labelScaleVel: 0,
@@ -106,13 +106,7 @@ export const GlowInput = ({
       // Calculate proximity to this input for hover glow
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const range = 120; // px — glow starts fading in from this distance
-        proximity = Math.max(0, 1 - dist / range);
+        proximity = proximityTo(rect, clientX, clientY);
       }
     };
     const unsubscribe = subscribeAttention(onMove);
@@ -130,7 +124,7 @@ export const GlowInput = ({
       const floated = focused || filled;
 
       // Spring targets
-      const targetLabelY = floated ? -24 : 0;
+      const targetLabelY = floated ? -12 : 0;
       const targetLabelScale = floated ? 0.75 : 1;
       // Proximity gives cursor-reactive border colour, focus adds outer glow
       const targetGlow = dis ? 0 : focused || Boolean(err) ? 1 : Math.min(proximity, 0.45);
@@ -229,10 +223,10 @@ export const GlowInput = ({
       <label
         ref={labelRef}
         htmlFor={fieldId}
-        className="absolute left-4 top-5 pointer-events-none text-sm inline-block will-change-transform origin-top-left"
+        className="absolute left-[17px] top-[21px] pointer-events-none text-sm inline-block will-change-transform origin-top-left"
         style={{
           color: "rgba(255,255,255,0.5)",
-          transform: `translateY(${startsFloated ? -24 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
+          transform: `translateY(${startsFloated ? -12 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
         }}
       >
         {label}

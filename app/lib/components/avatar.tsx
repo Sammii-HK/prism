@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
-import { subscribeAttention } from "../hooks/attention";
+import { proximityToCircle, subscribeAttention } from "../hooks/attention";
 import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface AvatarProps {
@@ -18,8 +18,8 @@ export interface AvatarProps {
 }
 
 /**
- * Circular avatar with image or fallback initials. Pastel ring glow reacts
- * to cursor proximity (120px range, capped at 0.45 opacity). Ring colour
+ * Circular avatar with image or fallback initials. The pastel ring glows
+ * only while the pointer is over this avatar (capped at 0.45 opacity). Ring colour
  * shifts with cursor position via pastelColour — all driven by refs + rAF.
  *
  * @example
@@ -48,14 +48,9 @@ export const Avatar = ({
       mouseX = x;
       mouseY = y;
 
-      const rect = el.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = mouseX - cx;
-      const dy = mouseY - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      const range = 120;
-      proximity = Math.max(0, 1 - dist / range);
+      // Only the avatar under the pointer answers, so a stack of them does
+      // not all brighten as the cursor passes along it.
+      proximity = proximityToCircle(el.getBoundingClientRect(), mouseX, mouseY);
     });
 
     let raf: number;

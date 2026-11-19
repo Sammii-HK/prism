@@ -10,7 +10,7 @@ import {
 import { useSystemReducedMotion } from "../lib/components/async-button";
 import type { DemoPanelProps } from "./async-button";
 
-const PHASES: LatencyPhase[] = ["idle", "waiting", "skeleton", "slow", "success", "error", "cancelled"];
+const PHASES: LatencyPhase[] = ["idle", "pending", "skeleton", "slow", "success", "error", "cancelled"];
 
 type Article = { title: string; lines: string[] };
 

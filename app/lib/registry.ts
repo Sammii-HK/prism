@@ -1,4 +1,10 @@
-export type ItemType = "component" | "playground";
+/**
+ * - component: reusable and importable, with a props API.
+ * - study: a case study or shared state, not something you drop into a page.
+ *   It lives in the lab and is linked from the components it informs.
+ * - playground: a page that hosts several of them.
+ */
+export type ItemType = "component" | "study" | "playground";
 
 export type Category =
   | "button"
@@ -59,18 +65,18 @@ export const registry: RegistryItem[] = [
     date: "2026-10-30",
     tech: ["Spring Physics", "requestAnimationFrame", "CSS Transition", "prefers-reduced-motion"],
     tags: ["motion", "comparison", "measurement", "spring", "performance", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "feedback",
   },
   {
     slug: "latency-adapt",
-    title: "Latency adapt",
-    tagline: "A region that changes what it shows to match how long the wait is.",
-    description: "Content region driven by a pure reducer. A response under 150 ms renders with no skeleton flash; a longer wait shows a skeleton; past 2 s it says how many seconds have passed and offers Cancel; failure shows an inline Retry. The demo has a latency slider, an outcome toggle and a timestamped log of the state machine's events. With reduced motion the skeleton is still and nothing fades.",
+    title: "Latency states",
+    tagline: "One honest lifecycle for anything that waits, shared by the components that do.",
+    description: "Not a component: a state. useLatency() runs a request through idle, pending, skeleton, slow and settled phases from one pure reducer. A response under the skeleton threshold never flashes a placeholder; past the slow threshold the interface says how long it has been and can offer Cancel; failure offers Retry; late results are ignored. The async button runs on a slice of the same machine (no skeleton, no cancel), and the loading region here runs on all of it. The demo has a latency slider, an outcome toggle and a timestamped log of every event. With reduced motion the skeleton is still and nothing fades.",
     date: "2026-10-30",
     tech: ["State Machine", "useReducer", "AbortController", "aria-live", "prefers-reduced-motion"],
     tags: ["loading", "skeleton", "latency", "state", "accessibility", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "feedback",
   },
   {
@@ -81,7 +87,7 @@ export const registry: RegistryItem[] = [
     date: "2026-11-02",
     tech: ["Seeded PRNG", "Validation", "pastelColour", "Design Tokens"],
     tags: ["tokens", "generative", "validation", "design-system", "determinism"],
-    type: "component",
+    type: "study",
     category: "layout",
   },
   {
@@ -92,7 +98,7 @@ export const registry: RegistryItem[] = [
     date: "2026-11-02",
     tech: ["Focus Management", "ARIA", "Dialog", "prefers-reduced-motion"],
     tags: ["focus", "dialog", "modal", "keyboard", "accessibility", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "disclosure",
   },
   {
@@ -165,8 +171,8 @@ export const registry: RegistryItem[] = [
   {
     slug: "floating-dock",
     title: "Floating dock",
-    tagline: "macOS-style dock with proximity scaling and glow.",
-    description: "macOS-style dock with proximity-based scaling and spring physics. Icons lift and glow with position-mapped pastel colour as your cursor approaches.",
+    tagline: "A dock where only the icon you point at lifts and glows.",
+    description: "Icons lift a few pixels, scale a little and glow with position-mapped pastel colour when you point at them, on spring physics. Slots never resize, so nothing slides out from under the cursor and every icon stays where you aimed. Keyboard focus moves the same highlight; with reduced motion only the glow responds.",
     date: "2026-03-10",
     tech: ["Spring Physics", "Proximity Detection", "pastelColour"],
     tags: ["dock", "navigation", "spring", "proximity", "glow"],
@@ -223,7 +229,7 @@ export const registry: RegistryItem[] = [
     slug: "spring-toggle",
     title: "Spring toggle",
     tagline: "Switch with spring thumb overshoot and pastel fill.",
-    description: "Toggle switch with spring-physics overshoot on the thumb. Track fills with cursor-mapped pastel colour when on. Border glow reacts to cursor proximity.",
+    description: "Toggle switch with spring-physics overshoot on the thumb. Track fills with cursor-mapped pastel colour when on. The border glows only while you point at it.",
     date: "2026-03-15",
     tech: ["Spring Physics", "requestAnimationFrame", "pastelColour"],
     tags: ["toggle", "switch", "spring", "form", "cursor"],
@@ -244,8 +250,8 @@ export const registry: RegistryItem[] = [
   {
     slug: "avatar",
     title: "Avatar",
-    tagline: "Image or initials with proximity-aware pastel ring.",
-    description: "Circular avatar with image or fallback initials. Pastel ring glow reacts to cursor proximity, shifting colour with pointer position via pastelColour. All glow via refs and rAF.",
+    tagline: "Image or initials with a pastel ring that answers only the one you point at.",
+    description: "Circular avatar with image or fallback initials. The pastel ring glows only while the pointer is over that avatar, so a stack never lights up all at once, and its colour shifts with pointer position via pastelColour. All glow via refs and rAF.",
     date: "2026-03-15",
     tech: ["requestAnimationFrame", "Proximity Detection", "pastelColour"],
     tags: ["avatar", "image", "initials", "glow", "cursor", "proximity"],
@@ -335,6 +341,7 @@ export const registry: RegistryItem[] = [
 ];
 
 export const components = registry.filter((r) => r.type === "component");
+export const studies = registry.filter((r) => r.type === "study");
 export const playground = registry.filter((r) => r.type === "playground");
 export const featured = registry.filter((r) => r.featured);
 

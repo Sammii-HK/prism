@@ -22,7 +22,7 @@ export interface DemoPanelProps {
 export interface AsyncButtonObservation {
   state: AsyncButtonState;
   event: AsyncButtonEvent;
-  /** ms since the press that started the request (0 for PRESS). */
+  /** ms since the press that started the request (0 for START). */
   atMs: number;
 }
 
@@ -59,7 +59,7 @@ export function AsyncButtonPanel({
   );
 
   const onStateChange = useCallback((next: AsyncButtonState, event: AsyncButtonEvent) => {
-    if (event === "PRESS") startedAt.current = performance.now();
+    if (event === "START") startedAt.current = performance.now();
     const at = Math.round(performance.now() - startedAt.current);
     setState(next);
     setLog((rows) => [{ at, event, to: next }, ...rows].slice(0, 8));

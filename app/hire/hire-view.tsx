@@ -442,15 +442,10 @@ export const HireView = () => {
           {/* Floating Dock */}
           <DemoFrame
             label="floating-dock"
-            caption="Magnetic magnification — neighbours scale with a falloff curve."
+            caption="Only the icon you point at lifts. Nothing slides out from under the cursor."
           >
             <div className="w-full flex items-center justify-center py-4">
-              <FloatingDock
-                items={DOCK_ITEMS}
-                iconSize={42}
-                gap={4}
-                maxScale={1.7}
-              />
+              <FloatingDock items={DOCK_ITEMS} iconSize={42} gap={8} />
             </div>
           </DemoFrame>
 

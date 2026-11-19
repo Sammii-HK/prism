@@ -32,7 +32,7 @@ const SUPPORT = [
  * component's own source.
  */
 export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
-  const section = { href: "/components", label: "Components" };
+  const section = item.type === "study" ? { href: "/lab", label: "Lab" } : { href: "/components", label: "Components" };
   const importName = docs?.componentName;
 
   return (
@@ -47,7 +47,7 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
             <span aria-hidden="true" className="mx-2 text-white/30">
               /
             </span>
-            <span>{item.category}</span>
+            <span>{item.type === "study" ? "Case study" : item.category}</span>
           </nav>
           <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
