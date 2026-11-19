@@ -77,7 +77,34 @@ type Inspected = {
 export const XrayOverlay = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const [inspected, setInspected] = useState<Inspected | null>(null);
+
+  // Overlays live in the browser's top layer, above any z-index. X-ray joins
+  // it too, and steps back to the top whenever another one opens, so it
+  // always draws over the menu or dialog it is measuring.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const raise = () => {
+      try {
+        if (root.matches(":popover-open")) root.hidePopover();
+        root.showPopover();
+      } catch {
+        // No Popover API: it stays a fixed layer at z-90.
+      }
+    };
+    raise();
+    let open = -1;
+    const timer = window.setInterval(() => {
+      const count = document.querySelectorAll(":popover-open, dialog[open]").length;
+      if (count !== open) {
+        open = count;
+        raise();
+      }
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -341,7 +368,13 @@ export const XrayOverlay = () => {
   }, []);
 
   return (
-    <div {...{ [XRAY_ROOT_ATTR]: "" }} aria-hidden="true" className="pointer-events-none fixed inset-0 z-[90]">
+    <div
+      ref={rootRef}
+      {...{ [XRAY_ROOT_ATTR]: "" }}
+      popover="manual"
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-[90] m-0 h-full w-full overflow-visible border-0 bg-transparent p-0"
+    >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       <div
         ref={cardRef}

@@ -264,6 +264,94 @@ const TooltipPreview = () => (
   </Frame>
 );
 
+// Overlays are drawn open and still, so a gallery card never throws a real overlay over the page.
+
+const panel = "rounded-xl border border-white/[0.12] bg-[#0b0b0b] shadow-[0_12px_32px_rgba(0,0,0,0.5)]";
+const chip = "rounded-lg border border-white/[0.12] bg-white/[0.05] px-3 py-1.5 text-[11px] text-white/70";
+
+const PopoverPreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="flex flex-col items-start gap-2">
+      <span className={chip}>Share</span>
+      <div className={`${panel} w-44 p-3`} style={{ borderColor: "rgb(190 210 255 / 0.3)" }}>
+        <div className="h-2 w-20 rounded bg-white/25" />
+        <div className="mt-3 flex gap-1.5">
+          <div className="h-6 flex-1 rounded-md bg-white/[0.06]" />
+          <div className="h-6 w-10 rounded-md bg-white/[0.12]" />
+        </div>
+      </div>
+    </div>
+  </Frame>
+);
+
+const MenuPreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="flex flex-col items-end gap-2">
+      <span className={chip}>⋯</span>
+      <div className={`${panel} relative w-40 p-1`}>
+        {["Open", "Rename", "Duplicate"].map((l, i) => (
+          <div key={l} className={`rounded-md px-2.5 py-1.5 text-[11px] ${i === 1 ? "bg-white/[0.09] text-white" : "text-white/60"}`}>
+            {l}
+          </div>
+        ))}
+        <div className="mx-2 my-1 h-px bg-white/[0.08]" />
+        <div className="rounded-md px-2.5 py-1.5 text-[11px] text-[#fca5a5]">Move to trash</div>
+      </div>
+    </div>
+  </Frame>
+);
+
+const DialogPreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="relative flex h-32 w-full max-w-[220px] items-center justify-center rounded-xl bg-black/60">
+      <div className={`${panel} w-40 p-3`}>
+        <div className="h-2 w-24 rounded bg-white/30" />
+        <div className="mt-2 h-1.5 w-32 rounded bg-white/10" />
+        <div className="mt-4 flex justify-end gap-1.5">
+          <div className="h-5 w-11 rounded-md bg-white/[0.08]" />
+          <div className="h-5 w-11 rounded-md bg-[#fca5a5]/20" />
+        </div>
+      </div>
+    </div>
+  </Frame>
+);
+
+const SheetPreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="relative h-32 w-full max-w-[220px] overflow-hidden rounded-xl bg-black/50">
+      <div className="absolute inset-y-0 right-0 w-24 rounded-l-xl border-l border-white/[0.12] bg-[#0b0b0b] p-3">
+        <div className="h-2 w-14 rounded bg-white/30" />
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="mt-3 flex items-center justify-between">
+            <div className="h-1.5 w-10 rounded bg-white/15" />
+            <div className={`h-3 w-5 rounded-full ${i === 1 ? "bg-white/10" : "bg-white/40"}`} />
+          </div>
+        ))}
+      </div>
+      <div className="absolute inset-y-0 right-[92px] my-auto h-6 w-0.5 rounded-full bg-white/25" />
+    </div>
+  </Frame>
+);
+
+const ToastPreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="relative h-24 w-48">
+      {[2, 1, 0].map((i) => (
+        <div
+          key={i}
+          className={`${panel} absolute inset-x-0 bottom-0 flex items-center gap-2 px-3 py-2.5`}
+          style={{ transform: `translateY(${-i * 9}px) scale(${1 - i * 0.05})`, opacity: i === 0 ? 1 : 0.7 - i * 0.15 }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" style={{ opacity: i === 0 ? 1 : 0 }} />
+          <span className="text-[11px] text-white/80" style={{ opacity: i === 0 ? 1 : 0 }}>
+            Saved
+          </span>
+        </div>
+      ))}
+    </div>
+  </Frame>
+);
+
 export const previewMap: Record<string, React.ComponentType> = {
   // Components
   "animated-border": AnimatedBorderPreview,
@@ -277,6 +365,11 @@ export const previewMap: Record<string, React.ComponentType> = {
   "spotlight-card": SpotlightCardPreview,
   "ripple-button": RippleButtonPreview,
   "tooltip": TooltipPreview,
+  "popover": PopoverPreview,
+  "menu": MenuPreview,
+  "dialog": DialogPreview,
+  "sheet": SheetPreview,
+  "toast": ToastPreview,
   "floating-dock": FloatingDockPreview,
   "spring-toggle": SpringTogglePreview,
   "hover-reveal": HoverRevealPreview,

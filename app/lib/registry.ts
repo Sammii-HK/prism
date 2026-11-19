@@ -14,6 +14,7 @@ export type Category =
   | "layout"
   | "text"
   | "disclosure"
+  | "overlay"
   | "media"
   | "playground";
 
@@ -292,15 +293,71 @@ export const registry: RegistryItem[] = [
     category: "button",
   },
   {
+    slug: "popover",
+    title: "Popover",
+    tagline: "A panel that escapes every clipped parent.",
+    description: "A panel attached to a button, for a share link, a filter or a small form. It sits in the top layer, so overflow, transforms and z-index on any ancestor cannot trap it, and it is placed with CSS anchor positioning where the browser has it, falling back to measuring in JavaScript. Focus moves in on open; Escape gives it back to the trigger, a click elsewhere leaves it where you put it. It springs out of whichever side it lands on.",
+    date: "2026-11-19",
+    tech: ["Popover API", "CSS anchor positioning", "Spring Physics", "Focus management"],
+    tags: ["popover", "overlay", "top layer", "anchor", "accessibility"],
+    type: "component",
+    category: "overlay",
+    featured: true,
+  },
+  {
+    slug: "menu",
+    title: "Menu",
+    tagline: "An action menu with one highlight that springs.",
+    description: "The WAI-ARIA menu button pattern: arrows move, Home and End jump, typing a letter jumps, Enter chooses and Escape gives focus back to the button. ArrowUp opens at the last item. Check items stay open; actions close first, so anything they open remembers the button. One pill springs between items whether focus moves by keyboard or pointer.",
+    date: "2026-11-19",
+    tech: ["role=menu", "Roving focus", "Typeahead", "Spring Physics", "Popover API"],
+    tags: ["menu", "dropdown", "actions", "overlay", "keyboard"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "dialog",
+    title: "Dialog",
+    tagline: "A modal that makes the page inert, not just covered.",
+    description: "Built on the native dialog element and showModal(), so the browser makes the rest of the page inert and puts the dialog in the top layer. Prism adds what the browser cannot: the panel and backdrop spring both ways, and Escape is routed through the spring. Focus moves to data-autofocus and returns to the invoker. The alertdialog role drops the close button and ignores backdrop presses for confirmations.",
+    date: "2026-11-19",
+    tech: ["<dialog>", "showModal()", "inert", "Spring Physics", "Scroll lock"],
+    tags: ["dialog", "modal", "alertdialog", "overlay", "focus"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "sheet",
+    title: "Sheet",
+    tagline: "An edge panel you can drag closed.",
+    description: "The same native modal as Dialog, sliding in from the right, the left or the bottom. Drag its handle and it follows one to one, resisting the wrong way. On release the spring takes over from exactly where it was let go, carrying the drag's speed: past a third of the way or flicked, it closes; otherwise it settles back. With reduced motion it fades in place.",
+    date: "2026-11-19",
+    tech: ["<dialog>", "Pointer capture", "Spring Physics", "Velocity handoff"],
+    tags: ["sheet", "drawer", "bottom sheet", "overlay", "gesture"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "toast",
+    title: "Toast",
+    tagline: "Notifications that respect the latency rule.",
+    description: "Call toast() from anywhere. The newest sits in front with the rest peeking behind; hover or focus fans them out and pauses every timer, as does leaving the tab. Swipe one away and the spring keeps the swipe's speed. toast.promise shows nothing for a request that settles inside 400ms, so a fast save never flashes a loading toast. Each is announced through a live region, errors assertively, and F8 reaches them from the keyboard. Toasts with an action wait to be dismissed.",
+    date: "2026-11-19",
+    tech: ["aria-live", "Popover API", "Spring Physics", "Latency states"],
+    tags: ["toast", "notification", "snackbar", "overlay", "live region"],
+    type: "component",
+    category: "overlay",
+  },
+  {
     slug: "tooltip",
     title: "Tooltip",
     tagline: "A tooltip that stays next to what it describes.",
-    description: "Anchored tooltip that sits centred on its trigger. It appears after a short hover or straight away on keyboard focus, closes on Escape, and is linked with aria-describedby. The border takes the Prism colour of where the trigger sits on the page.",
+    description: "Anchored tooltip that sits centred on its trigger. It appears after a short hover or straight away on keyboard focus, closes on Escape, and is linked with aria-describedby. It shares the overlay engine with Popover and Menu, so a clipped card cannot cut it off and it flips below when there is no room. The border takes the Prism colour of where the trigger sits on the page.",
     date: "2026-11-17",
-    tech: ["aria-describedby", "Focus Visible", "pastelColour"],
+    tech: ["aria-describedby", "Popover API", "CSS anchor positioning", "pastelColour"],
     tags: ["tooltip", "hint", "label", "accessibility"],
     type: "component",
-    category: "feedback",
+    category: "overlay",
   },
   {
     slug: "ripple-button",
