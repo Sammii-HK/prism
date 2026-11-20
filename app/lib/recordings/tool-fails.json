@@ -1,0 +1,175 @@
+{
+  "id": "tool-fails",
+  "title": "A tool fails and the model recovers",
+  "prompt": "Which Prism component should I use for a share-link panel that opens from a button?",
+  "note": "The first get_component call was made to fail with a timeout while recording. The recovery is the model's own.",
+  "model": "qwen2.5-coder:7b (local, through Ollama)",
+  "recordedAt": "2026-11-19",
+  "sources": [
+    {
+      "n": 1,
+      "title": "Async button",
+      "href": "/async-button"
+    },
+    {
+      "n": 2,
+      "title": "Icon button",
+      "href": "/icon-button"
+    },
+    {
+      "n": 3,
+      "title": "Ripple button",
+      "href": "/ripple-button"
+    },
+    {
+      "n": 4,
+      "title": "Popover",
+      "href": "/popover"
+    }
+  ],
+  "events": [
+    {
+      "t": 10494,
+      "type": "tool_call",
+      "id": "call-1",
+      "name": "search_components",
+      "args": {
+        "query": "share-link panel button"
+      }
+    },
+    {
+      "t": 10497,
+      "type": "tool_result",
+      "id": "call-1",
+      "ok": true,
+      "summary": "Found Async button, Icon button, Ripple button, Popover",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Async button",
+          "href": "/async-button"
+        },
+        {
+          "n": 2,
+          "title": "Icon button",
+          "href": "/icon-button"
+        },
+        {
+          "n": 3,
+          "title": "Ripple button",
+          "href": "/ripple-button"
+        },
+        {
+          "n": 4,
+          "title": "Popover",
+          "href": "/popover"
+        }
+      ]
+    },
+    {
+      "t": 22167,
+      "type": "tool_call",
+      "id": "call-2",
+      "name": "get_component",
+      "args": {
+        "slug": "popover"
+      }
+    },
+    {
+      "t": 23975,
+      "type": "tool_result",
+      "id": "call-2",
+      "ok": false,
+      "summary": "Timed out after 1.8s"
+    },
+    {
+      "t": 26965,
+      "type": "text",
+      "text": "It"
+    },
+    {
+      "t": 27302,
+      "type": "text",
+      "text": " seems"
+    },
+    {
+      "t": 27533,
+      "type": "text",
+      "text": " there"
+    },
+    {
+      "t": 27769,
+      "type": "text",
+      "text": " was"
+    },
+    {
+      "t": 27980,
+      "type": "text",
+      "text": " an"
+    },
+    {
+      "t": 28167,
+      "type": "text",
+      "text": " issue"
+    },
+    {
+      "t": 28540,
+      "type": "text",
+      "text": " with"
+    },
+    {
+      "t": 28749,
+      "type": "text",
+      "text": " retrieving"
+    },
+    {
+      "t": 28976,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 29227,
+      "type": "text",
+      "text": " component"
+    },
+    {
+      "t": 29373,
+      "type": "text",
+      "text": " details"
+    },
+    {
+      "t": 29583,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 29819,
+      "type": "text",
+      "text": " Please"
+    },
+    {
+      "t": 30041,
+      "type": "text",
+      "text": " try"
+    },
+    {
+      "t": 30355,
+      "type": "text",
+      "text": " again"
+    },
+    {
+      "t": 30546,
+      "type": "text",
+      "text": " later"
+    },
+    {
+      "t": 30899,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 31161,
+      "type": "done"
+    }
+  ]
+}

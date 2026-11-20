@@ -46,7 +46,7 @@ scout-findings-*.json
 SCOUT_REPORT_*.json
 
 # recordings
-recordings/
+/recordings/
 
 # typescript
 *.tsbuildinfo

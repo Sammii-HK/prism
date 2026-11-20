@@ -1,0 +1,407 @@
+{
+  "id": "tool-fails-retry",
+  "title": "The retry",
+  "prompt": "Which Prism component should I use for a share-link panel that opens from a button?",
+  "note": "A second, separate run of the same question, recorded with nothing injected. Played when you press Retry.",
+  "model": "qwen2.5-coder:7b (local, through Ollama)",
+  "recordedAt": "2026-11-19",
+  "sources": [
+    {
+      "n": 1,
+      "title": "Async button",
+      "href": "/async-button"
+    },
+    {
+      "n": 2,
+      "title": "Icon button",
+      "href": "/icon-button"
+    },
+    {
+      "n": 3,
+      "title": "Ripple button",
+      "href": "/ripple-button"
+    },
+    {
+      "n": 4,
+      "title": "Popover",
+      "href": "/popover"
+    }
+  ],
+  "events": [
+    {
+      "t": 9513,
+      "type": "tool_call",
+      "id": "call-1",
+      "name": "search_components",
+      "args": {
+        "query": "share-link panel button"
+      }
+    },
+    {
+      "t": 9514,
+      "type": "tool_result",
+      "id": "call-1",
+      "ok": true,
+      "summary": "Found Async button, Icon button, Ripple button, Popover",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Async button",
+          "href": "/async-button"
+        },
+        {
+          "n": 2,
+          "title": "Icon button",
+          "href": "/icon-button"
+        },
+        {
+          "n": 3,
+          "title": "Ripple button",
+          "href": "/ripple-button"
+        },
+        {
+          "n": 4,
+          "title": "Popover",
+          "href": "/popover"
+        }
+      ]
+    },
+    {
+      "t": 16372,
+      "type": "tool_call",
+      "id": "call-2",
+      "name": "get_component",
+      "args": {
+        "slug": "popover"
+      }
+    },
+    {
+      "t": 16372,
+      "type": "tool_result",
+      "id": "call-2",
+      "ok": true,
+      "summary": "Read Popover",
+      "sources": [
+        {
+          "n": 4,
+          "title": "Popover",
+          "href": "/popover"
+        }
+      ]
+    },
+    {
+      "t": 20398,
+      "type": "text",
+      "text": "The"
+    },
+    {
+      "t": 20501,
+      "type": "text",
+      "text": " best"
+    },
+    {
+      "t": 20649,
+      "type": "text",
+      "text": " match"
+    },
+    {
+      "t": 20819,
+      "type": "text",
+      "text": " for"
+    },
+    {
+      "t": 20975,
+      "type": "text",
+      "text": " your"
+    },
+    {
+      "t": 21152,
+      "type": "text",
+      "text": " needs"
+    },
+    {
+      "t": 21343,
+      "type": "text",
+      "text": " is"
+    },
+    {
+      "t": 21521,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 21770,
+      "type": "text",
+      "text": " Pop"
+    },
+    {
+      "t": 22000,
+      "type": "text",
+      "text": "over"
+    },
+    {
+      "t": 22225,
+      "type": "text",
+      "text": " component"
+    },
+    {
+      "t": 22462,
+      "type": "text",
+      "text": " ["
+    },
+    {
+      "t": 22704,
+      "type": "text",
+      "text": "4"
+    },
+    {
+      "t": 23025,
+      "type": "text",
+      "text": "]."
+    },
+    {
+      "t": 23310,
+      "type": "text",
+      "text": " It"
+    },
+    {
+      "t": 23537,
+      "type": "text",
+      "text": "'s"
+    },
+    {
+      "t": 23748,
+      "type": "text",
+      "text": " designed"
+    },
+    {
+      "t": 23955,
+      "type": "text",
+      "text": " to"
+    },
+    {
+      "t": 24132,
+      "type": "text",
+      "text": " be"
+    },
+    {
+      "t": 24362,
+      "type": "text",
+      "text": " attached"
+    },
+    {
+      "t": 24583,
+      "type": "text",
+      "text": " to"
+    },
+    {
+      "t": 24771,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 25038,
+      "type": "text",
+      "text": " button"
+    },
+    {
+      "t": 25301,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 25511,
+      "type": "text",
+      "text": " can"
+    },
+    {
+      "t": 25704,
+      "type": "text",
+      "text": " be"
+    },
+    {
+      "t": 25894,
+      "type": "text",
+      "text": " used"
+    },
+    {
+      "t": 26105,
+      "type": "text",
+      "text": " for"
+    },
+    {
+      "t": 26348,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 26567,
+      "type": "text",
+      "text": " share"
+    },
+    {
+      "t": 26838,
+      "type": "text",
+      "text": " link"
+    },
+    {
+      "t": 27036,
+      "type": "text",
+      "text": " panel"
+    },
+    {
+      "t": 27316,
+      "type": "text",
+      "text": " or"
+    },
+    {
+      "t": 27676,
+      "type": "text",
+      "text": " other"
+    },
+    {
+      "t": 27898,
+      "type": "text",
+      "text": " small"
+    },
+    {
+      "t": 28106,
+      "type": "text",
+      "text": " forms"
+    },
+    {
+      "t": 28276,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 28493,
+      "type": "text",
+      "text": " The"
+    },
+    {
+      "t": 28733,
+      "type": "text",
+      "text": " popover"
+    },
+    {
+      "t": 28924,
+      "type": "text",
+      "text": " will"
+    },
+    {
+      "t": 29138,
+      "type": "text",
+      "text": " appear"
+    },
+    {
+      "t": 29435,
+      "type": "text",
+      "text": " in"
+    },
+    {
+      "t": 29631,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 29816,
+      "type": "text",
+      "text": " top"
+    },
+    {
+      "t": 30050,
+      "type": "text",
+      "text": " layer"
+    },
+    {
+      "t": 30321,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 30571,
+      "type": "text",
+      "text": " ensuring"
+    },
+    {
+      "t": 30918,
+      "type": "text",
+      "text": " it"
+    },
+    {
+      "t": 31135,
+      "type": "text",
+      "text": " remains"
+    },
+    {
+      "t": 31362,
+      "type": "text",
+      "text": " visible"
+    },
+    {
+      "t": 31587,
+      "type": "text",
+      "text": " even"
+    },
+    {
+      "t": 31856,
+      "type": "text",
+      "text": " if"
+    },
+    {
+      "t": 32076,
+      "type": "text",
+      "text": " its"
+    },
+    {
+      "t": 32269,
+      "type": "text",
+      "text": " parent"
+    },
+    {
+      "t": 32509,
+      "type": "text",
+      "text": " elements"
+    },
+    {
+      "t": 32677,
+      "type": "text",
+      "text": " have"
+    },
+    {
+      "t": 32902,
+      "type": "text",
+      "text": " overflow"
+    },
+    {
+      "t": 33135,
+      "type": "text",
+      "text": " or"
+    },
+    {
+      "t": 33331,
+      "type": "text",
+      "text": " z"
+    },
+    {
+      "t": 33569,
+      "type": "text",
+      "text": "-index"
+    },
+    {
+      "t": 33821,
+      "type": "text",
+      "text": " issues"
+    },
+    {
+      "t": 34056,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 34440,
+      "type": "done"
+    }
+  ]
+}
