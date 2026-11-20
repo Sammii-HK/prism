@@ -349,6 +349,18 @@ export const registry: RegistryItem[] = [
     category: "overlay",
   },
   {
+    slug: "ai-response",
+    title: "AI response",
+    tagline: "A streamed answer that is honest about where it is.",
+    description: "An AI response with a state for everything that happens: nothing drawn for a fast start, then thinking, each tool call as a step with its arguments one click away, text revealed at an even pace instead of in bursts, citations that only link when a source is behind them, a 'still working' with Stop when nothing arrives, and Retry that keeps what came. Screen readers hear the finished answer once, not every token. The demo replays real runs from a local model at their recorded pace, including a tool timing out and the model reading the wrong component.",
+    date: "2026-11-19",
+    tech: ["Streaming", "Tool calls", "aria-live", "Latency states", "Recorded replay"],
+    tags: ["ai", "assistant", "chat", "streaming", "llm", "citations"],
+    type: "component",
+    category: "feedback",
+    featured: true,
+  },
+  {
     slug: "tooltip",
     title: "Tooltip",
     tagline: "A tooltip that stays next to what it describes.",

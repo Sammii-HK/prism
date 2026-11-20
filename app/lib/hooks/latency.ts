@@ -15,6 +15,11 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
  * - slow: it has taken long enough that the interface should say so.
  * - success / error / cancelled: settled. START runs it again, RESET clears it.
  */
+/** Under this, show nothing new: a fast response never flashes a placeholder. Shared by every waiting surface. */
+export const QUIET_MS = 400;
+/** Past this with no progress, say it is slow and offer a way out. */
+export const SLOW_MS = 2000;
+
 export type LatencyPhase = "idle" | "pending" | "skeleton" | "slow" | "success" | "error" | "cancelled";
 
 export type LatencyEvent = "START" | "SHOW_SKELETON" | "SLOW" | "RESOLVE" | "REJECT" | "CANCEL" | "RESET";
@@ -79,7 +84,7 @@ export interface LatencyOptions<T> {
  * @example
  * const { phase, start } = useLatency({ run: (signal) => fetch("/api", { signal }), slowAfterMs: 1500 });
  */
-export const useLatency = <T>({ run, skeletonAfterMs, slowAfterMs = 2000, successHoldMs, onEvent }: LatencyOptions<T>) => {
+export const useLatency = <T>({ run, skeletonAfterMs, slowAfterMs = SLOW_MS, successHoldMs, onEvent }: LatencyOptions<T>) => {
   const [phase, dispatch] = useReducer(latencyReducer, "idle");
   const phaseRef = useRef<LatencyPhase>("idle");
   const [data, setData] = useState<{ value: T } | null>(null);

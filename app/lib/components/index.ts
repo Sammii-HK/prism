@@ -9,6 +9,7 @@ export { Menu, type MenuItem } from "./menu";
 export { Dialog } from "./dialog";
 export { Sheet } from "./sheet";
 export { Toaster, toast } from "./toast";
+export { AIResponse } from "./ai-response";
 export { GlowCheckbox } from "./glow-checkbox";
 export { GlowInput } from "./glow-input";
 export { IconButton } from "./icon-button";

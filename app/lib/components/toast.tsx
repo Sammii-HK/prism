@@ -3,6 +3,7 @@ import { useEffect, useRef, useSyncExternalStore, type PointerEvent } from "reac
 import { X } from "lucide-react";
 import { reducedMotionNow } from "../hooks/reduced-motion";
 import { SPRINGS, stepSpring, type SpringState } from "../hooks/overlay";
+import { QUIET_MS } from "../hooks/latency";
 
 // --- Store -----------------------------------------------------------------
 
@@ -90,7 +91,7 @@ export const toast = Object.assign((title: string, opts?: ToastOptions) => upser
   promise: <T,>(
     promise: Promise<T>,
     messages: { loading: string; success: Message<T>; error: Message<unknown> },
-    { quietMs = 400 }: { quietMs?: number } = {}
+    { quietMs = QUIET_MS }: { quietMs?: number } = {}
   ) => {
     const id = `toast-${++counter}`;
     const timer = window.setTimeout(() => upsert(messages.loading, { id, tone: "loading" }), quietMs);

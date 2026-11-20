@@ -30,6 +30,7 @@ const componentMap: Record<string, React.ComponentType> = {
   "dialog": dynamic(() => import("../demos/dialog")),
   "sheet": dynamic(() => import("../demos/sheet")),
   "toast": dynamic(() => import("../demos/toast")),
+  "ai-response": dynamic(() => import("../demos/ai-response")),
   "floating-dock": dynamic(() => import("../demos/floating-dock")),
   "spring-toggle": dynamic(() => import("../demos/spring-toggle")),
   "hover-reveal": dynamic(() => import("../demos/hover-reveal")),

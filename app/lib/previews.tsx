@@ -352,6 +352,24 @@ const ToastPreview = () => (
   </Frame>
 );
 
+const AIResponsePreview = () => (
+  <Frame>
+    <div aria-hidden="true" className="grid w-52 gap-2">
+      <div className="ml-auto rounded-xl rounded-br-sm bg-white/[0.08] px-3 py-1.5 text-[10px] text-white/75">Which component confirms a delete?</div>
+      <div className={`${panel} p-3`}>
+        <div className="flex items-center gap-1.5 text-[10px] text-white/45">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#86efac]" /> Opened dialog
+        </div>
+        <div className="mt-2 h-1.5 w-36 rounded bg-white/25" />
+        <div className="mt-1.5 flex items-center gap-1">
+          <div className="h-1.5 w-24 rounded bg-white/15" />
+          <span className="rounded px-1 font-mono text-[8px] text-white/60 ring-1 ring-white/20">1</span>
+        </div>
+      </div>
+    </div>
+  </Frame>
+);
+
 export const previewMap: Record<string, React.ComponentType> = {
   // Components
   "animated-border": AnimatedBorderPreview,
@@ -370,6 +388,7 @@ export const previewMap: Record<string, React.ComponentType> = {
   "dialog": DialogPreview,
   "sheet": SheetPreview,
   "toast": ToastPreview,
+  "ai-response": AIResponsePreview,
   "floating-dock": FloatingDockPreview,
   "spring-toggle": SpringTogglePreview,
   "hover-reveal": HoverRevealPreview,
