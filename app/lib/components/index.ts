@@ -31,3 +31,6 @@ export { Skeleton } from "./skeleton";
 export { SpringToggle } from "./spring-toggle";
 export { SpotlightCard } from "../primitives/spotlight-card";
 export { CursorGlow } from "../primitives/cursor-glow";
+export { SpringFieldPanel } from "./spring-field";
+export { ReadingRailPanel } from "./reading-rail";
+export { FlipReorderPanel } from "./flip-reorder";
