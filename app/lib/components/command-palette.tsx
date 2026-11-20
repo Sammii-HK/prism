@@ -1,13 +1,14 @@
 "use client";
 import { Search, ChevronRight } from "lucide-react";
 import {
-  useCallback,
+  useCallback, useSyncExternalStore,
   useEffect,
   useId,
   useMemo,
   useRef,
   useState,
   type ReactNode,
+  type ButtonHTMLAttributes,
 } from "react";
 import { createPortal } from "react-dom";
 import { colourField, pastelColour } from "../primitives/gradient";
@@ -117,6 +118,14 @@ const fuzzyMatch = (
   return { score, matches };
 };
 
+function CommandChoice({command, onChoose, elementRef, ...props}: ButtonHTMLAttributes<HTMLButtonElement> & {command:Command; onChoose:(command:Command)=>void; elementRef:(element:HTMLButtonElement|null)=>void}) {
+  return <button {...props} ref={elementRef} onClick={()=>onChoose(command)} />;
+}
+
+const subscribeClient = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
 export const CommandPalette = ({
   open,
   onOpenChange,
@@ -127,11 +136,21 @@ export const CommandPalette = ({
   loading = false,
   triggerKey = { key: "k", meta: true },
 }: CommandPaletteProps) => {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeClient, clientSnapshot, serverSnapshot);
   const [query, setQuery] = useState("");
   const [highlight, setHighlight] = useState(0);
   const [stack, setStack] = useState<Frame[]>([]);
   const [announce, setAnnounce] = useState("");
+  const [previousOpen, setPreviousOpen] = useState(open);
+  if (previousOpen !== open) {
+    setPreviousOpen(open);
+    if (!open) { setQuery(""); setStack([]); }
+  }
+  const [previousScope, setPreviousScope] = useState({query, stack});
+  if (previousScope.query !== query || previousScope.stack !== stack) {
+    setPreviousScope({query, stack});
+    if (highlight !== 0) setHighlight(0);
+  }
 
   const listId = useId();
 
@@ -153,10 +172,7 @@ export const CommandPalette = ({
     live.current.open = open;
   }, [open]);
 
-  // Mount (for portal)
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+
 
   // Active commands (from current stack frame, or root)
   const activeCommands = useMemo(() => {
@@ -242,15 +258,9 @@ export const CommandPalette = ({
   // Flat list of items in render order (for keyboard navigation + indicator)
   const flatItems = useMemo(() => grouped.flatMap((g) => g.items), [grouped]);
 
-  // Reset highlight when result set changes
-  useEffect(() => {
-    setHighlight(0);
-  }, [query, stack]);
-
-  // Clamp highlight
-  useEffect(() => {
-    if (highlight >= flatItems.length) setHighlight(Math.max(0, flatItems.length - 1));
-  }, [flatItems.length, highlight]);
+  // Keep selection in range before rendering a shorter async result set.
+  const lastHighlight = Math.max(0, flatItems.length - 1);
+  if (highlight > lastHighlight) setHighlight(lastHighlight);
 
   // Debounced announce
   useEffect(() => {
@@ -291,8 +301,6 @@ export const CommandPalette = ({
       return () => window.clearTimeout(id);
     } else {
       // Reset internal state when closing
-      setQuery("");
-      setStack([]);
       swapTriggeredRef.current = false;
       const el = restoreFocusRef.current;
       if (el && typeof el.focus === "function") {
@@ -866,16 +874,17 @@ export const CommandPalette = ({
                       s.cmd.children && s.cmd.children.length > 0;
 
                     return (
-                      <button
+                      <CommandChoice
                         key={s.cmd.id}
-                        ref={(el) => {
+                        elementRef={(el) => {
                           itemRefs.current[idx] = el;
                         }}
                         id={`${listId}-item-${idx}`}
                         role="option"
                         aria-selected={selected}
                         type="button"
-                        onClick={() => runCommand(s.cmd)}
+                        command={s.cmd}
+                        onChoose={runCommand}
                         onMouseEnter={() => setHighlight(idx)}
                         className="relative w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg outline-none cursor-pointer select-none"
                         style={{
@@ -942,7 +951,7 @@ export const CommandPalette = ({
                             {directKey}
                           </span>
                         )}
-                      </button>
+                      </CommandChoice>
                     );
                   })}
                 </div>

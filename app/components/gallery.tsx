@@ -106,7 +106,7 @@ export const ComponentsGallery = () => {
           {(query || activeTabIdx>0 || availability!=='all') && <button type="button" onClick={reset} className="mt-3 inline-flex min-h-11 items-center gap-2 text-xs text-white/60 hover:text-white"><X size={14} aria-hidden="true" />Clear filters</button>}
         </Container>
 
-        <Container className="sticky top-14 z-30 -mt-px border-y border-white/[0.06] bg-[#050505]/75 py-3 backdrop-blur-xl">
+        <Container className="sticky top-[100px] sm:top-14 z-30 -mt-px border-y border-white/[0.06] bg-[#050505]/75 py-3 backdrop-blur-xl">
           <div className="flex items-center justify-between gap-4">
             <div className="-mx-1 overflow-x-auto px-1 no-scrollbar">
               <MorphTabs tabs={TAB_CATEGORIES.map(tabLabel)} activeIndex={activeTabIdx} onChange={setActiveTabIdx} />
