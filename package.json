@@ -8,7 +8,12 @@
     "start": "next start",
     "lint": "eslint",
     "test:tokens": "node --test --experimental-strip-types scripts/token-compose.test.ts",
-    "test:lab": "node --test --experimental-strip-types scripts/spring-field.test.ts scripts/reading-pace.test.ts scripts/reorder.test.ts"
+    "test:lab": "node --test --experimental-strip-types scripts/spring-field.test.ts scripts/reading-pace.test.ts scripts/reorder.test.ts",
+    "registry:build": "node scripts/build-registry.mjs",
+    "registry:check": "node scripts/build-registry.mjs --check",
+    "predev": "npm run registry:build",
+    "prebuild": "npm run registry:build",
+    "test:registry": "npm run registry:check && node --test scripts/registry.test.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",

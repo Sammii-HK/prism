@@ -8,6 +8,7 @@ import { SiteNav } from "../lib/site-nav";
 import { SiteFooter } from "../lib/shell/site-footer";
 import { Container, Eyebrow } from "../lib/shell/ui";
 import { AttentionReadout } from "../lib/shell/attention-readout";
+import installable from "../../registry.config.json";
 
 type Neighbour = { slug: string; title: string } | null;
 
@@ -34,6 +35,7 @@ const SUPPORT = [
 export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
   const section = item.type === "study" ? { href: "/lab", label: "Lab" } : { href: "/components", label: "Components" };
   const importName = docs?.componentName;
+  const canInstall = installable.items.some(({ name }) => name === item.slug);
 
   return (
     <div className="relative min-h-screen">
@@ -99,6 +101,17 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
             </aside>
 
             <div className="flex min-w-0 flex-col gap-20">
+              {canInstall && (
+                <section aria-labelledby="installation">
+                  <Eyebrow className="mb-3">Editable source</Eyebrow>
+                  <h2 id="installation" className="mb-6 scroll-mt-24 text-2xl font-light text-white/90">Use it in your project</h2>
+                  <CodeBlock label="terminal" code={`npx shadcn@latest add https://prism.sammii.dev/r/prism-${item.slug}.json`} />
+                  <p className="mt-4 text-sm leading-relaxed text-white/55">
+                    React 18+ and Tailwind CSS 4. Includes the shared hooks. Styled for a dark surface.
+                    {" "}<Link href="/docs/installation" className="underline underline-offset-4 hover:text-white">Setup and usage</Link>.
+                  </p>
+                </section>
+              )}
               {docs && (docs.examples.length > 0 || importName) && (
                 <section aria-labelledby="usage">
                   <Eyebrow className="mb-3">Usage</Eyebrow>
@@ -107,7 +120,7 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
                   </h2>
                   <div className="flex flex-col gap-4">
                     {importName && (
-                      <CodeBlock label="import" code={`import { ${importName} } from "${docs.importPath}";`} />
+                      <CodeBlock label="import" code={`import { ${importName} } from "${canInstall ? `@/components/ui/prism/components/${item.slug}` : docs.importPath}";`} />
                     )}
                     {docs.examples.map((example, i) => (
                       <CodeBlock key={i} label={`example ${i + 1}`} code={example} />
