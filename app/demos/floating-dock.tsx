@@ -72,7 +72,7 @@ const DOCK_ITEMS = [
 export default function FloatingDockDemo() {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#050505]">
-      <FloatingDock items={DOCK_ITEMS} iconSize={52} gap={6} maxScale={1.8} />
+      <FloatingDock items={DOCK_ITEMS} iconSize={52} gap={8} />
     </div>
   );
 }

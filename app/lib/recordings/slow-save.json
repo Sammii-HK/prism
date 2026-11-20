@@ -1,0 +1,402 @@
+{
+  "id": "slow-save",
+  "title": "Answers from two components",
+  "prompt": "How should my app show that a save is taking a while, without flashing a spinner on fast saves?",
+  "note": "Recorded as it ran. Nothing injected.",
+  "model": "qwen2.5-coder:7b (local, through Ollama)",
+  "recordedAt": "2026-11-19",
+  "sources": [
+    {
+      "n": 1,
+      "title": "Async button",
+      "href": "/async-button"
+    },
+    {
+      "n": 2,
+      "title": "Toast",
+      "href": "/toast"
+    },
+    {
+      "n": 3,
+      "title": "Glow checkbox",
+      "href": "/glow-checkbox"
+    },
+    {
+      "n": 4,
+      "title": "Glow select",
+      "href": "/glow-select"
+    }
+  ],
+  "events": [
+    {
+      "t": 6728,
+      "type": "tool_call",
+      "id": "call-1",
+      "name": "search_components",
+      "args": {
+        "query": "loading indicator for slow processes"
+      }
+    },
+    {
+      "t": 6730,
+      "type": "tool_result",
+      "id": "call-1",
+      "ok": true,
+      "summary": "Found Async button, Toast, Glow checkbox, Glow select",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Async button",
+          "href": "/async-button"
+        },
+        {
+          "n": 2,
+          "title": "Toast",
+          "href": "/toast"
+        },
+        {
+          "n": 3,
+          "title": "Glow checkbox",
+          "href": "/glow-checkbox"
+        },
+        {
+          "n": 4,
+          "title": "Glow select",
+          "href": "/glow-select"
+        }
+      ]
+    },
+    {
+      "t": 14561,
+      "type": "tool_call",
+      "id": "call-2",
+      "name": "get_component",
+      "args": {
+        "slug": "toast"
+      }
+    },
+    {
+      "t": 14561,
+      "type": "tool_result",
+      "id": "call-2",
+      "ok": true,
+      "summary": "Read Toast",
+      "sources": [
+        {
+          "n": 2,
+          "title": "Toast",
+          "href": "/toast"
+        }
+      ]
+    },
+    {
+      "t": 22123,
+      "type": "text",
+      "text": "Toast"
+    },
+    {
+      "t": 22242,
+      "type": "text",
+      "text": " is"
+    },
+    {
+      "t": 22365,
+      "type": "text",
+      "text": " your"
+    },
+    {
+      "t": 22527,
+      "type": "text",
+      "text": " best"
+    },
+    {
+      "t": 22692,
+      "type": "text",
+      "text": " bet"
+    },
+    {
+      "t": 22986,
+      "type": "text",
+      "text": " for"
+    },
+    {
+      "t": 23111,
+      "type": "text",
+      "text": " showing"
+    },
+    {
+      "t": 23335,
+      "type": "text",
+      "text": " that"
+    },
+    {
+      "t": 23474,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 23668,
+      "type": "text",
+      "text": " save"
+    },
+    {
+      "t": 23889,
+      "type": "text",
+      "text": " is"
+    },
+    {
+      "t": 24086,
+      "type": "text",
+      "text": " taking"
+    },
+    {
+      "t": 24336,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 24673,
+      "type": "text",
+      "text": " while"
+    },
+    {
+      "t": 24895,
+      "type": "text",
+      "text": " without"
+    },
+    {
+      "t": 25106,
+      "type": "text",
+      "text": " flashing"
+    },
+    {
+      "t": 25327,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 25572,
+      "type": "text",
+      "text": " spinner"
+    },
+    {
+      "t": 25740,
+      "type": "text",
+      "text": " on"
+    },
+    {
+      "t": 25937,
+      "type": "text",
+      "text": " fast"
+    },
+    {
+      "t": 26122,
+      "type": "text",
+      "text": " saves"
+    },
+    {
+      "t": 26337,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 26552,
+      "type": "text",
+      "text": " It"
+    },
+    {
+      "t": 26719,
+      "type": "text",
+      "text": " respects"
+    },
+    {
+      "t": 27204,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 27396,
+      "type": "text",
+      "text": " latency"
+    },
+    {
+      "t": 27558,
+      "type": "text",
+      "text": " rule"
+    },
+    {
+      "t": 27789,
+      "type": "text",
+      "text": " by"
+    },
+    {
+      "t": 27982,
+      "type": "text",
+      "text": " only"
+    },
+    {
+      "t": 28333,
+      "type": "text",
+      "text": " showing"
+    },
+    {
+      "t": 28662,
+      "type": "text",
+      "text": " notifications"
+    },
+    {
+      "t": 29055,
+      "type": "text",
+      "text": " when"
+    },
+    {
+      "t": 29297,
+      "type": "text",
+      "text": " necessary"
+    },
+    {
+      "t": 29551,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 29859,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 30158,
+      "type": "text",
+      "text": " it"
+    },
+    {
+      "t": 30417,
+      "type": "text",
+      "text": " provides"
+    },
+    {
+      "t": 30618,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 31052,
+      "type": "text",
+      "text": " better"
+    },
+    {
+      "t": 31289,
+      "type": "text",
+      "text": " user"
+    },
+    {
+      "t": 31654,
+      "type": "text",
+      "text": " experience"
+    },
+    {
+      "t": 31947,
+      "type": "text",
+      "text": " with"
+    },
+    {
+      "t": 32137,
+      "type": "text",
+      "text": " features"
+    },
+    {
+      "t": 32330,
+      "type": "text",
+      "text": " like"
+    },
+    {
+      "t": 32504,
+      "type": "text",
+      "text": " hover"
+    },
+    {
+      "t": 32773,
+      "type": "text",
+      "text": "/f"
+    },
+    {
+      "t": 33133,
+      "type": "text",
+      "text": "ocus"
+    },
+    {
+      "t": 33828,
+      "type": "text",
+      "text": " fan"
+    },
+    {
+      "t": 34402,
+      "type": "text",
+      "text": "-out"
+    },
+    {
+      "t": 35411,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 37182,
+      "type": "text",
+      "text": " swipe"
+    },
+    {
+      "t": 37314,
+      "type": "text",
+      "text": "-to"
+    },
+    {
+      "t": 39308,
+      "type": "text",
+      "text": "-dismiss"
+    },
+    {
+      "t": 39368,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 40956,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 44205,
+      "type": "text",
+      "text": " live"
+    },
+    {
+      "t": 45716,
+      "type": "text",
+      "text": " region"
+    },
+    {
+      "t": 46575,
+      "type": "text",
+      "text": " announcements"
+    },
+    {
+      "t": 46920,
+      "type": "text",
+      "text": " ["
+    },
+    {
+      "t": 47131,
+      "type": "text",
+      "text": "2"
+    },
+    {
+      "t": 47544,
+      "type": "text",
+      "text": "]."
+    },
+    {
+      "t": 47947,
+      "type": "done"
+    }
+  ]
+}

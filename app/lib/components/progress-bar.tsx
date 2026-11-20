@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect } from "react";
 import { pastelColour } from "../primitives/gradient";
-import { subscribeAttention } from "../hooks/attention";
+import { subscribeAttention, proximityTo } from "../hooks/attention";
 import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface ProgressBarProps {
@@ -55,12 +55,7 @@ export const ProgressBar = ({
       mouseY = y;
 
       const rect = track.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = Math.max(0, Math.abs(mouseX - cx) - rect.width / 2);
-      const dy = Math.max(0, Math.abs(mouseY - cy) - rect.height / 2);
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      proximity = Math.max(0, 1 - dist / 150);
+      proximity = proximityTo(rect, mouseX, mouseY);
     };
 
     const unsubscribe = subscribeAttention(onMove);

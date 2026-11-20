@@ -16,7 +16,7 @@ type FloatingDockProps = {
   gap?: number;
   /** Base icon size in pixels. Default: 48 */
   iconSize?: number;
-  /** Maximum scale factor on proximity. Default: 1.8 */
+  /** Maximum scale factor on proximity. Default: 1.2 */
   maxScale?: number;
 };
 
@@ -29,8 +29,9 @@ type IconState = {
 };
 
 /**
- * A macOS-style dock where icons scale up on proximity and glow
- * with cursor-position-mapped pastel colour.
+ * A dock where the icon under the pointer lifts and scales a little and
+ * glows with cursor-position-mapped pastel colour. Slots never resize, so
+ * every icon stays exactly where it was when you aimed at it.
  *
  * @example
  * <FloatingDock items={[
@@ -42,7 +43,7 @@ export const FloatingDock = ({
   items,
   gap = 8,
   iconSize = 48,
-  maxScale = 1.8,
+  maxScale = 1.2,
 }: FloatingDockProps) => {
   const dockRef = useRef<HTMLDivElement>(null);
   const iconsRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -63,10 +64,13 @@ export const FloatingDock = ({
     const dock = dockRef.current;
     if (!dock) return;
 
-    const RADIUS = iconSize * 2.2;
+    // Only the icon under the pointer magnifies. The radius stops short of
+    // the neighbour's centre, so neighbours stir only while the pointer is
+    // between two icons, and nothing moves out from under it.
+    const RADIUS = iconSize * 1.1;
     const STIFFNESS = 0.1;
     const DAMPING = 0.75;
-    const MAX_LIFT = -18;
+    const MAX_LIFT = -6;
 
     const onMove = (e: { clientX: number; clientY: number }) => {
       mouseRef.current.x = e.clientX;
@@ -146,12 +150,6 @@ export const FloatingDock = ({
         const xPc = (cx / window.innerWidth) * 100;
         const yPc = ((rect.top + rect.height / 2) / window.innerHeight) * 100;
         const { r, g, b } = pastelColour(xPc, yPc, t);
-
-        // Adjust wrapper width so neighbours move apart
-        const wrapper = el.parentElement;
-        if (wrapper) {
-          wrapper.style.width = `${iconSize * s.scale}px`;
-        }
 
         // Apply transforms
         el.style.transform = `translateY(${s.liftY}px) scale(${s.scale})`;

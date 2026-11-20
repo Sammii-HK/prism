@@ -20,20 +20,20 @@ export default function SpringToggleDemo() {
 
         {/* (a) Notifications — off by default */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/70">Notifications</span>
-          <SpringToggle checked={notifications} onChange={setNotifications} />
+          <span className="text-sm text-white/70" id="toggle-notifications">Notifications</span>
+          <SpringToggle checked={notifications} onChange={setNotifications} aria-labelledby="toggle-notifications" />
         </div>
 
         {/* (b) Dark mode — pre-checked */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/70">Dark mode</span>
-          <SpringToggle checked={darkMode} onChange={setDarkMode} />
+          <span className="text-sm text-white/70" id="toggle-dark-mode">Dark mode</span>
+          <SpringToggle checked={darkMode} onChange={setDarkMode} aria-labelledby="toggle-dark-mode" />
         </div>
 
         {/* (c) Beta features — disabled */}
         <div className="flex items-center justify-between">
-          <span className="text-sm text-white/50">Beta features</span>
-          <SpringToggle checked={beta} onChange={setBeta} disabled />
+          <span className="text-sm text-white/50" id="toggle-beta-features">Beta features</span>
+          <SpringToggle checked={beta} onChange={setBeta} disabled aria-labelledby="toggle-beta-features" />
         </div>
 
         {/* Footer hint */}

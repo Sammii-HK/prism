@@ -71,7 +71,8 @@ export const MorphTabs = ({
     const tabRect = tab.getBoundingClientRect();
 
     const s = stateRef.current;
-    s.targetX = tabRect.left - containerRect.left;
+    // Relative to the padding box, which is where an absolute child's left: 0 sits.
+    s.targetX = tabRect.left - containerRect.left - container.clientLeft;
     s.targetW = tabRect.width;
 
     // Snap on first measure
@@ -112,7 +113,7 @@ export const MorphTabs = ({
       if (tab && container) {
         const cr = container.getBoundingClientRect();
         const tr = tab.getBoundingClientRect();
-        s.targetX = tr.left - cr.left;
+        s.targetX = tr.left - cr.left - container.clientLeft;
         s.targetW = tr.width;
       }
 
@@ -176,7 +177,7 @@ export const MorphTabs = ({
       <div
         ref={indicatorRef}
         aria-hidden="true"
-        className="absolute top-1 h-[calc(100%-8px)] rounded-lg border pointer-events-none"
+        className="absolute left-0 top-1 h-[calc(100%-8px)] rounded-lg border pointer-events-none"
         style={{
           willChange: "transform, width",
           backfaceVisibility: "hidden",

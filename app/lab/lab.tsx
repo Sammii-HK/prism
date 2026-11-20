@@ -25,7 +25,7 @@ const SECTIONS = [
   { id: "async-button", label: "Async button" },
   { id: "radial-menu", label: "Radial menu" },
   { id: "motion-compare", label: "Motion compare" },
-  { id: "latency-adapt", label: "Latency adapt" },
+  { id: "latency-adapt", label: "Latency states" },
   { id: "token-compose", label: "Token compose" },
   { id: "focus-trail", label: "Focus trail" },
   { id: "spring-field", label: "Spring field" },
@@ -58,7 +58,7 @@ function AsyncSection({ mode }: { mode: Mode }) {
       events: p.events + 1,
       state: o.state,
       last: `+${o.atMs} ms ${o.event} → ${o.state}`,
-      slowAt: o.event === "PRESS" ? null : o.event === "SLOW" ? o.atMs : p.slowAt,
+      slowAt: o.event === "START" ? null : o.event === "SLOW" ? o.atMs : p.slowAt,
       succeeded: p.succeeded + (o.event === "RESOLVE" ? 1 : 0),
       failed: p.failed + (o.event === "REJECT" ? 1 : 0),
     }));
@@ -282,7 +282,7 @@ function LatencySection({ mode }: { mode: Mode }) {
       index="04"
       kicker="Loading"
       question="Should an interface behave differently at 80 milliseconds than at 4 seconds?"
-      name="Latency adapt"
+      name="Latency states"
       demo={<LatencyAdaptPanel embedded forceReduced={mode.forced} onObserve={onObserve} />}
       why={
         <>
@@ -291,6 +291,9 @@ function LatencySection({ mode }: { mode: Mode }) {
           </p>
           <p className="mt-3">
             The expressive part is that the interface changes with the wait, rather than treating every wait the same.
+          </p>
+          <p className="mt-3">
+            It is a state, not a component. <code className="font-mono text-[13px] text-white/80">useLatency()</code> holds the timing rules, and the async button above runs on a slice of the same machine: no skeleton, no cancel, the same thresholds and the same refusal of late results.
           </p>
         </>
       }

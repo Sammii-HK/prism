@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, type ReactNode } from "react";
 import { pastelColour } from "../primitives/gradient";
-import { subscribeAttention, type Attention } from "../hooks/attention";
+import { subscribeAttention, type Attention, proximityTo } from "../hooks/attention";
 import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowBadgeProps {
@@ -51,13 +51,7 @@ export const GlowBadge = ({
 
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const range = 100;
-        proximity = Math.max(0, 1 - dist / range);
+        proximity = proximityTo(rect, clientX, clientY);
       }
     };
     const unsubscribe = subscribeAttention(onMove);

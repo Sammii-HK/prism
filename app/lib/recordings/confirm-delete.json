@@ -1,0 +1,337 @@
+{
+  "id": "confirm-delete",
+  "title": "Picks a component, with sources",
+  "prompt": "Which Prism component should I use to confirm deleting a project, and why?",
+  "note": "Recorded as it ran. Nothing injected.",
+  "model": "qwen2.5-coder:7b (local, through Ollama)",
+  "recordedAt": "2026-11-19",
+  "sources": [
+    {
+      "n": 1,
+      "title": "Dialog",
+      "href": "/dialog"
+    }
+  ],
+  "events": [
+    {
+      "t": 8833,
+      "type": "tool_call",
+      "id": "call-1",
+      "name": "search_components",
+      "args": {
+        "query": "confirm delete project"
+      }
+    },
+    {
+      "t": 8848,
+      "type": "tool_result",
+      "id": "call-1",
+      "ok": true,
+      "summary": "Found Dialog",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Dialog",
+          "href": "/dialog"
+        }
+      ]
+    },
+    {
+      "t": 14431,
+      "type": "tool_call",
+      "id": "call-2",
+      "name": "get_component",
+      "args": {
+        "slug": "dialog"
+      }
+    },
+    {
+      "t": 14434,
+      "type": "tool_result",
+      "id": "call-2",
+      "ok": true,
+      "summary": "Read Dialog",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Dialog",
+          "href": "/dialog"
+        }
+      ]
+    },
+    {
+      "t": 18854,
+      "type": "text",
+      "text": "The"
+    },
+    {
+      "t": 18965,
+      "type": "text",
+      "text": " Dialog"
+    },
+    {
+      "t": 19188,
+      "type": "text",
+      "text": " component"
+    },
+    {
+      "t": 19437,
+      "type": "text",
+      "text": " ["
+    },
+    {
+      "t": 19642,
+      "type": "text",
+      "text": "1"
+    },
+    {
+      "t": 19799,
+      "type": "text",
+      "text": "]"
+    },
+    {
+      "t": 20100,
+      "type": "text",
+      "text": " is"
+    },
+    {
+      "t": 20736,
+      "type": "text",
+      "text": " ideal"
+    },
+    {
+      "t": 20992,
+      "type": "text",
+      "text": " for"
+    },
+    {
+      "t": 21285,
+      "type": "text",
+      "text": " confirming"
+    },
+    {
+      "t": 21555,
+      "type": "text",
+      "text": " a"
+    },
+    {
+      "t": 21824,
+      "type": "text",
+      "text": " project"
+    },
+    {
+      "t": 22199,
+      "type": "text",
+      "text": " deletion"
+    },
+    {
+      "t": 22444,
+      "type": "text",
+      "text": " because"
+    },
+    {
+      "t": 22573,
+      "type": "text",
+      "text": " it"
+    },
+    {
+      "t": 22755,
+      "type": "text",
+      "text": " makes"
+    },
+    {
+      "t": 22968,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 23163,
+      "type": "text",
+      "text": " rest"
+    },
+    {
+      "t": 23345,
+      "type": "text",
+      "text": " of"
+    },
+    {
+      "t": 23526,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 23729,
+      "type": "text",
+      "text": " page"
+    },
+    {
+      "t": 23922,
+      "type": "text",
+      "text": " inert"
+    },
+    {
+      "t": 24085,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 24318,
+      "type": "text",
+      "text": " ensuring"
+    },
+    {
+      "t": 24499,
+      "type": "text",
+      "text": " that"
+    },
+    {
+      "t": 24657,
+      "type": "text",
+      "text": " users"
+    },
+    {
+      "t": 24849,
+      "type": "text",
+      "text": " cannot"
+    },
+    {
+      "t": 25067,
+      "type": "text",
+      "text": " interact"
+    },
+    {
+      "t": 25340,
+      "type": "text",
+      "text": " with"
+    },
+    {
+      "t": 25546,
+      "type": "text",
+      "text": " other"
+    },
+    {
+      "t": 25793,
+      "type": "text",
+      "text": " elements"
+    },
+    {
+      "t": 26022,
+      "type": "text",
+      "text": " while"
+    },
+    {
+      "t": 26319,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 26571,
+      "type": "text",
+      "text": " dialog"
+    },
+    {
+      "t": 26826,
+      "type": "text",
+      "text": " is"
+    },
+    {
+      "t": 27038,
+      "type": "text",
+      "text": " open"
+    },
+    {
+      "t": 27228,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 27455,
+      "type": "text",
+      "text": " It"
+    },
+    {
+      "t": 27621,
+      "type": "text",
+      "text": " also"
+    },
+    {
+      "t": 27934,
+      "type": "text",
+      "text": " includes"
+    },
+    {
+      "t": 28598,
+      "type": "text",
+      "text": " features"
+    },
+    {
+      "t": 28915,
+      "type": "text",
+      "text": " like"
+    },
+    {
+      "t": 29095,
+      "type": "text",
+      "text": " focus"
+    },
+    {
+      "t": 29408,
+      "type": "text",
+      "text": " management"
+    },
+    {
+      "t": 29765,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 29945,
+      "type": "text",
+      "text": " role"
+    },
+    {
+      "t": 30174,
+      "type": "text",
+      "text": " attributes"
+    },
+    {
+      "t": 30397,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 30625,
+      "type": "text",
+      "text": " which"
+    },
+    {
+      "t": 30833,
+      "type": "text",
+      "text": " enhance"
+    },
+    {
+      "t": 31061,
+      "type": "text",
+      "text": " usability"
+    },
+    {
+      "t": 31264,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 31463,
+      "type": "text",
+      "text": " accessibility"
+    },
+    {
+      "t": 31648,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 31933,
+      "type": "done"
+    }
+  ]
+}

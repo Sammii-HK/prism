@@ -11,11 +11,12 @@ import { Container, Eyebrow, Rule, SectionHeading } from "./lib/shell/ui";
 import { AttentionReadout } from "./lib/shell/attention-readout";
 import { HeroStage } from "./lib/shell/hero-stage";
 import { ShowcaseCards } from "./showcase/showcase-cards";
+import { ExpressionsTeaser, XrayInvite } from "./lib/shell/expressions-teaser";
 
 const principles = [
   {
-    title: "Spring physics, not CSS transitions",
-    body: "Every motion integrates position and velocity every frame. Overshoot, damping, settle — motion that feels alive.",
+    title: "Springs, wherever they run",
+    body: "Every motion is a spring with hand-tuned stiffness and damping. Integrated every frame in JavaScript, or compiled to the same curve in CSS.",
   },
   {
     title: "Cursor-reactive colour",
@@ -98,6 +99,13 @@ export default function LandingPage() {
 
         <Rule />
 
+        {/* Expressions ----------------------------------------------------- */}
+        <Container as="section" className="py-20 sm:py-24">
+          <ExpressionsTeaser />
+        </Container>
+
+        <Rule />
+
         {/* Principles ------------------------------------------------------ */}
         <Container as="section" className="py-20 sm:py-24">
           <SectionHeading eyebrow="Principles" title="How it's made" />
@@ -130,6 +138,11 @@ export default function LandingPage() {
               <ComponentCard key={item.slug} item={item} featured />
             ))}
           </div>
+        </Container>
+
+        {/* X-ray ----------------------------------------------------------- */}
+        <Container as="section" className="pt-4">
+          <XrayInvite />
         </Container>
 
         {/* Lab ------------------------------------------------------------- */}

@@ -1,0 +1,287 @@
+{
+  "id": "wrong-source",
+  "title": "The model reads the wrong component",
+  "prompt": "What does Prism's action menu do with the keyboard?",
+  "note": "Recorded as it ran. Search ranked Menu first; the model opened Radial menu instead, on every seed tried. Left as it happened: the citation is how a reader catches it.",
+  "model": "qwen2.5-coder:7b (local, through Ollama)",
+  "recordedAt": "2026-11-19",
+  "sources": [
+    {
+      "n": 1,
+      "title": "Menu",
+      "href": "/menu"
+    },
+    {
+      "n": 2,
+      "title": "Radial menu",
+      "href": "/radial-menu"
+    },
+    {
+      "n": 3,
+      "title": "Async button",
+      "href": "/async-button"
+    },
+    {
+      "n": 4,
+      "title": "Toast",
+      "href": "/toast"
+    }
+  ],
+  "events": [
+    {
+      "t": 10022,
+      "type": "tool_call",
+      "id": "call-1",
+      "name": "search_components",
+      "args": {
+        "query": "action menu keyboard"
+      }
+    },
+    {
+      "t": 10023,
+      "type": "tool_result",
+      "id": "call-1",
+      "ok": true,
+      "summary": "Found Menu, Radial menu, Async button, Toast",
+      "sources": [
+        {
+          "n": 1,
+          "title": "Menu",
+          "href": "/menu"
+        },
+        {
+          "n": 2,
+          "title": "Radial menu",
+          "href": "/radial-menu"
+        },
+        {
+          "n": 3,
+          "title": "Async button",
+          "href": "/async-button"
+        },
+        {
+          "n": 4,
+          "title": "Toast",
+          "href": "/toast"
+        }
+      ]
+    },
+    {
+      "t": 17112,
+      "type": "tool_call",
+      "id": "call-2",
+      "name": "get_component",
+      "args": {
+        "slug": "radial-menu"
+      }
+    },
+    {
+      "t": 17112,
+      "type": "tool_result",
+      "id": "call-2",
+      "ok": true,
+      "summary": "Read Radial menu",
+      "sources": [
+        {
+          "n": 2,
+          "title": "Radial menu",
+          "href": "/radial-menu"
+        }
+      ]
+    },
+    {
+      "t": 20274,
+      "type": "text",
+      "text": "A"
+    },
+    {
+      "t": 20468,
+      "type": "text",
+      "text": " radial"
+    },
+    {
+      "t": 20650,
+      "type": "text",
+      "text": " menu"
+    },
+    {
+      "t": 20877,
+      "type": "text",
+      "text": " lets"
+    },
+    {
+      "t": 21069,
+      "type": "text",
+      "text": " users"
+    },
+    {
+      "t": 21278,
+      "type": "text",
+      "text": " navigate"
+    },
+    {
+      "t": 21497,
+      "type": "text",
+      "text": " options"
+    },
+    {
+      "t": 21715,
+      "type": "text",
+      "text": " using"
+    },
+    {
+      "t": 21989,
+      "type": "text",
+      "text": " keyboard"
+    },
+    {
+      "t": 22224,
+      "type": "text",
+      "text": " shortcuts"
+    },
+    {
+      "t": 22469,
+      "type": "text",
+      "text": " like"
+    },
+    {
+      "t": 22693,
+      "type": "text",
+      "text": " arrow"
+    },
+    {
+      "t": 22919,
+      "type": "text",
+      "text": " keys"
+    },
+    {
+      "t": 23154,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 23374,
+      "type": "text",
+      "text": " Home"
+    },
+    {
+      "t": 23586,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 23795,
+      "type": "text",
+      "text": " End"
+    },
+    {
+      "t": 23961,
+      "type": "text",
+      "text": ","
+    },
+    {
+      "t": 24194,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 24390,
+      "type": "text",
+      "text": " typing"
+    },
+    {
+      "t": 24600,
+      "type": "text",
+      "text": " to"
+    },
+    {
+      "t": 24779,
+      "type": "text",
+      "text": " select"
+    },
+    {
+      "t": 25002,
+      "type": "text",
+      "text": " an"
+    },
+    {
+      "t": 25208,
+      "type": "text",
+      "text": " item"
+    },
+    {
+      "t": 25429,
+      "type": "text",
+      "text": "."
+    },
+    {
+      "t": 25728,
+      "type": "text",
+      "text": " It"
+    },
+    {
+      "t": 25962,
+      "type": "text",
+      "text": " closes"
+    },
+    {
+      "t": 26179,
+      "type": "text",
+      "text": " on"
+    },
+    {
+      "t": 26377,
+      "type": "text",
+      "text": " Escape"
+    },
+    {
+      "t": 26657,
+      "type": "text",
+      "text": " and"
+    },
+    {
+      "t": 26915,
+      "type": "text",
+      "text": " returns"
+    },
+    {
+      "t": 27369,
+      "type": "text",
+      "text": " focus"
+    },
+    {
+      "t": 27574,
+      "type": "text",
+      "text": " to"
+    },
+    {
+      "t": 27752,
+      "type": "text",
+      "text": " the"
+    },
+    {
+      "t": 28089,
+      "type": "text",
+      "text": " trigger"
+    },
+    {
+      "t": 28342,
+      "type": "text",
+      "text": " ["
+    },
+    {
+      "t": 28661,
+      "type": "text",
+      "text": "2"
+    },
+    {
+      "t": 28885,
+      "type": "text",
+      "text": "]."
+    },
+    {
+      "t": 29243,
+      "type": "done"
+    }
+  ]
+}

@@ -1,42 +1,15 @@
 "use client";
-import { useCallback, useEffect, useReducer, useRef, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { useSystemReducedMotion } from "./async-button";
+import { useLatency, type LatencyLogEntry } from "../hooks/latency";
 
-/**
- * What the region is showing.
- * - waiting: a request is out but under the skeleton threshold. Nothing new is drawn.
- * - skeleton: it has taken longer than the threshold, so a placeholder appears.
- * - slow: it has taken long enough that the region says so and offers a cancel.
- */
-export type LatencyPhase = "idle" | "waiting" | "skeleton" | "slow" | "success" | "error" | "cancelled";
-
-export type LatencyEvent = "START" | "SHOW_SKELETON" | "SLOW" | "RESOLVE" | "REJECT" | "CANCEL";
-
-/**
- * Every legal transition. Anything not listed is ignored. Note that
- * waiting -> RESOLVE goes straight to success: a fast response never shows a
- * skeleton, so there is no flash of placeholder.
- */
-export const LATENCY_TRANSITIONS: Record<LatencyPhase, Partial<Record<LatencyEvent, LatencyPhase>>> = {
-  idle: { START: "waiting" },
-  waiting: { SHOW_SKELETON: "skeleton", SLOW: "slow", RESOLVE: "success", REJECT: "error", CANCEL: "cancelled" },
-  skeleton: { SLOW: "slow", RESOLVE: "success", REJECT: "error", CANCEL: "cancelled" },
-  slow: { RESOLVE: "success", REJECT: "error", CANCEL: "cancelled" },
-  success: { START: "waiting" },
-  error: { START: "waiting" },
-  cancelled: { START: "waiting" },
-};
-
-export const latencyReducer = (state: LatencyPhase, event: LatencyEvent): LatencyPhase =>
-  LATENCY_TRANSITIONS[state][event] ?? state;
-
-export interface LatencyLogEntry {
-  /** Milliseconds since the request started (0 for START). */
-  atMs: number;
-  event: LatencyEvent;
-  from: LatencyPhase;
-  to: LatencyPhase;
-}
+export {
+  LATENCY_TRANSITIONS,
+  latencyReducer,
+  type LatencyEvent,
+  type LatencyLogEntry,
+  type LatencyPhase,
+} from "../hooks/latency";
 
 export interface LatencyAdaptProps<T> {
   /** The request. Honour `signal` if you can; the component ignores late results either way. */
@@ -85,7 +58,8 @@ const DefaultSkeleton = ({ animate }: { animate: boolean }) => (
  *  - after `slowAfterMs` (2 s): a message with elapsed seconds and a Cancel;
  *  - on failure: an inline message with Retry.
  *
- * The logic is `latencyReducer`, a pure function you can test on its own.
+ * It runs on `useLatency` (hooks/latency.ts), the same states the async
+ * button uses; the logic underneath is `latencyReducer`, a pure function.
  * With reduced motion the skeleton is still, with no shimmer and no fade.
  *
  * @example
@@ -105,96 +79,12 @@ export const LatencyAdapt = <T,>({
   const systemReduced = useSystemReducedMotion();
   const reduced = reducedMotion ?? systemReduced;
 
-  const [phase, dispatchRaw] = useReducer(latencyReducer, "idle");
-  const phaseRef = useRef<LatencyPhase>("idle");
-  const [data, setData] = useState<{ value: T } | null>(null);
-  const [errorText, setErrorText] = useState("");
-  const [elapsedS, setElapsedS] = useState(0);
-
-  const requestId = useRef(0);
-  const startedAt = useRef(0);
-  const timers = useRef<number[]>([]);
-  const ticker = useRef<number | null>(null);
-  const controller = useRef<AbortController | null>(null);
-  const mounted = useRef(true);
-  const onEventRef = useRef(onEvent);
-  useEffect(() => {
-    onEventRef.current = onEvent;
-  }, [onEvent]);
-
-  const stopTimers = () => {
-    timers.current.forEach((t) => window.clearTimeout(t));
-    timers.current = [];
-    if (ticker.current !== null) window.clearInterval(ticker.current);
-    ticker.current = null;
-  };
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-      stopTimers();
-      controller.current?.abort();
-    };
-  }, []);
-
-  const send = useCallback((event: LatencyEvent) => {
-    const from = phaseRef.current;
-    const to = latencyReducer(from, event);
-    if (to === from) return false;
-    phaseRef.current = to;
-    dispatchRaw(event);
-    const atMs = event === "START" ? 0 : Math.round(performance.now() - startedAt.current);
-    onEventRef.current?.({ atMs, event, from, to });
-    return true;
-  }, []);
-
-  const start = useCallback(() => {
-    const p = phaseRef.current;
-    if (p === "waiting" || p === "skeleton" || p === "slow") return;
-    stopTimers();
-    startedAt.current = performance.now();
-    if (!send("START")) return;
-    const id = ++requestId.current;
-    const ctl = new AbortController();
-    controller.current = ctl;
-    const live = () => mounted.current && id === requestId.current;
-    timers.current.push(window.setTimeout(() => live() && send("SHOW_SKELETON"), skeletonAfterMs));
-    timers.current.push(
-      window.setTimeout(() => {
-        if (!live()) return;
-        send("SLOW");
-        const tick = () => setElapsedS(Math.floor((performance.now() - startedAt.current) / 1000));
-        tick();
-        ticker.current = window.setInterval(tick, 250);
-      }, slowAfterMs)
-    );
-    Promise.resolve()
-      .then(() => load(ctl.signal))
-      .then(
-        (value) => {
-          if (!live()) return;
-          stopTimers();
-          setData({ value });
-          send("RESOLVE");
-        },
-        (err: unknown) => {
-          if (!live()) return;
-          stopTimers();
-          setErrorText(err instanceof Error ? err.message : "Request failed");
-          send("REJECT");
-        }
-      );
-  }, [load, send, skeletonAfterMs, slowAfterMs]);
-
-  const cancel = useCallback(() => {
-    if (phaseRef.current !== "slow") return;
-    requestId.current++; // a late result can no longer move the region
-    stopTimers();
-    controller.current?.abort();
-    send("CANCEL");
-  }, [send]);
-
-  const busy = phase === "waiting" || phase === "skeleton" || phase === "slow";
+  const { phase, busy, data, error: errorText, elapsedS, start, cancel } = useLatency({
+    run: load,
+    skeletonAfterMs,
+    slowAfterMs,
+    onEvent,
+  });
 
   const status =
     phase === "skeleton"
@@ -237,7 +127,7 @@ export const LatencyAdapt = <T,>({
       >
         {phase === "idle" && <p className="text-sm text-white/50">Nothing loaded yet.</p>}
 
-        {phase === "waiting" &&
+        {phase === "pending" &&
           (data ? (
             <div style={{ opacity: 0.55 }}>{render(data.value)}</div>
           ) : (
@@ -253,7 +143,7 @@ export const LatencyAdapt = <T,>({
             </p>
             <button
               type="button"
-              onClick={cancel}
+              onClick={() => phase === "slow" && cancel()}
               className="rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
               style={{ border: "1px solid rgba(255,196,110,0.6)", background: "rgba(255,196,110,0.12)" }}
             >

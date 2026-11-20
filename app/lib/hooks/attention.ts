@@ -126,3 +126,27 @@ export const subscribeAttention = (listener: (attention: Attention) => void) => 
 
 /** The current attention point, for code that polls inside a rAF loop. */
 export const getAttention = (): Attention => state;
+
+/** How far outside an element its hover glow starts to fade in, in px. */
+export const HOVER_REACH = 16;
+
+/**
+ * How strongly an element should answer the attention point: 1 while the
+ * point is over it, easing to 0 within `reach` px outside it.
+ *
+ * The reach is shorter than the gap between neighbouring controls, so only
+ * the thing being pointed at lights up. Its neighbours stay at rest instead
+ * of all brightening together as the cursor passes.
+ */
+export const proximityTo = (rect: DOMRect, x: number, y: number, reach = HOVER_REACH) => {
+  const dx = Math.max(0, rect.left - x, x - rect.right);
+  const dy = Math.max(0, rect.top - y, y - rect.bottom);
+  return Math.max(0, 1 - Math.hypot(dx, dy) / reach);
+};
+
+/** The same, for a round element such as an avatar: measured from its edge, not its box. */
+export const proximityToCircle = (rect: DOMRect, x: number, y: number, reach = HOVER_REACH) => {
+  const radius = Math.min(rect.width, rect.height) / 2;
+  const dist = Math.max(0, Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2)) - radius);
+  return Math.max(0, 1 - dist / reach);
+};

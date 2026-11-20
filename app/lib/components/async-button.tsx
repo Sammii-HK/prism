@@ -1,34 +1,29 @@
 "use client";
-import { useCallback, useEffect, useReducer, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { sliceTransitions, useLatency, type LatencyPhase } from "../hooks/latency";
 
 /**
- * The states an async button can be in. Kept as a plain union so the demo can
- * draw the machine from the same source the component runs on.
+ * The states an async button can be in. They are the shared latency states
+ * (hooks/latency.ts), minus the two a button has no use for: it never draws
+ * a skeleton and it cannot be cancelled.
  */
-export type AsyncButtonState = "idle" | "pending" | "slow" | "success" | "error";
+export type AsyncButtonState = Extract<LatencyPhase, "idle" | "pending" | "slow" | "success" | "error">;
 
-export type AsyncButtonEvent = "PRESS" | "SLOW" | "RESOLVE" | "REJECT" | "RESET";
+export type AsyncButtonEvent = "START" | "SLOW" | "RESOLVE" | "REJECT" | "RESET";
+
+const BUTTON_STATES = ["idle", "pending", "slow", "success", "error"] as const satisfies readonly AsyncButtonState[];
+const BUTTON_EVENTS = ["START", "SLOW", "RESOLVE", "REJECT", "RESET"] as const satisfies readonly AsyncButtonEvent[];
 
 /**
- * Every legal transition. Anything not listed is ignored, so a second press
- * while pending cannot start a second request and a late result cannot move
- * a button that has already reset.
+ * Every legal transition, read straight from the shared latency machine.
+ * Anything not listed is ignored, so a second press while pending cannot
+ * start a second request and a late result cannot move a button that has
+ * already reset.
  */
-export const ASYNC_BUTTON_TRANSITIONS: Record<
-  AsyncButtonState,
-  Partial<Record<AsyncButtonEvent, AsyncButtonState>>
-> = {
-  idle: { PRESS: "pending" },
-  pending: { SLOW: "slow", RESOLVE: "success", REJECT: "error" },
-  slow: { RESOLVE: "success", REJECT: "error" },
-  success: { RESET: "idle", PRESS: "pending" },
-  error: { PRESS: "pending", RESET: "idle" },
-};
+export const ASYNC_BUTTON_TRANSITIONS = sliceTransitions(BUTTON_STATES, BUTTON_EVENTS);
 
-export const asyncButtonReducer = (
-  state: AsyncButtonState,
-  event: AsyncButtonEvent
-): AsyncButtonState => ASYNC_BUTTON_TRANSITIONS[state][event] ?? state;
+export const asyncButtonReducer = (state: AsyncButtonState, event: AsyncButtonEvent): AsyncButtonState =>
+  ASYNC_BUTTON_TRANSITIONS[state][event] ?? state;
 
 export interface AsyncButtonLabels {
   idle: string;
@@ -111,69 +106,20 @@ export const AsyncButton = ({
   const reduced = reducedMotion ?? systemReduced;
   const text = { ...DEFAULT_LABELS, ...labels };
 
-  const [state, dispatchRaw] = useReducer(asyncButtonReducer, "idle");
-  const stateRef = useRef<AsyncButtonState>("idle");
-  const requestId = useRef(0);
-  const timers = useRef<number[]>([]);
-  const mounted = useRef(true);
   const onStateChangeRef = useRef(onStateChange);
   useEffect(() => {
     onStateChangeRef.current = onStateChange;
   }, [onStateChange]);
 
-  const clearTimers = () => {
-    timers.current.forEach((t) => window.clearTimeout(t));
-    timers.current = [];
-  };
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-      clearTimers();
-    };
-  }, []);
-
-  /** Dispatch only legal events, and report real changes. */
-  const send = useCallback((event: AsyncButtonEvent) => {
-    const next = asyncButtonReducer(stateRef.current, event);
-    if (next === stateRef.current) return false;
-    stateRef.current = next;
-    dispatchRaw(event);
-    onStateChangeRef.current?.(next, event);
-    return true;
-  }, []);
-
-  const press = useCallback(() => {
-    if (stateRef.current === "pending" || stateRef.current === "slow") return;
-    clearTimers();
-    if (!send("PRESS")) return;
-    const id = ++requestId.current;
-    timers.current.push(
-      window.setTimeout(() => {
-        if (mounted.current && id === requestId.current) send("SLOW");
-      }, slowAfterMs)
-    );
-    Promise.resolve()
-      .then(onPress)
-      .then(
-        () => {
-          if (!mounted.current || id !== requestId.current) return;
-          clearTimers();
-          send("RESOLVE");
-          timers.current.push(
-            window.setTimeout(() => {
-              if (mounted.current && id === requestId.current) send("RESET");
-            }, successHoldMs)
-          );
-        },
-        () => {
-          if (!mounted.current || id !== requestId.current) return;
-          clearTimers();
-          send("REJECT");
-        }
-      );
-  }, [onPress, send, slowAfterMs, successHoldMs]);
+  const run = useCallback(() => Promise.resolve().then(onPress), [onPress]);
+  const { phase, start } = useLatency({
+    run,
+    slowAfterMs,
+    successHoldMs,
+    onEvent: ({ event, to }) => onStateChangeRef.current?.(to as AsyncButtonState, event as AsyncButtonEvent),
+  });
+  const state = phase as AsyncButtonState;
+  const press = start;
 
   const busy = state === "pending" || state === "slow";
   const tint = TINT[state];

@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
-import { subscribeAttention, type Attention } from "../hooks/attention";
+import { subscribeAttention, type Attention, proximityTo } from "../hooks/attention";
 import { motionTime, reducedMotionNow } from "../hooks/reduced-motion";
 
 export interface GlowSelectOption {
@@ -89,7 +89,7 @@ export const GlowSelect = ({
   const startsFloated = isFilled || isFocused || isOpen;
 
   const sp = useRef({
-    labelY: startsFloated ? -24 : 0,
+    labelY: startsFloated ? -12 : 0,
     labelYVel: 0,
     labelScale: startsFloated ? 0.75 : 1,
     labelScaleVel: 0,
@@ -237,13 +237,7 @@ export const GlowSelect = ({
 
       if (wrapRef.current) {
         const rect = wrapRef.current.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = Math.max(0, Math.abs(clientX - cx) - rect.width / 2);
-        const dy = Math.max(0, Math.abs(clientY - cy) - rect.height / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const range = 120;
-        proximity = Math.max(0, 1 - dist / range);
+        proximity = proximityTo(rect, clientX, clientY);
       }
     };
     const unsubscribe = subscribeAttention(onMove);
@@ -260,7 +254,7 @@ export const GlowSelect = ({
       const floated = focused || filled || open;
 
       // Spring targets
-      const targetLabelY = floated ? -24 : 0;
+      const targetLabelY = floated ? -12 : 0;
       const targetLabelScale = floated ? 0.75 : 1;
       const targetGlow = dis ? 0 : open || focused ? 1 : Math.min(proximity, 0.45);
       const targetChevronRot = open ? 180 : 0;
@@ -410,18 +404,19 @@ export const GlowSelect = ({
           }, 0);
         }}
         disabled={disabled}
-        className="w-full bg-transparent border border-white/[0.15] rounded-xl px-4 pt-7 pb-3 text-left text-sm outline-none disabled:cursor-not-allowed flex items-center justify-between"
+        className="w-full bg-transparent border border-white/[0.15] relative rounded-xl pl-4 pr-10 pt-7 pb-3 text-left text-sm outline-none disabled:cursor-not-allowed flex items-center justify-between"
         style={{
           transition: "none",
           willChange: "box-shadow",
           boxShadow: "0 0 0 1px rgba(255,255,255,0.1)",
         }}
       >
-        <span className={selectedOption ? "text-white" : "text-white/50"}>
+        <span className={`min-h-5 leading-5 ${selectedOption ? "text-white" : "text-white/50"}`}>
           {selectedOption ? selectedOption.label : (isFocused || isOpen ? placeholder : "")}
         </span>
 
-        {/* Chevron */}
+        {/* Chevron: centred on the whole field, like the resting label, not on the value line. */}
+        <span aria-hidden="true" className="pointer-events-none absolute top-1/2 -translate-y-1/2" style={{ right: 16 }}>
         <svg
           ref={chevronRef}
           width="16"
@@ -432,21 +427,22 @@ export const GlowSelect = ({
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="shrink-0 ml-2 will-change-transform"
+          className="block will-change-transform"
           style={{ color: "rgba(255,255,255,0.5)" }}
         >
           <path d="M4 6l4 4 4-4" />
         </svg>
+        </span>
       </button>
 
       {/* Floating label */}
       <span
         ref={labelRef}
         id={labelId}
-        className="absolute left-4 top-5 pointer-events-none text-sm inline-block will-change-transform origin-top-left"
+        className="absolute left-[17px] top-[21px] pointer-events-none text-sm inline-block will-change-transform origin-top-left"
         style={{
           color: "rgba(255,255,255,0.5)",
-          transform: `translateY(${startsFloated ? -24 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
+          transform: `translateY(${startsFloated ? -12 : 0}px) scale(${startsFloated ? 0.75 : 1})`,
         }}
       >
         {label}

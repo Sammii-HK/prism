@@ -1,4 +1,10 @@
-export type ItemType = "component" | "playground";
+/**
+ * - component: reusable and importable, with a props API.
+ * - study: a case study or shared state, not something you drop into a page.
+ *   It lives in the lab and is linked from the components it informs.
+ * - playground: a page that hosts several of them.
+ */
+export type ItemType = "component" | "study" | "playground";
 
 export type Category =
   | "button"
@@ -8,6 +14,7 @@ export type Category =
   | "layout"
   | "text"
   | "disclosure"
+  | "overlay"
   | "media"
   | "playground";
 
@@ -38,6 +45,7 @@ export const registry: RegistryItem[] = [
     tags: ["button", "loading", "state", "accessibility", "reduced-motion", "keyboard"],
     type: "component",
     category: "button",
+    featured: true,
   },
   {
     slug: "radial-menu",
@@ -58,18 +66,18 @@ export const registry: RegistryItem[] = [
     date: "2026-10-30",
     tech: ["Spring Physics", "requestAnimationFrame", "CSS Transition", "prefers-reduced-motion"],
     tags: ["motion", "comparison", "measurement", "spring", "performance", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "feedback",
   },
   {
     slug: "latency-adapt",
-    title: "Latency adapt",
-    tagline: "A region that changes what it shows to match how long the wait is.",
-    description: "Content region driven by a pure reducer. A response under 150 ms renders with no skeleton flash; a longer wait shows a skeleton; past 2 s it says how many seconds have passed and offers Cancel; failure shows an inline Retry. The demo has a latency slider, an outcome toggle and a timestamped log of the state machine's events. With reduced motion the skeleton is still and nothing fades.",
+    title: "Latency states",
+    tagline: "One honest lifecycle for anything that waits, shared by the components that do.",
+    description: "Not a component: a state. useLatency() runs a request through idle, pending, skeleton, slow and settled phases from one pure reducer. A response under the skeleton threshold never flashes a placeholder; past the slow threshold the interface says how long it has been and can offer Cancel; failure offers Retry; late results are ignored. The async button runs on a slice of the same machine (no skeleton, no cancel), and the loading region here runs on all of it. The demo has a latency slider, an outcome toggle and a timestamped log of every event. With reduced motion the skeleton is still and nothing fades.",
     date: "2026-10-30",
     tech: ["State Machine", "useReducer", "AbortController", "aria-live", "prefers-reduced-motion"],
     tags: ["loading", "skeleton", "latency", "state", "accessibility", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "feedback",
   },
   {
@@ -80,7 +88,7 @@ export const registry: RegistryItem[] = [
     date: "2026-11-02",
     tech: ["Seeded PRNG", "Validation", "pastelColour", "Design Tokens"],
     tags: ["tokens", "generative", "validation", "design-system", "determinism"],
-    type: "component",
+    type: "study",
     category: "layout",
   },
   {
@@ -91,7 +99,7 @@ export const registry: RegistryItem[] = [
     date: "2026-11-02",
     tech: ["Focus Management", "ARIA", "Dialog", "prefers-reduced-motion"],
     tags: ["focus", "dialog", "modal", "keyboard", "accessibility", "reduced-motion"],
-    type: "component",
+    type: "study",
     category: "disclosure",
   },
   {
@@ -197,8 +205,8 @@ export const registry: RegistryItem[] = [
   {
     slug: "floating-dock",
     title: "Floating dock",
-    tagline: "macOS-style dock with proximity scaling and glow.",
-    description: "macOS-style dock with proximity-based scaling and spring physics. Icons lift and glow with position-mapped pastel colour as your cursor approaches.",
+    tagline: "A dock where only the icon you point at lifts and glows.",
+    description: "Icons lift a few pixels, scale a little and glow with position-mapped pastel colour when you point at them, on spring physics. Slots never resize, so nothing slides out from under the cursor and every icon stays where you aimed. Keyboard focus moves the same highlight; with reduced motion only the glow responds.",
     date: "2026-03-10",
     tech: ["Spring Physics", "Proximity Detection", "pastelColour"],
     tags: ["dock", "navigation", "spring", "proximity", "glow"],
@@ -255,7 +263,7 @@ export const registry: RegistryItem[] = [
     slug: "spring-toggle",
     title: "Spring toggle",
     tagline: "Switch with spring thumb overshoot and pastel fill.",
-    description: "Toggle switch with spring-physics overshoot on the thumb. Track fills with cursor-mapped pastel colour when on. Border glow reacts to cursor proximity.",
+    description: "Toggle switch with spring-physics overshoot on the thumb. Track fills with cursor-mapped pastel colour when on. The border glows only while you point at it.",
     date: "2026-03-15",
     tech: ["Spring Physics", "requestAnimationFrame", "pastelColour"],
     tags: ["toggle", "switch", "spring", "form", "cursor"],
@@ -276,8 +284,8 @@ export const registry: RegistryItem[] = [
   {
     slug: "avatar",
     title: "Avatar",
-    tagline: "Image or initials with proximity-aware pastel ring.",
-    description: "Circular avatar with image or fallback initials. Pastel ring glow reacts to cursor proximity, shifting colour with pointer position via pastelColour. All glow via refs and rAF.",
+    tagline: "Image or initials with a pastel ring that answers only the one you point at.",
+    description: "Circular avatar with image or fallback initials. The pastel ring glows only while the pointer is over that avatar, so a stack never lights up all at once, and its colour shifts with pointer position via pastelColour. All glow via refs and rAF.",
     date: "2026-03-15",
     tech: ["requestAnimationFrame", "Proximity Detection", "pastelColour"],
     tags: ["avatar", "image", "initials", "glow", "cursor", "proximity"],
@@ -318,15 +326,83 @@ export const registry: RegistryItem[] = [
     category: "button",
   },
   {
+    slug: "popover",
+    title: "Popover",
+    tagline: "A panel that escapes every clipped parent.",
+    description: "A panel attached to a button, for a share link, a filter or a small form. It sits in the top layer, so overflow, transforms and z-index on any ancestor cannot trap it, and it is placed with CSS anchor positioning where the browser has it, falling back to measuring in JavaScript. Focus moves in on open; Escape gives it back to the trigger, a click elsewhere leaves it where you put it. It springs out of whichever side it lands on.",
+    date: "2026-11-19",
+    tech: ["Popover API", "CSS anchor positioning", "Spring Physics", "Focus management"],
+    tags: ["popover", "overlay", "top layer", "anchor", "accessibility"],
+    type: "component",
+    category: "overlay",
+    featured: true,
+  },
+  {
+    slug: "menu",
+    title: "Menu",
+    tagline: "An action menu with one highlight that springs.",
+    description: "The WAI-ARIA menu button pattern: arrows move, Home and End jump, typing a letter jumps, Enter chooses and Escape gives focus back to the button. ArrowUp opens at the last item. Check items stay open; actions close first, so anything they open remembers the button. One pill springs between items whether focus moves by keyboard or pointer.",
+    date: "2026-11-19",
+    tech: ["role=menu", "Roving focus", "Typeahead", "Spring Physics", "Popover API"],
+    tags: ["menu", "dropdown", "actions", "overlay", "keyboard"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "dialog",
+    title: "Dialog",
+    tagline: "A modal that makes the page inert, not just covered.",
+    description: "Built on the native dialog element and showModal(), so the browser makes the rest of the page inert and puts the dialog in the top layer. Prism adds what the browser cannot: the panel and backdrop spring both ways, and Escape is routed through the spring. Focus moves to data-autofocus and returns to the invoker. The alertdialog role drops the close button and ignores backdrop presses for confirmations.",
+    date: "2026-11-19",
+    tech: ["<dialog>", "showModal()", "inert", "Spring Physics", "Scroll lock"],
+    tags: ["dialog", "modal", "alertdialog", "overlay", "focus"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "sheet",
+    title: "Sheet",
+    tagline: "An edge panel you can drag closed.",
+    description: "The same native modal as Dialog, sliding in from the right, the left or the bottom. Drag its handle and it follows one to one, resisting the wrong way. On release the spring takes over from exactly where it was let go, carrying the drag's speed: past a third of the way or flicked, it closes; otherwise it settles back. With reduced motion it fades in place.",
+    date: "2026-11-19",
+    tech: ["<dialog>", "Pointer capture", "Spring Physics", "Velocity handoff"],
+    tags: ["sheet", "drawer", "bottom sheet", "overlay", "gesture"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "toast",
+    title: "Toast",
+    tagline: "Notifications that respect the latency rule.",
+    description: "Call toast() from anywhere. The newest sits in front with the rest peeking behind; hover or focus fans them out and pauses every timer, as does leaving the tab. Swipe one away and the spring keeps the swipe's speed. toast.promise shows nothing for a request that settles inside 400ms, so a fast save never flashes a loading toast. Each is announced through a live region, errors assertively, and F8 reaches them from the keyboard. Toasts with an action wait to be dismissed.",
+    date: "2026-11-19",
+    tech: ["aria-live", "Popover API", "Spring Physics", "Latency states"],
+    tags: ["toast", "notification", "snackbar", "overlay", "live region"],
+    type: "component",
+    category: "overlay",
+  },
+  {
+    slug: "ai-response",
+    title: "AI response",
+    tagline: "A streamed answer that is honest about where it is.",
+    description: "An AI response with a state for everything that happens: nothing drawn for a fast start, then thinking, each tool call as a step with its arguments one click away, text revealed at an even pace instead of in bursts, citations that only link when a source is behind them, a 'still working' with Stop when nothing arrives, and Retry that keeps what came. Screen readers hear the finished answer once, not every token. The demo replays real runs from a local model at their recorded pace, including a tool timing out and the model reading the wrong component.",
+    date: "2026-11-19",
+    tech: ["Streaming", "Tool calls", "aria-live", "Latency states", "Recorded replay"],
+    tags: ["ai", "assistant", "chat", "streaming", "llm", "citations"],
+    type: "component",
+    category: "feedback",
+    featured: true,
+  },
+  {
     slug: "tooltip",
     title: "Tooltip",
     tagline: "A tooltip that stays next to what it describes.",
-    description: "Anchored tooltip that sits centred on its trigger. It appears after a short hover or straight away on keyboard focus, closes on Escape, and is linked with aria-describedby. The border takes the Prism colour of where the trigger sits on the page.",
+    description: "Anchored tooltip that sits centred on its trigger. It appears after a short hover or straight away on keyboard focus, closes on Escape, and is linked with aria-describedby. It shares the overlay engine with Popover and Menu, so a clipped card cannot cut it off and it flips below when there is no room. The border takes the Prism colour of where the trigger sits on the page.",
     date: "2026-11-17",
-    tech: ["aria-describedby", "Focus Visible", "pastelColour"],
+    tech: ["aria-describedby", "Popover API", "CSS anchor positioning", "pastelColour"],
     tags: ["tooltip", "hint", "label", "accessibility"],
     type: "component",
-    category: "feedback",
+    category: "overlay",
   },
   {
     slug: "ripple-button",
@@ -367,6 +443,7 @@ export const registry: RegistryItem[] = [
 ];
 
 export const components = registry.filter((r) => r.type === "component");
+export const studies = registry.filter((r) => r.type === "study");
 export const playground = registry.filter((r) => r.type === "playground");
 export const featured = registry.filter((r) => r.featured);
 
