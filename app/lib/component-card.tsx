@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import installable from "../../registry.config.json";
 import { useEffect, useRef, useState } from "react";
 import type { RegistryItem } from "./registry";
 import { SpotlightCard } from "./primitives";
@@ -70,6 +71,7 @@ export const ComponentCard = ({ item, featured = false }: ComponentCardProps) =>
 
       <div className="flex flex-1 flex-col px-2 pb-2 pt-4">
         <div className="flex items-baseline justify-between gap-3">
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/45">{installable.items.some(({name})=>name===item.slug)?"Registry install":item.type==="study"?"Interaction study":"Source reference"}</p>
           <h3 className="text-[15px] font-light text-white/90">
             <Link
               href={`/${item.slug}`}
