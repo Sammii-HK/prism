@@ -1,4 +1,5 @@
 "use client";
+import { Plus } from "lucide-react";
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { useSystemReducedMotion } from "./async-button";
 
@@ -306,18 +307,14 @@ export const RadialMenu = ({
             transition: reduced ? "none" : "background 200ms",
           }}
         >
-          <svg
-            aria-hidden
+          <Plus aria-hidden
             width="20"
             height="20"
-            viewBox="0 0 20 20"
+
             style={{
               transform: open ? "rotate(45deg)" : "rotate(0deg)",
               transition: reduced ? "none" : "transform 260ms cubic-bezier(.3,1.4,.5,1)",
-            }}
-          >
-            <path d="M10 3v14M3 10h14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          </svg>
+            }} />
         </button>
 
         {mounted && (

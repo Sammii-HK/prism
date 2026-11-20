@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { featured, registry } from "./lib/registry";
 import { usePointer } from "./lib/hooks/use-pointer";
@@ -61,7 +62,7 @@ export default function LandingPage() {
               >
                 Browse {componentCount} components
                 <span aria-hidden="true" className="text-white/50 transition-transform group-hover:translate-x-0.5">
-                  →
+                  <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
                 </span>
               </Link>
               <Link
@@ -90,7 +91,7 @@ export default function LandingPage() {
             title="Built into real products"
             aside={
               <Link href="/showcase" className="transition-colors hover:text-white">
-                All showcase →
+                All showcase <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
               </Link>
             }
           />
@@ -129,7 +130,7 @@ export default function LandingPage() {
             title="Signature interactions"
             aside={
               <Link href="/components" className="transition-colors hover:text-white">
-                All components →
+                All components <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
               </Link>
             }
           />
@@ -161,7 +162,7 @@ export default function LandingPage() {
             <span className="mt-8 inline-flex items-center gap-2 text-sm text-white/75 transition-colors group-hover:text-white">
               Open the lab
               <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
-                →
+                <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
               </span>
             </span>
           </Link>

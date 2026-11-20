@@ -1,4 +1,5 @@
 "use client";
+import { Check } from "lucide-react";
 import { useRef, useEffect, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
 import { subscribeAttention, type Attention, proximityTo } from "../hooks/attention";
@@ -206,28 +207,18 @@ export const GlowCheckbox = ({
           transition: "none",
         }}
       >
-        <svg
-          ref={tickRef}
+        <Check ref={tickRef}
           width="12"
           height="12"
-          viewBox="0 0 12 12"
-          fill="none"
+
+
           className="pointer-events-none"
           style={{
             opacity: 0,
             transform: "scale(0)",
             willChange: "transform, opacity",
             transition: "none",
-          }}
-        >
-          <path
-            d="M2.5 6.5L5 9L9.5 3.5"
-            stroke="white"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+          }} />
       </button>
       {label && (
         <span id={labelId} className="text-sm text-white/60">{label}</span>

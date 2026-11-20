@@ -1,4 +1,5 @@
 "use client";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { RegistryItem } from "../lib/registry";
@@ -202,9 +203,9 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
                   >
                     <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/50">{dir}</span>
                     <span className="mt-2 block text-lg font-light text-white/80 transition-colors group-hover:text-white">
-                      {dir === "Previous" && <span aria-hidden="true">← </span>}
+                      {dir === "Previous" && <span aria-hidden="true"><ArrowLeft size={14} aria-hidden="true" className="inline-block align-middle" /> </span>}
                       {n.title}
-                      {dir === "Next" && <span aria-hidden="true"> →</span>}
+                      {dir === "Next" && <span aria-hidden="true"> <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /></span>}
                     </span>
                   </Link>
                 ) : (

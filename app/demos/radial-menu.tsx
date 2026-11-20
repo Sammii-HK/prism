@@ -100,7 +100,7 @@ export function RadialMenuPanel({
               Menu is {open ? "open" : "closed"}. Only the highlighted item is a tab stop (roving tabindex).
             </p>
             <p data-testid="trail" className="mt-1 font-mono text-xs text-white/50">
-              Focus trail: {trail.length ? trail.join(" → ") : "none yet"}
+              Focus trail: {trail.length ? trail.join(" to ") : "none yet"}
             </p>
           </div>
 

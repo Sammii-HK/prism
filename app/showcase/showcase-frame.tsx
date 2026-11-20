@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SiteNav } from "../lib/site-nav";
@@ -115,7 +116,7 @@ export const ShowcaseFrame = ({ slug, title, lede, uses, notes, keys, children }
                 className="group bg-[#050505] p-6 transition-colors hover:bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/60"
               >
                 <span className="text-lg font-light text-white/85 transition-colors group-hover:text-white">
-                  {o.title} <span aria-hidden="true">→</span>
+                  {o.title} <span aria-hidden="true"><ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /></span>
                 </span>
                 <span className="mt-1.5 block text-[13px] leading-relaxed text-white/55">{o.pitch}</span>
               </Link>

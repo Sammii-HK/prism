@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight, ArrowUp } from "lucide-react";
 import { useEffect, useId, useRef } from "react";
 import { reducedMotionNow } from "../../lib/hooks/reduced-motion";
 import type { SynthEngine } from "./engine";
@@ -181,13 +182,13 @@ export const XYPad = ({ engine, x, y, onChange, cutoffText, resonanceText }: XYP
           className="pointer-events-none absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 bg-[#080808]"
         />
         <span aria-hidden="true" className="pointer-events-none absolute bottom-2.5 right-3 font-mono text-[11px] uppercase tracking-[0.22em] text-white/50">
-          Cutoff →
+          Cutoff <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
         </span>
         <span
           aria-hidden="true"
           className="pointer-events-none absolute left-3 top-2.5 font-mono text-[11px] uppercase tracking-[0.22em] text-white/50"
         >
-          ↑ Resonance
+          <ArrowUp size={14} aria-hidden="true" className="inline-block align-middle" /> Resonance
         </span>
       </div>
       <p id={hintId} className="sr-only">

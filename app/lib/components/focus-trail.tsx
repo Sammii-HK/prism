@@ -1,4 +1,5 @@
 "use client";
+import { X } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { useSystemReducedMotion } from "./async-button";
 
@@ -363,7 +364,7 @@ export function FocusTrailPanel({
               className="rounded-md px-2 py-1 text-sm text-white/70 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
               onClick={() => close("button")}
             >
-              <span aria-hidden>×</span>
+              <span aria-hidden><X size={14} aria-hidden="true" className="inline-block align-middle" /></span>
             </button>
           </div>
           <label className="flex flex-col gap-1.5 text-sm text-white/75">

@@ -35,7 +35,7 @@ const PrismMark = () => {
   }, []);
 
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0">
+    <svg data-brand-mark="prism" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0">
       <path ref={ref} d="M7 1.5 12.6 12H1.4Z" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="1.25" strokeLinejoin="round" />
     </svg>
   );

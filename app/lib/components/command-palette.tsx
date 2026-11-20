@@ -1,4 +1,5 @@
 "use client";
+import { Search, ChevronRight } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -711,21 +712,16 @@ export const CommandPalette = ({
           }}
         >
           {/* Search icon */}
-          <svg
-            width="16"
+          <Search width="16"
             height="16"
-            viewBox="0 0 24 24"
-            fill="none"
+
+
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{ color: "rgba(255,255,255,0.5)", flexShrink: 0 }}
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <line x1="16.5" y1="16.5" x2="21" y2="21" />
-          </svg>
+            aria-hidden="true" />
 
           {/* Breadcrumb chips inline */}
           {breadcrumbs.length > 0 && (
@@ -909,20 +905,16 @@ export const CommandPalette = ({
                         </span>
 
                         {hasChildren && (
-                          <svg
-                            width="14"
+                          <ChevronRight width="14"
                             height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
+
+
                             stroke="currentColor"
                             strokeWidth="1.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             style={{ color: "rgba(255,255,255,0.5)" }}
-                            aria-hidden="true"
-                          >
-                            <polyline points="9 6 15 12 9 18" />
-                          </svg>
+                            aria-hidden="true" />
                         )}
 
                         {s.cmd.hint && (
@@ -970,14 +962,14 @@ export const CommandPalette = ({
           }}
         >
           <div className="flex items-center gap-3">
-            <LegendChip label="↑↓" />
+            <LegendChip label="Up / Down" />
             <span
               className="text-[10px]"
               style={{ color: "rgba(255,255,255,0.5)" }}
             >
               navigate
             </span>
-            <LegendChip label="↵" />
+            <LegendChip label="Enter" />
             <span
               className="text-[10px]"
               style={{ color: "rgba(255,255,255,0.5)" }}

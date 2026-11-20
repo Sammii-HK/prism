@@ -28,6 +28,8 @@ export const ComponentCard = ({ item, featured = false }: ComponentCardProps) =>
   // cards after mount.
   const [visible, setVisible] = useState(true);
   const Preview = previewMap[item.slug] ?? labPreviewMap[item.slug];
+  // These card specimens are static: they have no timers or animation loops to pause.
+  const staticSpecimen = ["spring-field", "reading-rail", "flip-reorder"].includes(item.slug);
 
   useEffect(() => {
     if (!wrapRef.current) return;
@@ -57,11 +59,13 @@ export const ComponentCard = ({ item, featured = false }: ComponentCardProps) =>
     <SpotlightCard className="group relative flex h-full flex-col rounded-2xl bg-white/[0.025] p-3 backdrop-blur-sm transition-colors has-[a:focus-visible]:bg-white/[0.05]">
       <div
         ref={wrapRef}
+        data-component-preview={item.slug}
+        data-preview-available={Boolean(Preview)}
         inert
         aria-hidden="true"
         className={`relative ${previewHeight} w-full overflow-hidden rounded-xl border border-white/[0.05] bg-[#050505]`}
       >
-        {visible && Preview && <Preview />}
+        {(visible || staticSpecimen) && Preview && <Preview />}
       </div>
 
       <div className="flex flex-1 flex-col px-2 pb-2 pt-4">

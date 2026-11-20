@@ -91,8 +91,7 @@ export const ComponentsGallery = () => {
             <div>
               <h1 className="text-[44px] font-light leading-none tracking-[-0.035em] text-white/90 sm:text-6xl">Components</h1>
               <p className="mt-5 max-w-md text-base leading-relaxed text-white/60">
-                Production-ready, cursor-reactive, hand-built. Each one works with a mouse, a finger or the
-                keyboard, and holds still when you ask for reduced motion.
+                Cursor-reactive components and inspectable interaction studies. Every card has a compact preview; open a component for its working demo, API and verification notes.
               </p>
             </div>
             <div ref={searchRef} className="w-full lg:w-80">
