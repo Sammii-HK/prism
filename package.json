@@ -17,7 +17,8 @@
     "lint:icons": "node scripts/lint-icons.mjs",
     "test:icons": "node --test scripts/icons.test.mjs",
     "test:gallery": "node --test scripts/gallery-previews.test.mjs",
-    "test:discovery": "node --test scripts/discovery.test.mjs"
+    "test:discovery": "node --test scripts/discovery.test.mjs",
+    "test": "npm run test:icons && npm run test:tokens && npm run test:lab && npm run test:registry && npm run test:gallery && npm run test:discovery"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",
