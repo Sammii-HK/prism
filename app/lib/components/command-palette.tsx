@@ -311,6 +311,29 @@ export const CommandPalette = ({
     }
   }, [open]);
 
+  // A visually hidden portal must not remain reachable. While open, keep the
+  // surrounding document inert and restore each element's previous state.
+  useEffect(() => {
+    if (!mounted || !open) return;
+    const background = Array.from(document.body.children)
+      .filter((element): element is HTMLElement =>
+        element instanceof HTMLElement &&
+        element !== panelRef.current && element !== scrimRef.current
+      )
+      .map((element) => ({ element, inert: element.inert }));
+    const overflow = document.body.style.overflow;
+    background.forEach(({ element }) => {
+      element.inert = true;
+    });
+    document.body.style.overflow = "hidden";
+    return () => {
+      background.forEach(({ element, inert }) => {
+        element.inert = inert;
+      });
+      document.body.style.overflow = overflow;
+    };
+  }, [mounted, open]);
+
   // Execute a command
   const runCommand = useCallback(
     (cmd: Command) => {
@@ -319,6 +342,7 @@ export const CommandPalette = ({
         swapTriggeredRef.current = true;
         setStack((s) => [...s, { commands: cmd.children!, title: cmd.label }]);
         setQuery("");
+        inputRef.current?.focus();
         return;
       }
       try {
@@ -366,6 +390,10 @@ export const CommandPalette = ({
         if (flatItems.length > 0 && highlight < flatItems.length) {
           runCommand(flatItems[highlight].cmd);
         }
+      } else if (e.key === "Tab") {
+        // The combobox owns active-descendant navigation; options are not a
+        // second tab sequence and focus stays inside the modal.
+        e.preventDefault();
       } else if (e.key === "Escape") {
         e.preventDefault();
         if (stack.length > 0) popStack();
@@ -684,7 +712,9 @@ export const CommandPalette = ({
       <div
         ref={panelRef}
         role="dialog"
-        aria-modal="true"
+        aria-modal={open || undefined}
+        aria-hidden={!open}
+        inert={!open}
         aria-label="Command palette"
         style={{
           position: "fixed",
@@ -755,7 +785,8 @@ export const CommandPalette = ({
             ref={inputRef}
             type="text"
             role="combobox"
-            aria-expanded="true"
+            aria-expanded={open}
+            aria-label={currentTitle ? `Search ${currentTitle}` : "Search commands"}
             aria-controls={listId}
             aria-activedescendant={activeItemId}
             aria-autocomplete="list"
@@ -881,6 +912,7 @@ export const CommandPalette = ({
                         }}
                         id={`${listId}-item-${idx}`}
                         role="option"
+                        tabIndex={-1}
                         aria-selected={selected}
                         type="button"
                         command={s.cmd}
