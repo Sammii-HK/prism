@@ -57,7 +57,11 @@ export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
   );
 };
 
+/** Length of Lucide's check path in its 24-unit box, so the stroke can draw on from nothing. */
+const CHECK_LENGTH = 23;
+
 export const Checkbox = ({ checked, onChange, label, disabled }: CheckboxProps) => {
+  const draw = useSpring(["stroke-dashoffset"]);
   return (
     <label className={`group flex cursor-pointer items-center gap-3 text-[13px] ${disabled ? "cursor-not-allowed text-white/35" : "text-white/80"}`}>
       <input
@@ -73,7 +77,15 @@ export const Checkbox = ({ checked, onChange, label, disabled }: CheckboxProps) 
           checked ? "border-white/80" : HAIRLINE
         }`}
       >
-        <Check width="10" height="10"   />
+        {/* Dash properties inherit from the svg to its path, so the spring draws the tick on and off. */}
+        <Check
+          width="10"
+          height="10"
+          color="white"
+          strokeWidth={1.4}
+          absoluteStrokeWidth
+          style={{ ...draw, strokeDasharray: CHECK_LENGTH, strokeDashoffset: checked ? 0 : CHECK_LENGTH }}
+        />
       </span>
       {label}
     </label>
@@ -157,7 +169,7 @@ export const Select = ({ value, onChange, options, label, disabled }: SelectProp
         className={`flex w-full items-center justify-between border-b pb-2 text-left text-[14px] text-white/90 disabled:opacity-40 ${FOCUS} ${open ? "border-white/70" : HAIRLINE}`}
       >
         {options[selected]?.label}
-        <ChevronDown width="10" height="10"  aria-hidden="true" style={{ ...motion, transform: `rotate(${open ? 180 : 0}deg)` }} />
+        <ChevronDown width="10" height="10" strokeWidth={1.2} absoluteStrokeWidth aria-hidden="true" style={{ ...motion, transform: `rotate(${open ? 180 : 0}deg)` }} />
       </button>
       <ul
         {...listProps}

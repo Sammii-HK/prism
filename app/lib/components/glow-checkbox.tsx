@@ -207,11 +207,13 @@ export const GlowCheckbox = ({
           transition: "none",
         }}
       >
-        <Check ref={tickRef}
+        <Check
+          ref={tickRef}
           width="12"
           height="12"
-
-
+          color="white"
+          strokeWidth={1.75}
+          absoluteStrokeWidth
           className="pointer-events-none"
           style={{
             opacity: 0,

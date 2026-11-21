@@ -119,7 +119,7 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
                   <h2 id="usage" className="mb-6 scroll-mt-24 text-2xl font-light text-white/90">
                     {canInstall ? "Drop it in" : "Inspect the source"}
                   </h2>
-                  {!canInstall && <p className="mb-5 text-sm leading-relaxed text-white/55">This example uses Prism’s source paths. It is not yet packaged as a registry install. Review the component and its shared dependencies before copying it. <a href={`https://github.com/Sammii-HK/prism/blob/03a2e50/app/lib/components/${item.slug}.tsx`} className="underline underline-offset-4 hover:text-white">Read the source</a>.</p>}
+                  {!canInstall && <p className="mb-5 text-sm leading-relaxed text-white/55">This example uses Prism’s source paths. It is not yet packaged as a registry install. Review the component and its shared dependencies before copying it. <a href={`https://github.com/Sammii-HK/prism/blob/main/app/lib/components/${item.slug}.tsx`} className="underline underline-offset-4 hover:text-white">Read the source</a>.</p>}
                   <div className="flex flex-col gap-4">
                     {importName && (
                       <CodeBlock label="import" code={`import { ${importName} } from "${canInstall ? `@/components/ui/prism/components/${item.slug}` : docs.importPath}";`} />
