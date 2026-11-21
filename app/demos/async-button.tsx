@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   AsyncButton,
@@ -182,7 +183,7 @@ export function AsyncButtonPanel({
               <ul className="font-mono text-xs text-white/60">
                 {log.map((row, i) => (
                   <li key={`${row.at}-${i}`}>
-                    +{row.at} ms {row.event} → {row.to}
+                    +{row.at} ms {row.event} <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /> {row.to}
                   </li>
                 ))}
               </ul>

@@ -59,7 +59,7 @@ export default function MenuDemo() {
                   </IconButton>
                 }
                 items={[
-                  { label: "Open", icon: <Eye size={14} />, shortcut: "↵", onSelect: () => toast(`Opened “${file.name}”`) },
+                  { label: "Open", icon: <Eye size={14} />, shortcut: "Enter", onSelect: () => toast(`Opened “${file.name}”`) },
                   { label: "Rename", icon: <Pencil size={14} />, shortcut: "R", onSelect: () => toast("Rename is a demo") },
                   {
                     label: "Duplicate",

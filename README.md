@@ -120,3 +120,15 @@ npx tsx scripts/record.ts <slug> [duration_seconds]
 ## License
 
 MIT. Copy, fork, remix.
+
+## Install editable components
+
+Eight components can be copied into a React 18+ / Tailwind CSS 4 project with the shadcn CLI. Their shared hooks and primitives are included under your configured UI directory in `prism/`. Current styles expect a dark surface.
+
+```sh
+npx shadcn@latest add https://prism.sammii.dev/r/prism-ai-response.json
+```
+
+See `/docs/installation` for setup, the full list and usage. The AI response item includes the stream adapter hook, without a provider, model call, credentials or demo recordings.
+
+`npm run registry:build` rebuilds `/r/*.json` from the component sources. `npm run test:registry` detects stale payloads and compiles all installed files together outside the app, checking shared-file consistency and transitive imports.

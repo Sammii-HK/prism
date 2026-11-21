@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { EXPRESSIONS } from "../expressions/store";
@@ -22,7 +23,7 @@ export const ExpressionsTeaser = () => {
         title="One API, three ways to build it"
         aside={
           <Link href="/expressions" className="transition-colors hover:text-white">
-            See it in depth →
+            See it in depth <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
           </Link>
         }
       />

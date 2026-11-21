@@ -1,4 +1,5 @@
 "use client";
+import { ArrowDown } from "lucide-react";
 import { cloneElement, isValidElement, useId, type ReactElement } from "react";
 import { useTabs, useTooltip } from "../core/behaviour";
 import type { ButtonProps, CheckboxProps, SelectProps, SliderProps, SwitchProps, TabsProps, TextFieldProps, TooltipProps } from "../core/contract";
@@ -121,7 +122,7 @@ export const Select = ({ value, onChange, options, label, disabled }: SelectProp
           ))}
         </select>
         <span aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 grid w-10 place-items-center border-l-2 border-white font-mono text-[12px] font-bold text-white">
-          ↓
+          <ArrowDown size={14} strokeWidth={2.75} strokeLinecap="square" strokeLinejoin="miter" aria-hidden="true" className="inline-block align-middle" />
         </span>
       </div>
     </div>

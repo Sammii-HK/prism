@@ -1,4 +1,5 @@
 "use client";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { RegistryItem } from "../lib/registry";
@@ -8,6 +9,7 @@ import { SiteNav } from "../lib/site-nav";
 import { SiteFooter } from "../lib/shell/site-footer";
 import { Container, Eyebrow } from "../lib/shell/ui";
 import { AttentionReadout } from "../lib/shell/attention-readout";
+import installable from "../../registry.config.json";
 
 type Neighbour = { slug: string; title: string } | null;
 
@@ -34,6 +36,7 @@ const SUPPORT = [
 export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
   const section = item.type === "study" ? { href: "/lab", label: "Lab" } : { href: "/components", label: "Components" };
   const importName = docs?.componentName;
+  const canInstall = installable.items.some(({ name }) => name === item.slug);
 
   return (
     <div className="relative min-h-screen">
@@ -99,15 +102,27 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
             </aside>
 
             <div className="flex min-w-0 flex-col gap-20">
+              {canInstall && (
+                <section aria-labelledby="installation">
+                  <Eyebrow className="mb-3">Editable source</Eyebrow>
+                  <h2 id="installation" className="mb-6 scroll-mt-24 text-2xl font-light text-white/90">Use it in your project</h2>
+                  <CodeBlock label="terminal" code={`npx shadcn@latest add https://prism.sammii.dev/r/prism-${item.slug}.json`} />
+                  <p className="mt-4 text-sm leading-relaxed text-white/55">
+                    React 18+ and Tailwind CSS 4. Includes the shared hooks. Styled for a dark surface.
+                    {" "}<Link href="/docs/installation" className="underline underline-offset-4 hover:text-white">Setup and usage</Link>.
+                  </p>
+                </section>
+              )}
               {docs && (docs.examples.length > 0 || importName) && (
                 <section aria-labelledby="usage">
                   <Eyebrow className="mb-3">Usage</Eyebrow>
                   <h2 id="usage" className="mb-6 scroll-mt-24 text-2xl font-light text-white/90">
-                    Drop it in
+                    {canInstall ? "Drop it in" : "Inspect the source"}
                   </h2>
+                  {!canInstall && <p className="mb-5 text-sm leading-relaxed text-white/55">This example uses Prism’s source paths. It is not yet packaged as a registry install. Review the component and its shared dependencies before copying it. <a href={`https://github.com/Sammii-HK/prism/blob/main/app/lib/components/${item.slug}.tsx`} className="underline underline-offset-4 hover:text-white">Read the source</a>.</p>}
                   <div className="flex flex-col gap-4">
                     {importName && (
-                      <CodeBlock label="import" code={`import { ${importName} } from "${docs.importPath}";`} />
+                      <CodeBlock label="import" code={`import { ${importName} } from "${canInstall ? `@/components/ui/prism/components/${item.slug}` : docs.importPath}";`} />
                     )}
                     {docs.examples.map((example, i) => (
                       <CodeBlock key={i} label={`example ${i + 1}`} code={example} />
@@ -189,9 +204,9 @@ export const ItemDetail = ({ item, docs, prev, next, children }: Props) => {
                   >
                     <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/50">{dir}</span>
                     <span className="mt-2 block text-lg font-light text-white/80 transition-colors group-hover:text-white">
-                      {dir === "Previous" && <span aria-hidden="true">← </span>}
+                      {dir === "Previous" && <span aria-hidden="true"><ArrowLeft size={14} aria-hidden="true" className="inline-block align-middle" /> </span>}
                       {n.title}
-                      {dir === "Next" && <span aria-hidden="true"> →</span>}
+                      {dir === "Next" && <span aria-hidden="true"> <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /></span>}
                     </span>
                   </Link>
                 ) : (

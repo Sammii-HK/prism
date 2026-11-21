@@ -307,7 +307,7 @@ export const DarkroomShowcase = () => {
                 <Undo2 size={15} />
               </IconButton>
             </Tooltip>
-            <Tooltip content="Redo (⇧⌘Z)">
+            <Tooltip content="Redo (Shift+Command+Z)">
               <IconButton size="sm" onClick={redo} disabled={!history.future.length} aria-label="Redo">
                 <Redo2 size={15} />
               </IconButton>

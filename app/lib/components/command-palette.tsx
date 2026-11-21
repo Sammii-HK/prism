@@ -1,12 +1,14 @@
 "use client";
+import { Search, ChevronRight } from "lucide-react";
 import {
-  useCallback,
+  useCallback, useSyncExternalStore,
   useEffect,
   useId,
   useMemo,
   useRef,
   useState,
   type ReactNode,
+  type ButtonHTMLAttributes,
 } from "react";
 import { createPortal } from "react-dom";
 import { colourField, pastelColour } from "../primitives/gradient";
@@ -116,6 +118,14 @@ const fuzzyMatch = (
   return { score, matches };
 };
 
+function CommandChoice({command, onChoose, elementRef, ...props}: ButtonHTMLAttributes<HTMLButtonElement> & {command:Command; onChoose:(command:Command)=>void; elementRef:(element:HTMLButtonElement|null)=>void}) {
+  return <button {...props} ref={elementRef} onClick={()=>onChoose(command)} />;
+}
+
+const subscribeClient = () => () => {};
+const clientSnapshot = () => true;
+const serverSnapshot = () => false;
+
 export const CommandPalette = ({
   open,
   onOpenChange,
@@ -126,11 +136,21 @@ export const CommandPalette = ({
   loading = false,
   triggerKey = { key: "k", meta: true },
 }: CommandPaletteProps) => {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(subscribeClient, clientSnapshot, serverSnapshot);
   const [query, setQuery] = useState("");
   const [highlight, setHighlight] = useState(0);
   const [stack, setStack] = useState<Frame[]>([]);
   const [announce, setAnnounce] = useState("");
+  const [previousOpen, setPreviousOpen] = useState(open);
+  if (previousOpen !== open) {
+    setPreviousOpen(open);
+    if (!open) { setQuery(""); setStack([]); }
+  }
+  const [previousScope, setPreviousScope] = useState({query, stack});
+  if (previousScope.query !== query || previousScope.stack !== stack) {
+    setPreviousScope({query, stack});
+    if (highlight !== 0) setHighlight(0);
+  }
 
   const listId = useId();
 
@@ -152,10 +172,7 @@ export const CommandPalette = ({
     live.current.open = open;
   }, [open]);
 
-  // Mount (for portal)
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+
 
   // Active commands (from current stack frame, or root)
   const activeCommands = useMemo(() => {
@@ -241,15 +258,9 @@ export const CommandPalette = ({
   // Flat list of items in render order (for keyboard navigation + indicator)
   const flatItems = useMemo(() => grouped.flatMap((g) => g.items), [grouped]);
 
-  // Reset highlight when result set changes
-  useEffect(() => {
-    setHighlight(0);
-  }, [query, stack]);
-
-  // Clamp highlight
-  useEffect(() => {
-    if (highlight >= flatItems.length) setHighlight(Math.max(0, flatItems.length - 1));
-  }, [flatItems.length, highlight]);
+  // Keep selection in range before rendering a shorter async result set.
+  const lastHighlight = Math.max(0, flatItems.length - 1);
+  if (highlight > lastHighlight) setHighlight(lastHighlight);
 
   // Debounced announce
   useEffect(() => {
@@ -290,8 +301,6 @@ export const CommandPalette = ({
       return () => window.clearTimeout(id);
     } else {
       // Reset internal state when closing
-      setQuery("");
-      setStack([]);
       swapTriggeredRef.current = false;
       const el = restoreFocusRef.current;
       if (el && typeof el.focus === "function") {
@@ -302,6 +311,29 @@ export const CommandPalette = ({
     }
   }, [open]);
 
+  // A visually hidden portal must not remain reachable. While open, keep the
+  // surrounding document inert and restore each element's previous state.
+  useEffect(() => {
+    if (!mounted || !open) return;
+    const background = Array.from(document.body.children)
+      .filter((element): element is HTMLElement =>
+        element instanceof HTMLElement &&
+        element !== panelRef.current && element !== scrimRef.current
+      )
+      .map((element) => ({ element, inert: element.inert }));
+    const overflow = document.body.style.overflow;
+    background.forEach(({ element }) => {
+      element.inert = true;
+    });
+    document.body.style.overflow = "hidden";
+    return () => {
+      background.forEach(({ element, inert }) => {
+        element.inert = inert;
+      });
+      document.body.style.overflow = overflow;
+    };
+  }, [mounted, open]);
+
   // Execute a command
   const runCommand = useCallback(
     (cmd: Command) => {
@@ -310,6 +342,7 @@ export const CommandPalette = ({
         swapTriggeredRef.current = true;
         setStack((s) => [...s, { commands: cmd.children!, title: cmd.label }]);
         setQuery("");
+        inputRef.current?.focus();
         return;
       }
       try {
@@ -357,6 +390,10 @@ export const CommandPalette = ({
         if (flatItems.length > 0 && highlight < flatItems.length) {
           runCommand(flatItems[highlight].cmd);
         }
+      } else if (e.key === "Tab") {
+        // The combobox owns active-descendant navigation; options are not a
+        // second tab sequence and focus stays inside the modal.
+        e.preventDefault();
       } else if (e.key === "Escape") {
         e.preventDefault();
         if (stack.length > 0) popStack();
@@ -675,7 +712,9 @@ export const CommandPalette = ({
       <div
         ref={panelRef}
         role="dialog"
-        aria-modal="true"
+        aria-modal={open || undefined}
+        aria-hidden={!open}
+        inert={!open}
         aria-label="Command palette"
         style={{
           position: "fixed",
@@ -711,21 +750,16 @@ export const CommandPalette = ({
           }}
         >
           {/* Search icon */}
-          <svg
-            width="16"
+          <Search width="16"
             height="16"
-            viewBox="0 0 24 24"
-            fill="none"
+
+
             stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{ color: "rgba(255,255,255,0.5)", flexShrink: 0 }}
-            aria-hidden="true"
-          >
-            <circle cx="11" cy="11" r="7" />
-            <line x1="16.5" y1="16.5" x2="21" y2="21" />
-          </svg>
+            aria-hidden="true" />
 
           {/* Breadcrumb chips inline */}
           {breadcrumbs.length > 0 && (
@@ -751,7 +785,8 @@ export const CommandPalette = ({
             ref={inputRef}
             type="text"
             role="combobox"
-            aria-expanded="true"
+            aria-expanded={open}
+            aria-label={currentTitle ? `Search ${currentTitle}` : "Search commands"}
             aria-controls={listId}
             aria-activedescendant={activeItemId}
             aria-autocomplete="list"
@@ -870,16 +905,18 @@ export const CommandPalette = ({
                       s.cmd.children && s.cmd.children.length > 0;
 
                     return (
-                      <button
+                      <CommandChoice
                         key={s.cmd.id}
-                        ref={(el) => {
+                        elementRef={(el) => {
                           itemRefs.current[idx] = el;
                         }}
                         id={`${listId}-item-${idx}`}
                         role="option"
+                        tabIndex={-1}
                         aria-selected={selected}
                         type="button"
-                        onClick={() => runCommand(s.cmd)}
+                        command={s.cmd}
+                        onChoose={runCommand}
                         onMouseEnter={() => setHighlight(idx)}
                         className="relative w-full flex items-center gap-3 px-3 py-2.5 text-left rounded-lg outline-none cursor-pointer select-none"
                         style={{
@@ -909,20 +946,16 @@ export const CommandPalette = ({
                         </span>
 
                         {hasChildren && (
-                          <svg
-                            width="14"
+                          <ChevronRight width="14"
                             height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
+
+
                             stroke="currentColor"
                             strokeWidth="1.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             style={{ color: "rgba(255,255,255,0.5)" }}
-                            aria-hidden="true"
-                          >
-                            <polyline points="9 6 15 12 9 18" />
-                          </svg>
+                            aria-hidden="true" />
                         )}
 
                         {s.cmd.hint && (
@@ -950,7 +983,7 @@ export const CommandPalette = ({
                             {directKey}
                           </span>
                         )}
-                      </button>
+                      </CommandChoice>
                     );
                   })}
                 </div>
@@ -970,14 +1003,14 @@ export const CommandPalette = ({
           }}
         >
           <div className="flex items-center gap-3">
-            <LegendChip label="↑↓" />
+            <LegendChip label="Up / Down" />
             <span
               className="text-[10px]"
               style={{ color: "rgba(255,255,255,0.5)" }}
             >
               navigate
             </span>
-            <LegendChip label="↵" />
+            <LegendChip label="Enter" />
             <span
               className="text-[10px]"
               style={{ color: "rgba(255,255,255,0.5)" }}

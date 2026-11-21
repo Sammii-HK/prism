@@ -1,0 +1,61 @@
+{
+  "items": [
+    {
+      "name": "async-button",
+      "title": "Async button",
+      "roots": [
+        "components/async-button.tsx"
+      ]
+    },
+    {
+      "name": "ai-response",
+      "title": "AI response",
+      "roots": [
+        "components/ai-response.tsx",
+        "hooks/assistant.ts"
+      ]
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "roots": [
+        "components/dialog.tsx"
+      ]
+    },
+    {
+      "name": "sheet",
+      "title": "Sheet",
+      "roots": [
+        "components/sheet.tsx"
+      ]
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "roots": [
+        "components/popover.tsx"
+      ]
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "roots": [
+        "components/tooltip.tsx"
+      ]
+    },
+    {
+      "name": "toast",
+      "title": "Toast",
+      "roots": [
+        "components/toast.tsx"
+      ]
+    },
+    {
+      "name": "menu",
+      "title": "Menu",
+      "roots": [
+        "components/menu.tsx"
+      ]
+    }
+  ]
+}

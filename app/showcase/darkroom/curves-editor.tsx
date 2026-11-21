@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { curveLUT, type CurvePoint } from "./grade";
 import { pastelColour } from "../../lib/primitives/gradient";
@@ -225,7 +226,7 @@ export const CurvesEditor = ({ points, onChange, histogram }: Props) => {
         </svg>
         {focused !== null && sorted[focused] && (
           <span className="pointer-events-none absolute bottom-2.5 right-3 font-mono text-[11px] tabular-nums text-white/60">
-            {sorted[focused].x} → {sorted[focused].y}
+            {sorted[focused].x} <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /> {sorted[focused].y}
           </span>
         )}
       </div>

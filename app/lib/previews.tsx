@@ -27,7 +27,7 @@ import {
   SpotlightCard,
   Tooltip,
 } from "./components";
-import { Heart, Home, Search, Settings, User } from "lucide-react";
+import { Heart, Home, Search, Settings, User, GripVertical } from "lucide-react";
 
 const Frame = ({ children }: { children: React.ReactNode }) => (
   <div className="w-full h-full flex items-center justify-center px-4 py-6 pointer-events-auto">
@@ -370,8 +370,23 @@ const AIResponsePreview = () => (
   </Frame>
 );
 
+const SpringFieldPreview = () => (
+  <Frame><div className="grid grid-cols-9 gap-3" aria-label="A field of spring dots">
+    {Array.from({ length: 45 }, (_, i) => { const x = i % 9 - 4; const y = Math.floor(i / 9) - 2; const distance = Math.hypot(x, y); return <span key={i} className="h-1.5 w-1.5 rounded-full bg-violet-200" style={{ opacity: 0.25 + Math.min(distance, 4) * 0.15, transform: `translate(${x / (distance + 1) * 9}px, ${y / (distance + 1) * 9}px)` }} />; })}
+  </div></Frame>
+);
+const ReadingRailPreview = () => (
+  <Frame><div className="flex w-52 gap-4"><div className="w-1 shrink-0 rounded bg-white/10"><div className="h-14 rounded bg-emerald-200/60" /></div><div className="grid flex-1 gap-3">{[0,1,2].map((i) => <div className="grid gap-1.5" key={i}><div className="h-1.5 w-full rounded bg-white/25" /><div className="h-1.5 w-4/5 rounded bg-white/15" /><div className="h-1.5 w-3/5 rounded bg-white/10" /></div>)}</div></div></Frame>
+);
+const FlipReorderPreview = () => (
+  <Frame><div className="grid w-52 gap-2">{['Write the explainer','Record the demo','Check keyboard paths'].map((text, i) => <div className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-[10px] ${i === 1 ? 'border-violet-200/40 bg-violet-200/10' : 'border-white/10 bg-white/[0.03]'}`} key={text}><GripVertical size={12} aria-hidden="true" className="text-white/40" /><span className="text-white/70">{text}</span></div>)}</div></Frame>
+);
+
 export const previewMap: Record<string, React.ComponentType> = {
   // Components
+  "spring-field": SpringFieldPreview,
+  "reading-rail": ReadingRailPreview,
+  "flip-reorder": FlipReorderPreview,
   "animated-border": AnimatedBorderPreview,
   "avatar": AvatarPreview,
   "glow-checkbox": GlowCheckboxPreview,

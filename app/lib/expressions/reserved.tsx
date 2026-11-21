@@ -1,4 +1,5 @@
 "use client";
+import { Check, ChevronDown } from "lucide-react";
 import { cloneElement, isValidElement, useId, type CSSProperties, type ReactElement } from "react";
 import { flushSync } from "react-dom";
 import { useCombobox, useSlider, useTabs, useTooltip } from "../core/behaviour";
@@ -56,6 +57,9 @@ export const Switch = ({ checked, onChange, label, disabled }: SwitchProps) => {
   );
 };
 
+/** Length of Lucide's check path in its 24-unit box, so the stroke can draw on from nothing. */
+const CHECK_LENGTH = 23;
+
 export const Checkbox = ({ checked, onChange, label, disabled }: CheckboxProps) => {
   const draw = useSpring(["stroke-dashoffset"]);
   return (
@@ -73,18 +77,15 @@ export const Checkbox = ({ checked, onChange, label, disabled }: CheckboxProps) 
           checked ? "border-white/80" : HAIRLINE
         }`}
       >
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path
-            d="M1.5 5.2 4 7.5 8.5 2.5"
-            stroke="white"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            pathLength={1}
-            strokeDasharray={1}
-            style={{ ...draw, strokeDashoffset: checked ? 0 : 1 }}
-          />
-        </svg>
+        {/* Dash properties inherit from the svg to its path, so the spring draws the tick on and off. */}
+        <Check
+          width="10"
+          height="10"
+          color="white"
+          strokeWidth={1.4}
+          absoluteStrokeWidth
+          style={{ ...draw, strokeDasharray: CHECK_LENGTH, strokeDashoffset: checked ? 0 : CHECK_LENGTH }}
+        />
       </span>
       {label}
     </label>
@@ -168,9 +169,7 @@ export const Select = ({ value, onChange, options, label, disabled }: SelectProp
         className={`flex w-full items-center justify-between border-b pb-2 text-left text-[14px] text-white/90 disabled:opacity-40 ${FOCUS} ${open ? "border-white/70" : HAIRLINE}`}
       >
         {options[selected]?.label}
-        <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" style={{ ...motion, transform: `rotate(${open ? 180 : 0}deg)` }}>
-          <path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" strokeWidth="1.2" fill="none" />
-        </svg>
+        <ChevronDown width="10" height="10" strokeWidth={1.2} absoluteStrokeWidth aria-hidden="true" style={{ ...motion, transform: `rotate(${open ? 180 : 0}deg)` }} />
       </button>
       <ul
         {...listProps}

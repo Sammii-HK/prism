@@ -35,7 +35,7 @@ const PrismMark = () => {
   }, []);
 
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0">
+    <svg data-brand-mark="prism" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" className="shrink-0">
       <path ref={ref} d="M7 1.5 12.6 12H1.4Z" fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth="1.25" strokeLinejoin="round" />
     </svg>
   );
@@ -55,15 +55,15 @@ export const SiteNav = ({ skipTo = "#main" }: { skipTo?: string | null } = {}) =
           Skip to content
         </a>
       )}
-      <nav aria-label="Primary" className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
+      <nav aria-label="Primary" className="mx-auto flex min-h-14 w-full max-w-6xl flex-wrap items-center justify-between max-sm:gap-y-1 max-sm:py-1 px-5 sm:px-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2.5 rounded-md font-mono text-[12px] tracking-[0.2em] text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+          className="flex min-h-11 min-w-11 shrink-0 items-center gap-2.5 rounded-md font-mono text-[12px] tracking-[0.2em] text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
         >
           <PrismMark />
-          <span className="max-sm:sr-only">PRISM</span>
+          <span className="">PRISM</span>
         </Link>
-        <ul className="no-scrollbar -mr-2 flex min-w-0 items-center gap-0.5 overflow-x-auto pr-2 sm:mr-0 sm:gap-1 sm:overflow-visible sm:pr-0">
+        <ul className="no-scrollbar -mr-2 flex min-w-0 items-center max-sm:order-2 max-sm:w-full max-sm:justify-between gap-0.5 overflow-x-auto pr-2 sm:mr-0 sm:gap-1 sm:overflow-visible sm:pr-0">
           {links.map((link) => {
             const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
@@ -71,13 +71,13 @@ export const SiteNav = ({ skipTo = "#main" }: { skipTo?: string | null } = {}) =
                 <Link
                   href={link.href}
                   aria-current={active ? "page" : undefined}
-                  className={`relative block whitespace-nowrap rounded-lg px-2 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:px-3 ${
+                  className={`relative flex min-h-11 items-center whitespace-nowrap rounded-lg px-2 py-1.5 text-[13px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:px-3 ${
                     active ? "text-white" : "text-white/55 hover:text-white/85"
                   }`}
                 >
                   {link.label}
                   {active && (
-                    <span className="absolute inset-x-2 -bottom-[13px] h-px bg-gradient-to-r from-transparent via-white/70 to-transparent sm:inset-x-3" />
+                    <span className="absolute inset-x-2 -bottom-[1px] h-px bg-gradient-to-r from-transparent via-white/70 to-transparent sm:inset-x-3" />
                   )}
                 </Link>
               </li>

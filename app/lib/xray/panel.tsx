@@ -1,4 +1,5 @@
 "use client";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { accessibleName, interactiveElements, roleOf, tabSequence, XRAY_ROOT_ATTR } from "./measure";
 import { LAYERS, toggleLayer, toggleSimulatedReducedMotion, toggleXray, useXray } from "./store";
@@ -113,9 +114,7 @@ export const XrayPanel = () => {
             aria-label="Turn off X-ray mode"
             className="grid h-7 w-7 place-items-center rounded-md text-white/55 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           >
-            <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true">
-              <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
+            <X width="10" height="10"  aria-hidden="true" />
           </button>
         </div>
       </div>

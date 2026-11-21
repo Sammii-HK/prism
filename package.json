@@ -6,13 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "npm run lint:icons && eslint",
     "test:tokens": "node --test --experimental-strip-types scripts/token-compose.test.ts",
-    "test:lab": "node --test --experimental-strip-types scripts/spring-field.test.ts scripts/reading-pace.test.ts scripts/reorder.test.ts"
+    "test:lab": "node --test --experimental-strip-types scripts/spring-field.test.ts scripts/reading-pace.test.ts scripts/reorder.test.ts",
+    "registry:build": "node scripts/build-registry.mjs",
+    "registry:check": "node scripts/build-registry.mjs --check",
+    "predev": "npm run registry:build",
+    "prebuild": "npm run registry:build",
+    "test:registry": "npm run registry:check && node --test scripts/registry.test.mjs",
+    "lint:icons": "node scripts/lint-icons.mjs",
+    "test:icons": "node --test scripts/icons.test.mjs",
+    "test:gallery": "node --test scripts/gallery-previews.test.mjs",
+    "test:discovery": "node --test scripts/discovery.test.mjs",
+    "test": "npm run test:icons && npm run test:tokens && npm run test:lab && npm run test:registry && npm run test:gallery && npm run test:discovery"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",
-    "next": "16.2.4",
+    "next": "16.4.6",
     "react": "19.2.5",
     "react-dom": "19.2.5"
   },
@@ -22,11 +32,32 @@
     "@types/node": "^25",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.4",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.4.6",
     "playwright": "^1.59.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee",
+  "pnpm": {
+    "overrides": {
+      "@babel/core": "^7.29.6",
+      "browserslist": "^4.28.7",
+      "baseline-browser-mapping": "^2.11.0",
+      "source-map-js": "^1.2.2",
+      "flatted": "^3.4.2",
+      "brace-expansion@1": "^1.1.21",
+      "brace-expansion@2": "^5.0.12",
+      "brace-expansion@5": "^5.0.12",
+      "picomatch@2": "^2.3.2",
+      "picomatch@4": "^4.0.4",
+      "js-yaml@4": "^4.3.2",
+      "nanoid@3": "^3.3.18",
+      "postcss@8": "^8.5.23",
+      "esbuild": "^0.28.1",
+      "zod@4": "^4.6.6",
+      "minimatch@10": "^11.0.1",
+      "@humanfs/node": "^0.16.8"
+    }
+  }
 }

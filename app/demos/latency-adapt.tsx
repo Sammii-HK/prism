@@ -1,4 +1,5 @@
 "use client";
+import { ArrowRight } from "lucide-react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import {
   LatencyAdapt,
@@ -153,7 +154,7 @@ export function LatencyAdaptPanel({
               <ul data-testid="log" className="font-mono text-xs text-white/60">
                 {log.map((row) => (
                   <li key={row.n}>
-                    +{row.atMs} ms {row.event}: {row.from} → {row.to}
+                    +{row.atMs} ms {row.event}: {row.from} <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" /> {row.to}
                   </li>
                 ))}
               </ul>

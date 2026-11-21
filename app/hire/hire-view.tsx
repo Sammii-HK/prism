@@ -1,24 +1,6 @@
 "use client";
 import { useState, type ReactNode } from "react";
-import {
-  Archive,
-  Home,
-  Monitor,
-  Moon,
-  Plus,
-  Settings,
-  Sun,
-  Trash2,
-  User,
-  Copy,
-  Palette,
-  Search,
-  Mail,
-  Calendar,
-  Star,
-  Camera,
-  Music,
-} from "lucide-react";
+import { Archive, Home, Monitor, Moon, Plus, Settings, Sun, Trash2, User, Copy, Palette, Search, Mail, Calendar, Star, Camera, Music, ArrowRight } from "lucide-react";
 
 import { usePointer } from "../lib/hooks/use-pointer";
 import { colourField } from "../lib/primitives/gradient";
@@ -317,7 +299,7 @@ export const HireView = () => {
           >
             Email Sammii
             <span className="text-white/50 group-hover:translate-x-0.5 transition-transform">
-              →
+              <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
             </span>
           </a>
           <a
@@ -586,7 +568,7 @@ const ContactLink = ({
     <span className="text-sm text-white/80 group-hover:text-white/95 transition-colors">
       {value}{" "}
       <span className="text-white/50 group-hover:translate-x-0.5 inline-block transition-transform">
-        →
+        <ArrowRight size={14} aria-hidden="true" className="inline-block align-middle" />
       </span>
     </span>
   </a>

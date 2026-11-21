@@ -1,4 +1,5 @@
 "use client";
+import { GripVertical } from "lucide-react";
 import { flushSync } from "react-dom";
 import { useCallback, useEffect, useId, useLayoutEffect, useReducer, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
 import { useSystemReducedMotion } from "./async-button";
@@ -45,9 +46,7 @@ const btn =
 const btnStyle = { borderColor: "rgba(255,255,255,0.24)", background: "rgba(255,255,255,0.08)" } as const;
 
 const Grip = () => (
-  <svg width="14" height="18" viewBox="0 0 14 18" aria-hidden="true" fill="currentColor">
-    {[3, 9, 15].flatMap((y) => [3, 11].map((x) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1.5" />))}
-  </svg>
+  <GripVertical width="14" height="18"  aria-hidden="true"  />
 );
 
 export function FlipReorderPanel({

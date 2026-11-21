@@ -1,4 +1,5 @@
 "use client";
+import { ChevronDown } from "lucide-react";
 import { useRef, useEffect, useState, useCallback, useId } from "react";
 import { pastelColour } from "../primitives/gradient";
 import { subscribeAttention, type Attention, proximityTo } from "../hooks/attention";
@@ -417,21 +418,17 @@ export const GlowSelect = ({
 
         {/* Chevron: centred on the whole field, like the resting label, not on the value line. */}
         <span aria-hidden="true" className="pointer-events-none absolute top-1/2 -translate-y-1/2" style={{ right: 16 }}>
-        <svg
-          ref={chevronRef}
+        <ChevronDown ref={chevronRef}
           width="16"
           height="16"
-          viewBox="0 0 16 16"
-          fill="none"
+
+
           stroke="currentColor"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           className="block will-change-transform"
-          style={{ color: "rgba(255,255,255,0.5)" }}
-        >
-          <path d="M4 6l4 4 4-4" />
-        </svg>
+          style={{ color: "rgba(255,255,255,0.5)" }} />
         </span>
       </button>
 
